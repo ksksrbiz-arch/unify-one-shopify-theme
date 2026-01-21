@@ -1,0 +1,72 @@
+# Dependencies
+node_modules/
+npm-debug.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Environment
+.env
+.env.local
+.env.*.local
+.env*.pem
+.env*.key
+
+# OS
+.DS_Store
+Thumbs.db
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.eslintcache
+*.sublime-workspace
+*.sublime-project
+.vs/
+.env.*.local
+
+# Build & Dist
+build/
+dist/
+.cache/
+out/
+.next/
+
+# Test
+coverage/
+.nyc_output/
+*.lcov
+junit.xml
+
+# Logs
+logs/
+*.log
+
+# Misc
+.DS_Store
+*.pem
+.env.example
+.envrc
+.venv/
+venv/
+
+# Shopify specific
+.theme-check-custom.yml
+config.yml
+
+# Project specific
+.shopify/
+*.backup
+*.tmp
+*.temp
