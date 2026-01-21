@@ -1,0 +1,316 @@
+# UnifyOne Shopify Theme - Setup Guide
+
+**Domain:** `1commerce.shop`  
+**Migrated From:** GoDaddy  
+**Last Updated:** January 21, 2026
+
+## 📋 Prerequisites
+
+- **Node.js** 18+ ([download](https://nodejs.org))
+- **npm** 9+ (comes with Node.js)
+- **Shopify CLI** - Install with: `npm install -g @shopify/cli @shopify/theme`
+- **Git** - For version control and GitHub integration
+- **GitHub Account** - For CI/CD workflows
+
+## 🔧 Local Development Setup
+
+### 1. Clone Repository
+
+```bash
+git clone https://github.com/ksksrbiz-arch/unify-one-shopify-theme.git
+cd unify-one-shopify-theme
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+### 3. Create Environment File
+
+Create `.env.local` in the root directory:
+
+```bash
+# .env.local
+SHOPIFY_STORE_NAME=1commerce.shop
+SHOPIFY_THEME_TOKEN=your_theme_token_here
+```
+
+**How to get Shopify Theme Token:**
+
+1. Go to Shopify Admin → Settings → Apps & integrations
+2. Click "Develop apps" (or "Create an app")
+3. Create a new app called "UnifyOne Theme CI/CD"
+4. Under "Admin API scopes", enable:
+   - `write_themes`
+   - `read_themes`
+5. Generate access token → Copy to `.env.local`
+
+### 4. Authenticate with Shopify
+
+```bash
+shopify auth login --store 1commerce.shop
+```
+
+This creates a local authentication session.
+
+### 5. Start Development Server
+
+```bash
+npm run dev
+```
+
+This launches a local development server with live reload at `http://localhost:9000`
+
+## 🚀 Deployment Pipeline
+
+### GitHub Secrets Configuration
+
+Add these secrets to your GitHub repository (Settings → Secrets & variables → Actions):
+
+| Secret Name | Description | Value |
+|-----------|-------------|-------|
+| `SHOPIFY_STORE_NAME` | Shopify store name | `1commerce.shop` |
+| `SHOPIFY_THEME_TOKEN` | API access token | From Shopify Admin |
+| `SHOPIFY_STAGING_THEME_ID` | Staging theme ID | From Shopify (e.g., 987654321) |
+| `SHOPIFY_PRODUCTION_THEME_ID` | Production theme ID | From Shopify (e.g., 123456789) |
+| `SLACK_WEBHOOK` | (Optional) Slack webhook for notifications | https://hooks.slack.com/... |
+
+### Finding Theme IDs
+
+```bash
+shopify theme list --store 1commerce.shop
+```
+
+Output example:
+```
+ID             NAME          ROLE
+123456789      Live          main
+987654321      Staging       development
+```
+
+### Staging Deployment
+
+**Automatic:** Push to `develop` branch
+
+```bash
+git checkout develop
+git commit -am "Update theme"
+git push origin develop
+```
+
+**Manual:** Trigger workflow
+
+```bash
+gh workflow run deploy-staging.yml -R ksksrbiz-arch/unify-one-shopify-theme
+```
+
+### Production Deployment
+
+**Automatic:** Create and push a version tag
+
+```bash
+git tag v1.0.1
+git push origin v1.0.1
+```
+
+**Manual:** Trigger workflow with version input
+
+```bash
+gh workflow run deploy-production.yml -R ksksrbiz-arch/unify-one-shopify-theme -f version=v1.0.1
+```
+
+## 📁 Directory Structure
+
+```
+.
+├── assets/                    # Static files
+│   ├── custom-styles.css     # Main theme CSS
+│   └── theme.js              # Theme JavaScript
+├── config/
+│   └── settings_schema.json   # Theme configuration
+├── layout/
+│   └── theme.liquid          # Base template
+├── sections/
+│   ├── header.liquid
+│   └── footer.liquid
+├── templates/
+│   ├── product.liquid
+│   ├── collection.liquid
+│   └── cart.liquid
+├── snippets/
+│   └── product-card.liquid
+├── .github/workflows/
+│   ├── deploy-staging.yml
+│   └── deploy-production.yml
+├── .shopifyignore             # Shopify deployment ignore
+├── .env.local                 # Local environment (git-ignored)
+├── package.json
+├── theme.json
+├── README.md
+└── SETUP.md                   # This file
+```
+
+## 🎨 Customization Guide
+
+### CSS Variables
+
+Edit `assets/custom-styles.css` to customize the design system:
+
+```css
+:root {
+  --primary-color: #007bff;
+  --secondary-color: #6c757d;
+  --accent-color: #28a745;
+  /* ... more variables ... */
+}
+```
+
+### Liquid Settings
+
+Edit `config/settings_schema.json` to add theme customization options visible in Shopify Admin:
+
+```json
+{
+  "name": "Colors",
+  "settings": [
+    {
+      "type": "color",
+      "id": "primary_color",
+      "label": "Primary Color",
+      "default": "#007bff"
+    }
+  ]
+}
+```
+
+### Adding New Sections
+
+1. Create `sections/new-section.liquid`
+2. Add schema definition at the bottom of the file
+3. Include in templates: `{% section 'new-section' %}`
+
+## 🧪 Testing & Validation
+
+### Lint Liquid Templates
+
+```bash
+npm run lint:liquid
+```
+
+### Full Theme Check
+
+```bash
+npm run lint
+```
+
+### Local Preview
+
+```bash
+npm run dev
+# Open http://localhost:9000 in browser
+```
+
+## 📦 Deployment Workflow Diagram
+
+```
+┌─────────────────────────────────────────┐
+│  Git Feature Branch Development         │
+│  (work on features/feature-name)        │
+└────────────────────┬────────────────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │  Create Pull Request   │
+        │  to develop branch     │
+        └────────────┬───────────┘
+                     │
+                     ▼
+        ┌────────────────────────┐
+        │  GitHub Actions runs   │
+        │  lint & validation     │
+        └────────────┬───────────┘
+                     │
+        ┌────────────▼───────────┐
+        │  Merge to develop      │
+        └────────────┬───────────┘
+                     │
+                     ▼
+    ┌────────────────────────────────────┐
+    │  Auto-Deploy to Staging Theme      │
+    │  (GitHub Actions workflow)         │
+    │  TEST: https://1commerce.shop      │
+    └────────────┬───────────────────────┘
+                 │
+        ┌────────▼──────────┐
+        │  QA Approval      │
+        └────────┬──────────┘
+                 │
+        ┌────────▼──────────┐
+        │  Tag Release      │
+        │  git tag v1.0.0   │
+        │  git push --tags  │
+        └────────┬──────────┘
+                 │
+                 ▼
+    ┌────────────────────────────────────┐
+    │  Auto-Deploy to Production         │
+    │  (GitHub Actions workflow)         │
+    │  LIVE: https://1commerce.shop      │
+    └────────────────────────────────────┘
+```
+
+## 🐛 Troubleshooting
+
+### Issue: "Cannot find module '@shopify/cli'"
+
+```bash
+npm install -g @shopify/cli @shopify/theme
+```
+
+### Issue: "Theme deployment failed"
+
+1. Verify `SHOPIFY_THEME_TOKEN` is valid
+2. Check theme ID exists: `shopify theme list --store 1commerce.shop`
+3. Review workflow logs in GitHub Actions
+
+### Issue: Local development server won't start
+
+```bash
+# Clear cache and reinstall
+rm -rf node_modules/.cache
+npm ci
+npm run dev
+```
+
+### Issue: Liquid syntax errors
+
+```bash
+# Run linter to identify issues
+npm run lint:liquid
+
+# Check specific file
+shopify theme check sections/header.liquid
+```
+
+## 📚 Resources
+
+- [Shopify Theme Development](https://shopify.dev/themes/getting-started)
+- [Liquid Template Language](https://shopify.dev/liquid)
+- [Shopify CLI Documentation](https://shopify.dev/themes/tools/cli)
+- [GitHub Actions Documentation](https://docs.github.com/en/actions)
+
+## 📞 Support
+
+For issues or questions:
+
+1. Check the README.md
+2. Review GitHub Actions workflow logs
+3. Contact PNW Enterprises Development Team
+
+---
+
+**Theme Version:** 1.0.0  
+**Last Updated:** January 21, 2026  
+**Maintained By:** PNW Enterprises
