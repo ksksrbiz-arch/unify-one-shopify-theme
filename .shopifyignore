@@ -1,0 +1,64 @@
+# Shopify Theme Ignore Rules
+# Files not to deploy to Shopify
+
+# Development files
+node_modules/
+npm-debug.log
+yarn-error.log
+.DS_Store
+Thumbs.db
+
+# Version control
+.git/
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.env*
+.eslintrc
+.prettierrc
+
+# Documentation
+README.md
+CONTRIBUTING.md
+LICENSE
+
+# CI/CD
+.github/
+.gitlab-ci.yml
+Jenkinsfile
+
+# Build/Cache
+build/
+dist/
+.cache/
+
+# Test files
+__tests__/
+*.test.js
+*.spec.js
+
+# Package files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Config
+.env
+.env.local
+.env.*.local
+config.yml
+
+# Logs
+logs/
+*.log
+
+# Misc
+*.tmp
+*.temp
+.editorconfig
