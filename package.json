@@ -1,0 +1,42 @@
+{
+  "name": "unify-one-shopify-theme",
+  "version": "1.0.0",
+  "description": "UnifyOne custom Shopify Liquid CSS theme for 1commerce.shop",
+  "main": "index.js",
+  "scripts": {
+    "dev": "shopify theme dev --store 1commerce.shop",
+    "watch": "shopify theme watch",
+    "lint": "shopify theme check",
+    "lint:liquid": "shopify theme check --fail-level info",
+    "deploy:staging": "shopify theme push --to 'Staging' --allow-live",
+    "deploy:production": "shopify theme push --allow-live",
+    "build": "npm run lint && npm run optimize",
+    "optimize": "node scripts/optimize-assets.js",
+    "test": "jest",
+    "format": "prettier --write \"**/*.{js,json,liquid,css}\""
+  },
+  "keywords": [
+    "shopify",
+    "theme",
+    "liquid",
+    "ecommerce",
+    "unify-one"
+  ],
+  "author": "PNW Enterprises",
+  "license": "PROPRIETARY",
+  "devDependencies": {
+    "@shopify/cli": "^3.50.0",
+    "@shopify/theme": "^3.50.0",
+    "prettier": "^3.1.0",
+    "shopify-cli-theme-check": "^2.0.0",
+    "jest": "^29.7.0"
+  },
+  "dependencies": {
+    "axios": "^1.6.0",
+    "uuid": "^9.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0",
+    "npm": ">=9.0.0"
+  }
+}
