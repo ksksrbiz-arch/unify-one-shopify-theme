@@ -26,10 +26,14 @@ unify-one-shopify-theme/
 ├── .github/workflows/
 │   ├── deploy-staging.yml      # Staging deployment with Lighthouse CI
 │   └── deploy-production.yml   # Production deployment
+├── deploy-staging.ps1           # PowerShell staging deployment script
+├── deploy-production.ps1        # PowerShell production deployment script
+├── deploy-staging.bat           # Command Prompt staging deployment script
+├── deploy-production.bat        # Command Prompt production deployment script
 ├── .shopifyignore              # Files to ignore during deployment
-├── lighthouserc.json           # Performance budgets & assertions
-├── theme.json                  # Theme metadata
-└── package.json                # Node.js dependencies
+├── lighthouserc.json            # Performance budgets & assertions
+├── theme.json                   # Theme metadata
+└── package.json                 # Node.js dependencies
 ```
 
 ## 🚀 Quick Start
@@ -52,23 +56,44 @@ shopify theme dev --store 1commerce.shop
 npm run watch
 ```
 
-### Deploy to Staging
+### Deploy to Staging (One Command)
 
+**PowerShell:**
+```powershell
+.\deploy-staging.ps1 "Your commit message"
+```
+
+**Command Prompt:**
+```cmd
+deploy-staging.bat "Your commit message"
+```
+
+**Manual:**
 ```bash
-git commit -am "Update theme"
+git add .
+git commit -m "Update theme"
 git push origin develop
-# GitHub Actions auto-deploys to staging + runs Lighthouse CI
 ```
 
-### Deploy to Production
+### Deploy to Production (One Command)
 
+**PowerShell:**
+```powershell
+.\deploy-production.ps1 -version 1.0.1 -message "Release: Add new features"
+```
+
+**Command Prompt:**
+```cmd
+deploy-production.bat 1.0.1 "Release: Add new features"
+```
+
+**Manual:**
 ```bash
-git tag v1.0.0
-git push origin v1.0.0
-# GitHub Actions auto-deploys to production
+git tag v1.0.1 -m "Release: Add new features"
+git push origin v1.0.1
 ```
 
-## 📦 Deployment Pipeline
+## 📋 Deployment Pipeline
 
 ### GitHub Actions Workflow
 
@@ -84,6 +109,14 @@ git push origin v1.0.0
 4. Run Lighthouse CI (performance audit)
 5. Post results to GitHub
 
+## 📚 Documentation
+
+| Document | Purpose |
+|----------|----------|
+| **[CLI Deployment Guide](./docs/CLI-DEPLOYMENT-GUIDE.md)** | Step-by-step commands for PowerShell/Command Prompt |
+| **[Performance Monitoring](./docs/PERFORMANCE-MONITORING.md)** | Lighthouse CI setup and optimization |
+| **[Setup Guide](./SETUP.md)** | Initial setup and configuration |
+
 ## 📊 Performance Monitoring
 
 Every deployment to staging automatically audits performance metrics:
@@ -93,10 +126,7 @@ Every deployment to staging automatically audits performance metrics:
 - **Best Practices** - Browser compatibility, image optimization
 - **SEO** - Meta tags, structured data, mobile-friendly
 
-**See:** [`docs/PERFORMANCE-MONITORING.md`](./docs/PERFORMANCE-MONITORING.md) for detailed configuration, interpretation, and optimization guide.
-
-### Performance Targets
-
+**Performance Targets:**
 ```
 Performance:   ≥ 85/100
 Accessibility: ≥ 90/100
@@ -108,6 +138,8 @@ Core Web Vitals:
 - FCP: < 2.0s
 - CLS: < 0.1
 ```
+
+See [Performance Monitoring Guide](./docs/PERFORMANCE-MONITORING.md) for details.
 
 ## 🎨 Customization
 
@@ -137,7 +169,7 @@ All templates have access to:
 
 Customize via `config/settings_schema.json` → Shopify Admin → Theme Settings
 
-## 🔄 CI/CD Configuration
+## 🔐 CI/CD Configuration
 
 ### Environment Variables
 
@@ -154,12 +186,6 @@ Create `.env.local`:
 SHOPIFY_STORE_NAME=1commerce.shop
 SHOPIFY_THEME_TOKEN=your_token_here
 ```
-
-## 📖 Documentation
-
-- **[Setup Guide](./SETUP.md)** - Initial setup and deployment instructions
-- **[Repository Management](./README.md)** - File structure and operations
-- **[Performance Monitoring](./docs/PERFORMANCE-MONITORING.md)** - Lighthouse CI setup and optimization
 
 ## 🐛 Troubleshooting
 
@@ -185,7 +211,35 @@ npm run lint:liquid
 
 ### Performance Issues
 
-See [Performance Monitoring Guide](./docs/PERFORMANCE-MONITORING.md#common-performance-issues--solutions) for troubleshooting common metrics failures.
+See [Performance Monitoring Guide](./docs/PERFORMANCE-MONITORING.md#common-performance-issues--solutions) for troubleshooting.
+
+### CLI Script Execution Issues
+
+**PowerShell: "Cannot be loaded because running scripts is disabled"**
+```powershell
+# Allow script execution
+Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
+
+# Then run script
+.\deploy-staging.ps1
+```
+
+**Command Prompt: Script not found**
+```cmd
+# Ensure you're in the theme root directory
+cd C:\path\to\unify-one-shopify-theme
+
+# Then run
+deploy-staging.bat
+```
+
+## 📖 Learning Resources
+
+- **[CLI Deployment Guide](./docs/CLI-DEPLOYMENT-GUIDE.md)** - Comprehensive git commands
+- **[Performance Monitoring](./docs/PERFORMANCE-MONITORING.md)** - Lighthouse CI optimization
+- **Shopify Docs:** https://shopify.dev/themes
+- **Liquid Docs:** https://shopify.dev/liquid
+- **GitHub Docs:** https://docs.github.com/
 
 ## 📄 License
 
@@ -200,4 +254,5 @@ Proprietary - UnifyOne Shopify Theme
 **Last Updated:** January 21, 2026  
 **Domain:** 1commerce.shop  
 **Migration Date:** GoDaddy → Shopify (January 2026)  
-**Theme Version:** 1.0.0+
+**Theme Version:** 1.0.0+  
+**CLI Scripts:** Included (PowerShell & Command Prompt)
