@@ -1,6 +1,6 @@
 # UnifyOne Shopify Theme
 
-Custom Liquid CSS theme for UnifyOne storefront at **1commerce.shop**. Migrated from GoDaddy with CI/CD deployment pipeline.
+Custom Liquid CSS theme for UnifyOne storefront at **1commerce.shop**. Migrated from GoDaddy with CI/CD deployment pipeline and automated performance monitoring.
 
 ## 📁 Project Structure
 
@@ -24,9 +24,10 @@ unify-one-shopify-theme/
 ├── snippets/
 │   └── product-card.liquid     # Reusable product component
 ├── .github/workflows/
-│   ├── deploy-staging.yml      # Staging deployment
+│   ├── deploy-staging.yml      # Staging deployment with Lighthouse CI
 │   └── deploy-production.yml   # Production deployment
 ├── .shopifyignore              # Files to ignore during deployment
+├── lighthouserc.json           # Performance budgets & assertions
 ├── theme.json                  # Theme metadata
 └── package.json                # Node.js dependencies
 ```
@@ -56,7 +57,7 @@ npm run watch
 ```bash
 git commit -am "Update theme"
 git push origin develop
-# GitHub Actions auto-deploys to staging
+# GitHub Actions auto-deploys to staging + runs Lighthouse CI
 ```
 
 ### Deploy to Production
@@ -72,7 +73,7 @@ git push origin v1.0.0
 ### GitHub Actions Workflow
 
 **Trigger Events:**
-- Push to `develop` → Deploy to staging
+- Push to `develop` → Deploy to staging + Lighthouse CI audit
 - Push tag `v*` → Deploy to production
 - Manual trigger via workflow dispatch
 
@@ -80,7 +81,33 @@ git push origin v1.0.0
 1. Lint Liquid templates
 2. Validate CSS/JS
 3. Deploy to Shopify using theme API
-4. Run smoke tests
+4. Run Lighthouse CI (performance audit)
+5. Post results to GitHub
+
+## 📊 Performance Monitoring
+
+Every deployment to staging automatically audits performance metrics:
+
+- **Performance** - LCP, FCP, CLS, TBT targets
+- **Accessibility** - WCAG compliance, keyboard nav, contrast
+- **Best Practices** - Browser compatibility, image optimization
+- **SEO** - Meta tags, structured data, mobile-friendly
+
+**See:** [`docs/PERFORMANCE-MONITORING.md`](./docs/PERFORMANCE-MONITORING.md) for detailed configuration, interpretation, and optimization guide.
+
+### Performance Targets
+
+```
+Performance:   ≥ 85/100
+Accessibility: ≥ 90/100
+Best Practice: ≥ 85/100
+SEO:           ≥ 90/100
+
+Core Web Vitals:
+- LCP: < 2.5s
+- FCP: < 2.0s
+- CLS: < 0.1
+```
 
 ## 🎨 Customization
 
@@ -128,12 +155,11 @@ SHOPIFY_STORE_NAME=1commerce.shop
 SHOPIFY_THEME_TOKEN=your_token_here
 ```
 
-## 📊 Performance
+## 📖 Documentation
 
-- Lazy-loaded images
-- Minified CSS/JS
-- Optimized Liquid rendering
-- 90+ PageSpeed score target
+- **[Setup Guide](./SETUP.md)** - Initial setup and deployment instructions
+- **[Repository Management](./README.md)** - File structure and operations
+- **[Performance Monitoring](./docs/PERFORMANCE-MONITORING.md)** - Lighthouse CI setup and optimization
 
 ## 🐛 Troubleshooting
 
@@ -157,6 +183,10 @@ shopify theme check
 npm run lint:liquid
 ```
 
+### Performance Issues
+
+See [Performance Monitoring Guide](./docs/PERFORMANCE-MONITORING.md#common-performance-issues--solutions) for troubleshooting common metrics failures.
+
 ## 📄 License
 
 Proprietary - UnifyOne Shopify Theme
@@ -169,4 +199,5 @@ Proprietary - UnifyOne Shopify Theme
 
 **Last Updated:** January 21, 2026  
 **Domain:** 1commerce.shop  
-**Migration Date:** GoDaddy → Shopify (January 2026)
+**Migration Date:** GoDaddy → Shopify (January 2026)  
+**Theme Version:** 1.0.0+
