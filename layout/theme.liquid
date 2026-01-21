@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="{{ request.locale.iso_code }}">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  
+  <title>{% if page_title %}{{ page_title }} | {% endif %}{{ shop.name }}</title>
+  <meta name="description" content="{{ page_description | escape }}">
+  
+  <link rel="canonical" href="{{ canonical_url }}">
+  <link rel="icon" type="image/png" href="{{ 'favicon.png' | asset_url }}">
+  
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{{ page_title | escape }}">
+  <meta property="og:description" content="{{ page_description | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:site_name" content="{{ shop.name }}">
+  <meta property="og:image" content="{{ page_image | img_url: '1200x630' | prepend: 'https:' }}">
+  
+  <!-- Twitter Card Meta Tags -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | escape }}">
+  <meta name="twitter:description" content="{{ page_description | escape }}">
+  <meta name="twitter:image" content="{{ page_image | img_url: '1200x630' | prepend: 'https:' }}">
+  
+  <!-- Theme CSS -->
+  {{ 'custom-styles.css' | asset_url | stylesheet_tag }}
+  
+  <!-- Shopify defaults -->
+  {{ content_for_header }}
+  
+  <!-- Custom scripts -->
+  <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
+</head>
+<body class="template-{{ template | handle }}" data-shop="{{ shop.permanent_domain }}">
+  
+  <!-- Header Section -->
+  {% section 'header' %}
+  
+  <!-- Main Content -->
+  <main id="MainContent" role="main">
+    {{ content_for_layout }}
+  </main>
+  
+  <!-- Footer Section -->
+  {% section 'footer' %}
+  
+  <!-- Cookie Banner -->
+  <div id="cookie-banner" class="cookie-banner" style="display: none;">
+    <div class="cookie-banner__content">
+      <p>We use cookies to enhance your experience. By continuing to browse this site you agree to our use of cookies.</p>
+      <div class="cookie-banner__actions">
+        <button id="cookie-accept" class="btn btn--primary btn--sm">Accept</button>
+        <button id="cookie-decline" class="btn btn--outline btn--sm">Decline</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- JSON-LD Structured Data -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ shop.name }}",
+    "url": "{{ shop.url }}",
+    "logo": "{{ 'logo.png' | asset_url }}",
+    "description": "{{ shop.description | escape }}",
+    "sameAs": [
+      "{{ settings.social_twitter }}",
+      "{{ settings.social_facebook }}",
+      "{{ settings.social_instagram }}"
+    ]
+  }
+  </script>
+  
+  <!-- Analytics (commented - add your tracking ID) -->
+  <!-- Google Analytics, Segment, etc. -->
+</body>
+</html>
