@@ -1,4 +1,4 @@
-name: Deploy to Staging
+name: Deploy to Staging with Performance Check
 
 on:
   push:
@@ -56,6 +56,16 @@ jobs:
           curl -s "https://1commerce.shop/cdn/shop/t/${{ secrets.SHOPIFY_STAGING_THEME_ID }}/assets/custom-styles.css" | head -c 100
         continue-on-error: true
 
+      # NEW: Lighthouse CI Performance Check
+      - name: Run Lighthouse CI
+        uses: treosh/lighthouse-ci-action@v10
+        with:
+          urls: |
+            https://1commerce.shop/?preview_theme_id=${{ secrets.SHOPIFY_STAGING_THEME_ID }}
+          uploadArtifacts: true
+          temporaryPublicStorage: true
+        continue-on-error: true
+
       - name: Create deployment annotation
         if: always()
         run: |
@@ -63,6 +73,7 @@ jobs:
           echo "Theme ID: ${{ secrets.SHOPIFY_STAGING_THEME_ID }}"
           echo "Store: 1commerce.shop"
           echo "Branch: develop"
+          echo "Lighthouse reports uploaded to temporary public storage"
 
       - name: Post deployment status to PR
         if: github.event_name == 'pull_request'
@@ -73,6 +84,6 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✅ Deployed to staging theme. Preview: https://1commerce.shop'
+              body: '✅ Deployed to staging theme. Preview: https://1commerce.shop\n\n📊 Lighthouse CI reports available in the workflow logs.'
             })
         continue-on-error: true
