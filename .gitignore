@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+package-lock.json
 
 # Environment
 .env
@@ -34,7 +35,6 @@ desktop.ini
 *.sublime-workspace
 *.sublime-project
 .vs/
-.env.*.local
 
 # Build & Dist
 build/
@@ -54,9 +54,7 @@ logs/
 *.log
 
 # Misc
-.DS_Store
 *.pem
-.env.example
 .envrc
 .venv/
 venv/
@@ -70,3 +68,7 @@ config.yml
 *.backup
 *.tmp
 *.temp
+
+# Don't ignore .env.example (it's a template)
+!.env.example
+
