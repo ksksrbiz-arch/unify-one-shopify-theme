@@ -356,9 +356,19 @@
         e.preventDefault();
         const productId = btn.dataset.addToCart;
         const quantity = parseInt(btn.dataset.quantity || 1, 10);
-        if (productId && !isNaN(quantity)) {
-          Cart.addToCart(productId, quantity);
+        
+        // Validate product ID (should be numeric)
+        if (!productId || !/^\d+$/.test(productId)) {
+          Cart.showNotification('Invalid product ID', 'error');
+          return;
         }
+        
+        if (isNaN(quantity) || quantity < 1) {
+          Cart.showNotification('Invalid quantity', 'error');
+          return;
+        }
+        
+        Cart.addToCart(productId, quantity);
       });
     });
   });
