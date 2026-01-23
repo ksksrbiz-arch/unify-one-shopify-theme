@@ -58,7 +58,6 @@
         {% endif %}
 
         {%- form 'product', product -%}
-          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
           
           {% if product.variants.size > 1 %}
             <div class="product__variants">
@@ -67,12 +66,15 @@
                 {% for variant in product.variants %}
                   <option 
                     value="{{ variant.id }}"
+                    {% if variant == product.selected_or_first_available_variant %}selected{% endif %}
                     {% unless variant.available %}disabled{% endunless %}>
                     {{ variant.title }} - {{ variant.price | money }}
                   </option>
                 {% endfor %}
               </select>
             </div>
+          {% else %}
+            <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
           {% endif %}
 
           <div class="product__quantity">

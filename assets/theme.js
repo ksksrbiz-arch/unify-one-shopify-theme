@@ -357,8 +357,10 @@
         const productId = btn.dataset.addToCart;
         const quantity = parseInt(btn.dataset.quantity || 1, 10);
         
-        // Validate product ID (should be numeric)
-        if (!productId || !/^\d+$/.test(productId)) {
+        // Shopify variant IDs are numeric strings (e.g., "12345678901")
+        const isValidVariantId = /^\d+$/.test(productId);
+        
+        if (!productId || !isValidVariantId) {
           Cart.showNotification('Invalid product ID', 'error');
           return;
         }
