@@ -3,17 +3,5 @@
   "version": "1.0.0",
   "theme_author": "PNW Enterprises",
   "theme_documentation_url": "https://github.com/ksksrbiz-arch/unify-one-shopify-theme",
-  "theme_support_url": "https://github.com/ksksrbiz-arch/unify-one-shopify-theme/issues",
-  "current": {
-    "sections": {
-      "header": {
-        "type": "header",
-        "settings": {}
-      },
-      "footer": {
-        "type": "footer",
-        "settings": {}
-      }
-    }
-  }
+  "theme_support_url": "https://github.com/ksksrbiz-arch/unify-one-shopify-theme/issues"
 }

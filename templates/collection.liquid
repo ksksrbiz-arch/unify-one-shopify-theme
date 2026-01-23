@@ -3,6 +3,7 @@
   Displays a grid of products in a collection
 {% endcomment %}
 
+{% paginate collection.products by 20 %}
 <div class="collection-page">
   <div class="container">
     
@@ -75,3 +76,4 @@
 
   </div>
 </div>
+{% endpaginate %}

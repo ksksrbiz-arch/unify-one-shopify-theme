@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta http-equiv="X-UA-Compatible" content="ie=edge">
   
-  <!-- Content Security Policy -->
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.shopify.com https://*.shopifycdn.com; style-src 'self' 'unsafe-inline' https://cdn.shopify.com https://*.shopifycdn.com; img-src 'self' data: https:; font-src 'self' data: https://cdn.shopify.com https://*.shopifycdn.com; connect-src 'self' https://monorail-edge.shopifysvc.com https://*.shopify.com; frame-src https://cdn.shopify.com;">
+  <!-- Content Security Policy - Note: 'unsafe-inline' required for Shopify's inline scripts -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.shopify.com https://*.shopifycdn.com https://monorail-edge.shopifysvc.com; style-src 'self' 'unsafe-inline' https://cdn.shopify.com https://*.shopifycdn.com; img-src 'self' data: https:; font-src 'self' data: https://cdn.shopify.com https://*.shopifycdn.com; connect-src 'self' https://monorail-edge.shopifysvc.com https://*.shopify.com; frame-src https://cdn.shopify.com;">
   
   <title>{% if page_title %}{{ page_title }} | {% endif %}{{ shop.name }}</title>
   <meta name="description" content="{{ page_description | escape }}">
