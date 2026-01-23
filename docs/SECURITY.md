@@ -1,9 +1,5 @@
-{% comment %}
-  Security Considerations for UnifyOne Shopify Theme
-  Last Updated: January 23, 2026
-{% endcomment %}
-
-# Security Features & Best Practices
+# Security Considerations for UnifyOne Shopify Theme
+# Last Updated: January 23, 2026
 
 ## 🔒 Implemented Security Measures
 

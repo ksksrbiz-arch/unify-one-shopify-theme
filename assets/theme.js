@@ -35,6 +35,7 @@
 
   /**
    * LocalStorage Manager
+   * Note: get() does not check consent to avoid circular dependency
    */
   const Storage = {
     get: (key, defaultValue = null) => {
@@ -48,9 +49,11 @@
     },
     set: (key, value) => {
       try {
-        // Check consent before storing
-        if (!CookieConsent.hasConsent()) {
-          return;
+        // Check consent before storing (except for consent keys themselves)
+        if (key !== 'cookie-consent' && key !== 'cookie-dismissed') {
+          if (!CookieConsent.hasConsent()) {
+            return;
+          }
         }
         localStorage.setItem(key, JSON.stringify(value));
       } catch (e) {
