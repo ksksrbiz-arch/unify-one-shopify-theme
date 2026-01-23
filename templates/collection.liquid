@@ -1,0 +1,77 @@
+{% comment %}
+  Collection Page Template
+  Displays a grid of products in a collection
+{% endcomment %}
+
+<div class="collection-page">
+  <div class="container">
+    
+    {%- comment -%} Collection Header {%- endcomment -%}
+    <div class="collection__header">
+      <h1 class="collection__title">{{ collection.title }}</h1>
+      {% if collection.description != blank %}
+        <div class="collection__description">
+          {{ collection.description }}
+        </div>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Product Grid {%- endcomment -%}
+    {% if collection.products.size > 0 %}
+      <div class="collection__products">
+        <div class="product-grid">
+          {% for product in collection.products %}
+            <div class="product-card">
+              <a href="{{ product.url }}" class="product-card__link">
+                {% if product.featured_image %}
+                  <div class="product-card__image">
+                    <img 
+                      src="{{ product.featured_image | img_url: '400x' }}" 
+                      alt="{{ product.featured_image.alt | escape }}"
+                      loading="lazy">
+                  </div>
+                {% endif %}
+                
+                <div class="product-card__info">
+                  <h3 class="product-card__title">{{ product.title }}</h3>
+                  <div class="product-card__price">
+                    <span class="price">{{ product.price | money }}</span>
+                    {% if product.compare_at_price > product.price %}
+                      <span class="price--compare">{{ product.compare_at_price | money }}</span>
+                    {% endif %}
+                  </div>
+                </div>
+              </a>
+              
+              <button 
+                type="button"
+                class="btn btn--primary btn--sm"
+                data-add-to-cart="{{ product.selected_or_first_available_variant.id }}"
+                data-quantity="1"
+                {% unless product.available %}disabled{% endunless %}>
+                {% if product.available %}
+                  Add to Cart
+                {% else %}
+                  Sold Out
+                {% endif %}
+              </button>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {%- comment -%} Pagination {%- endcomment -%}
+      {% if paginate.pages > 1 %}
+        <div class="collection__pagination">
+          {{ paginate | default_pagination }}
+        </div>
+      {% endif %}
+
+    {% else %}
+      <div class="collection__empty">
+        <p>No products found in this collection.</p>
+      </div>
+    {% endif %}
+
+  </div>
+</div>

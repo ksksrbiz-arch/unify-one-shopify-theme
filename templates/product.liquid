@@ -1,0 +1,101 @@
+{% comment %}
+  Product Page Template
+  Displays a single product with images, description, and purchase options
+{% endcomment %}
+
+<div class="product-page">
+  <div class="container">
+    <div class="product__wrapper">
+      
+      {%- comment -%} Product Images {%- endcomment -%}
+      <div class="product__images" data-product-gallery>
+        {% if product.images.size > 0 %}
+          <div class="product__main-image">
+            <img 
+              src="{{ product.featured_image | img_url: '800x' }}" 
+              alt="{{ product.featured_image.alt | escape }}"
+              data-gallery-main-image
+              loading="eager">
+          </div>
+          
+          {% if product.images.size > 1 %}
+            <div class="product__thumbnails">
+              {% for image in product.images %}
+                <button 
+                  type="button"
+                  class="product__thumbnail {% if forloop.first %}is-active{% endif %}"
+                  data-gallery-thumbnail="{{ image | img_url: '800x' }}"
+                  aria-label="View image {{ forloop.index }}">
+                  <img 
+                    src="{{ image | img_url: '100x' }}" 
+                    alt="{{ image.alt | escape }}"
+                    loading="lazy">
+                </button>
+              {% endfor %}
+            </div>
+          {% endif %}
+        {% endif %}
+      </div>
+
+      {%- comment -%} Product Info {%- endcomment -%}
+      <div class="product__info">
+        <h1 class="product__title">{{ product.title }}</h1>
+        
+        <div class="product__price">
+          <span class="price">{{ product.price | money }}</span>
+          {% if product.compare_at_price > product.price %}
+            <span class="price--compare">{{ product.compare_at_price | money }}</span>
+          {% endif %}
+        </div>
+
+        {% if product.description != blank %}
+          <div class="product__description">
+            {{ product.description }}
+          </div>
+        {% endif %}
+
+        {%- form 'product', product -%}
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          {% if product.variants.size > 1 %}
+            <div class="product__variants">
+              <label for="variant-select">Variant</label>
+              <select name="id" id="variant-select" class="product__variant-select">
+                {% for variant in product.variants %}
+                  <option 
+                    value="{{ variant.id }}"
+                    {% unless variant.available %}disabled{% endunless %}>
+                    {{ variant.title }} - {{ variant.price | money }}
+                  </option>
+                {% endfor %}
+              </select>
+            </div>
+          {% endif %}
+
+          <div class="product__quantity">
+            <label for="quantity">Quantity</label>
+            <input 
+              type="number" 
+              id="quantity" 
+              name="quantity" 
+              value="1" 
+              min="1"
+              class="quantity-input">
+          </div>
+
+          <button 
+            type="submit" 
+            name="add"
+            class="btn btn--primary btn--lg product__add-to-cart"
+            {% unless product.available %}disabled{% endunless %}>
+            {% if product.available %}
+              Add to Cart
+            {% else %}
+              Sold Out
+            {% endif %}
+          </button>
+        {%- endform -%}
+      </div>
+    </div>
+  </div>
+</div>
