@@ -84,6 +84,6 @@ jobs:
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body: '✅ Deployed to staging theme. Preview: https://1commerce.shop\n\n📊 Lighthouse CI reports available in the workflow logs.'
+              body: '✅ Deployed to staging theme. Preview: https://1commerce.shop\\n\\n📊 Lighthouse CI reports available in the workflow logs.'
             })
         continue-on-error: true
