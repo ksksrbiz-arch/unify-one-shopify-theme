@@ -3,6 +3,9 @@
   Displays site navigation, logo, and cart
 {% endcomment %}
 
+{%- comment -%} Section-specific CSS {%- endcomment -%}
+{{ 'section-header.css' | asset_url | stylesheet_tag }}
+
 <header class="site-header" role="banner" data-section-id="{{ section.id }}" data-section-type="header">
   <div class="container">
     <div class="header__wrapper">

@@ -3,6 +3,9 @@
   Displays footer links, social media, and copyright
 {% endcomment %}
 
+{%- comment -%} Section-specific CSS {%- endcomment -%}
+{{ 'section-footer.css' | asset_url | stylesheet_tag }}
+
 <footer class="site-footer" role="contentinfo" data-section-id="{{ section.id }}" data-section-type="footer">
   <div class="container">
     <div class="footer__grid">
