@@ -11,6 +11,7 @@
 | Document | Purpose | For Who |
 |----------|---------|----------|
 | **[SETUP.md](./SETUP.md)** | Local dev setup & deployment | Developers |
+| **[CSS_INTEGRATION_GUIDE.md](./CSS_INTEGRATION_GUIDE.md)** | CSS integration via GitHub connector | Frontend Developers |
 | **[BACKEND_INTEGRATION.md](./BACKEND_INTEGRATION.md)** | Connect to 19 revenue streams | Full-stack devs |
 | **[ANALYTICS_PIXELS_SETUP.md](./ANALYTICS_PIXELS_SETUP.md)** | Multi-platform pixel tracking | Marketing & Analytics |
 | **[Performance Workflows](./.github/workflows/performance-monitoring.yml)** | Lighthouse CI monitoring | DevOps |
@@ -23,6 +24,7 @@
 ```
 ├── README.md                      # This file - project overview
 ├── SETUP.md                       # Detailed setup & deployment instructions
+├── CSS_INTEGRATION_GUIDE.md       # CSS integration via GitHub connector (NEW)
 ├── BACKEND_INTEGRATION.md         # Backend API endpoints for 19 revenue streams (NEW)
 ├── ANALYTICS_PIXELS_SETUP.md      # Multi-platform analytics configuration (NEW)
 ├── theme.json                     # Theme metadata

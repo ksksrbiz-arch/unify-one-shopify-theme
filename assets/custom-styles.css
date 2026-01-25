@@ -1,5 +1,24 @@
 /* UnifyOne Custom Shopify Theme - Main Stylesheet */
-/* Last Updated: January 21, 2026 */
+/* Last Updated: January 25, 2026 */
+
+/* ============================================
+   IMPORTANT: CSS SCOPING APPROACH
+   ============================================
+   
+   This file contains GLOBAL styles that apply across all pages.
+   
+   For section-specific styles, use separate CSS files:
+   - assets/section-header.css (header only)
+   - assets/section-footer.css (footer only)
+   - assets/section-hero.css (hero sections)
+   
+   Section-specific CSS should use data attributes for scoping:
+   [data-section-type="header"] .nav-link { }
+   
+   This prevents style conflicts and improves performance.
+   
+   See CSS_INTEGRATION_GUIDE.md for detailed documentation.
+   ============================================ */
 
 /* ============================================
    DESIGN SYSTEM - CSS VARIABLES

@@ -35,6 +35,44 @@ jobs:
         run: npx shopify theme check --fail-level info
         continue-on-error: true
 
+      - name: Validate CSS files
+        run: |
+          echo "Validating CSS files for Shopify compatibility..."
+          
+          # Check CSS files exist in assets directory
+          if [ ! -f "assets/custom-styles.css" ]; then
+            echo "❌ Error: assets/custom-styles.css not found"
+            exit 1
+          fi
+          
+          # Check for Liquid syntax in CSS (should use CSS variables instead)
+          if grep -r "{{" assets/*.css 2>/dev/null; then
+            echo "⚠️  Warning: Liquid syntax found in CSS files. Use CSS variables in theme.liquid instead."
+          fi
+          
+          # Verify CSS file paths are correct (no subdirectories)
+          if find assets -type d -mindepth 1 | grep -q .; then
+            echo "⚠️  Warning: Subdirectories found in assets/. CSS files should be in assets/ root only."
+            if find assets -type f -name "*.css" ! -path "assets/*.css"; then
+              echo "❌ Error: CSS files in subdirectories detected. Move to assets/ root."
+              exit 1
+            fi
+          fi
+          
+          # Check CSS file sizes
+          for css_file in assets/*.css; do
+            if [ -f "$css_file" ]; then
+              size=$(wc -c < "$css_file")
+              if [ $size -gt 102400 ]; then
+                echo "⚠️  Warning: $css_file is larger than 100KB ($size bytes). Consider splitting."
+              fi
+              echo "✅ $css_file: $size bytes"
+            fi
+          done
+          
+          echo "CSS validation complete!"
+        continue-on-error: true
+
       - name: Install Shopify CLI
         run: npm install -g @shopify/cli @shopify/theme
 
