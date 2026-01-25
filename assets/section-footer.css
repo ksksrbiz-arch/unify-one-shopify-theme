@@ -1,6 +1,10 @@
 /* Section-Specific CSS - Footer */
 /* This CSS is scoped to the footer section only */
 /* Include in section file: {{ 'section-footer.css' | asset_url | stylesheet_tag }} */
+/* 
+ * IMPORTANT: This file depends on CSS variables defined in custom-styles.css
+ * Ensure custom-styles.css is loaded in theme.liquid before this section CSS
+ */
 
 /* ============================================
    FOOTER SECTION STYLES
