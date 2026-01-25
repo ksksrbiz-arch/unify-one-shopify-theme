@@ -35,6 +35,8 @@
 
   /**
    * LocalStorage Manager
+   * Note: get() does not check consent to avoid circular dependency
+   * set() checks consent except for consent-related keys
    */
   const Storage = {
     get: (key, defaultValue = null) => {
@@ -42,22 +44,31 @@
         const value = localStorage.getItem(key);
         return value ? JSON.parse(value) : defaultValue;
       } catch (e) {
-        console.error('Storage.get error:', e);
+        // Silent fail for storage errors
         return defaultValue;
       }
     },
     set: (key, value) => {
       try {
+        // Bypass consent check for consent-related keys to avoid circular dependency
+        const consentKeys = ['cookie-consent', 'cookie-dismissed'];
+        if (!consentKeys.includes(key)) {
+          // For non-consent keys, check if consent exists directly
+          const hasConsent = localStorage.getItem('cookie-consent');
+          if (hasConsent !== 'true') {
+            return;
+          }
+        }
         localStorage.setItem(key, JSON.stringify(value));
       } catch (e) {
-        console.error('Storage.set error:', e);
+        // Silent fail for storage errors (quota exceeded, private mode, etc.)
       }
     },
     remove: (key) => {
       try {
         localStorage.removeItem(key);
       } catch (e) {
-        console.error('Storage.remove error:', e);
+        // Silent fail for storage errors
       }
     }
   };
@@ -121,7 +132,7 @@
 
     loadAnalytics() {
       // Load Google Analytics or other tracking scripts
-      console.log('Analytics loaded');
+      // TODO: Implement actual analytics loading (GA4, Meta Pixel, etc.)
     }
   };
 
@@ -133,30 +144,60 @@
     init() {
       this.setupToggle();
       this.setupCloseOnClick();
+      this.setupAccessibility();
     },
 
     setupToggle() {
       const toggle = document.querySelector('[data-menu-toggle]');
       const menu = document.querySelector('[data-mobile-menu]');
 
-      if (toggle) {
+      if (toggle && menu) {
         toggle.addEventListener('click', () => {
-          menu.classList.toggle('is-open');
+          const isOpen = menu.classList.toggle('is-open');
           toggle.classList.toggle('is-active');
+          
+          // Update ARIA attributes
+          toggle.setAttribute('aria-expanded', isOpen);
+          menu.setAttribute('aria-hidden', !isOpen);
+          
+          // Prevent body scroll when menu is open
+          document.body.style.overflow = isOpen ? 'hidden' : '';
         });
       }
     },
 
     setupCloseOnClick() {
       const links = document.querySelectorAll('[data-mobile-menu] a');
+      const menu = document.querySelector('[data-mobile-menu]');
+      const toggle = document.querySelector('[data-menu-toggle]');
+      
       links.forEach((link) => {
         link.addEventListener('click', () => {
-          const menu = document.querySelector('[data-mobile-menu]');
-          const toggle = document.querySelector('[data-menu-toggle]');
-          menu.classList.remove('is-open');
-          toggle.classList.remove('is-active');
+          if (menu && toggle) {
+            menu.classList.remove('is-open');
+            toggle.classList.remove('is-active');
+            toggle.setAttribute('aria-expanded', 'false');
+            menu.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
         });
       });
+    },
+
+    setupAccessibility() {
+      const menu = document.querySelector('[data-mobile-menu]');
+      
+      if (menu) {
+        // Handle Escape key to close menu
+        document.addEventListener('keydown', (e) => {
+          if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+            const toggle = document.querySelector('[data-menu-toggle]');
+            if (toggle) {
+              toggle.click();
+            }
+          }
+        });
+      }
     }
   };
 
@@ -195,25 +236,40 @@
   // ===========================================
 
   const Cart = {
-    addToCart(productId, quantity = 1) {
+    addToCart(productId, quantity = 1, retries = 2) {
       const formData = new FormData();
       formData.append('id', productId);
       formData.append('quantity', quantity);
 
       return fetch('/cart/add.js', {
         method: 'POST',
-        body: formData
+        body: formData,
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        }
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+          return response.json();
+        })
         .then((json) => {
-          console.log('Item added to cart:', json);
           this.updateCartCount();
           this.showNotification('Product added to cart');
           return json;
         })
         .catch((error) => {
-          console.error('Error adding to cart:', error);
-          this.showNotification('Error adding to cart', 'error');
+          // Retry logic for network errors
+          if (retries > 0) {
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                resolve(this.addToCart(productId, quantity, retries - 1));
+              }, 1000);
+            });
+          }
+          this.showNotification('Unable to add product to cart. Please try again.', 'error');
+          throw error;
         });
     },
 
@@ -229,8 +285,14 @@
     },
 
     showNotification(message, type = 'success') {
+      // Validate notification type
+      const validTypes = ['success', 'error', 'warning', 'info'];
+      const notificationType = validTypes.includes(type) ? type : 'info';
+      
       const notification = document.createElement('div');
-      notification.className = `notification notification--${type}`;
+      notification.className = `notification notification--${notificationType}`;
+      notification.setAttribute('role', 'alert');
+      notification.setAttribute('aria-live', 'polite');
       notification.textContent = message;
       document.body.appendChild(notification);
 
@@ -264,6 +326,8 @@
             observer.unobserve(img);
           }
         });
+      }, {
+        rootMargin: '50px' // Load images 50px before they enter viewport
       });
 
       images.forEach((img) => observer.observe(img));
@@ -281,7 +345,6 @@
   // ===========================================
 
   document.addEventListener('DOMContentLoaded', () => {
-    console.log('UnifyOne theme initialized');
     CookieConsent.init();
     MobileMenu.init();
     ProductGallery.init();
@@ -292,7 +355,21 @@
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         const productId = btn.dataset.addToCart;
-        const quantity = parseInt(btn.dataset.quantity || 1);
+        const quantity = parseInt(btn.dataset.quantity || 1, 10);
+        
+        // Shopify variant IDs are numeric strings (e.g., "12345678901")
+        const isValidVariantId = /^\d+$/.test(productId);
+        
+        if (!productId || !isValidVariantId) {
+          Cart.showNotification('Invalid product ID', 'error');
+          return;
+        }
+        
+        if (isNaN(quantity) || quantity < 1) {
+          Cart.showNotification('Invalid quantity', 'error');
+          return;
+        }
+        
         Cart.addToCart(productId, quantity);
       });
     });

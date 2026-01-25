@@ -1,27 +1,7 @@
 {
   "name": "UnifyOne",
-  "id": 123456789,
-  "theme": {
-    "name": "UnifyOne Custom Theme",
-    "id": 123456789
-  },
-  "current_version_id": 1,
-  "presets": {
-    "Default": {
-      "colors": {
-        "primary": "#007bff",
-        "secondary": "#6c757d",
-        "accent": "#28a745"
-      },
-      "typography": {
-        "heading_font": "'Inter', sans-serif",
-        "body_font": "'Inter', sans-serif"
-      }
-    }
-  },
-  "settings": {
-    "logo_width": 200,
-    "checkout_logo_width": 250,
-    "favicon": "/cdn/shop/files/favicon.png"
-  }
+  "version": "1.0.0",
+  "theme_author": "PNW Enterprises",
+  "theme_documentation_url": "https://github.com/ksksrbiz-arch/unify-one-shopify-theme",
+  "theme_support_url": "https://github.com/ksksrbiz-arch/unify-one-shopify-theme/issues"
 }
