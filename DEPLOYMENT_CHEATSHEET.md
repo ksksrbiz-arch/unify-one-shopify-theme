@@ -106,7 +106,7 @@ git push origin v1.0.1
 
 ```bash
 # Save work in progress
-git stash save "Newsletter form - incomplete"
+git stash push -m "Newsletter form - incomplete"
 
 # List all stashes
 git stash list

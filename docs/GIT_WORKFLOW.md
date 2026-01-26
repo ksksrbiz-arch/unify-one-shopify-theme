@@ -32,7 +32,7 @@ Temporarily save your changes (work in progress) when you need to switch branche
   ```
 - Stash with a descriptive message:
   ```sh
-  git stash save "Work in progress on newsletter feature"
+  git stash push -m "Work in progress on newsletter feature"
   ```
 - Drop a specific stash:
   ```sh
@@ -43,7 +43,7 @@ Temporarily save your changes (work in progress) when you need to switch branche
 ```sh
 # You're working on a new feature but need to quickly fix a bug
 # Save your unfinished work
-git stash save "Newsletter form - incomplete validation"
+git stash push -m "Newsletter form - incomplete validation"
 
 # Switch branches and work on the bug fix
 git checkout main
@@ -415,7 +415,7 @@ git checkout -b features/mobile-menu-improvements
 # Make changes to sections/header.liquid and assets/theme.js
 
 # Urgent: Need to fix a bug on main
-git stash save "Mobile menu improvements - in progress"
+git stash push -m "Mobile menu improvements - in progress"
 git checkout main
 # Fix the bug, commit, push
 

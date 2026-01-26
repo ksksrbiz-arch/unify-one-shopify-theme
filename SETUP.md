@@ -302,7 +302,7 @@ Save work in progress when you need to switch contexts:
 
 ```bash
 # Save current changes temporarily
-git stash save "Work in progress on product gallery"
+git stash push -m "Work in progress on product gallery"
 
 # Switch to another branch to fix a bug
 git checkout main

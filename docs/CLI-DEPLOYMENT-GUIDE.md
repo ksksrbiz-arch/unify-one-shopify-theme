@@ -330,7 +330,7 @@ git rebase upstream/main
 #### Stash (Temporarily Save Work)
 ```powershell
 # Save current changes without committing
-git stash save "Work in progress on product section"
+git stash push -m "Work in progress on product section"
 
 # List all stashes
 git stash list

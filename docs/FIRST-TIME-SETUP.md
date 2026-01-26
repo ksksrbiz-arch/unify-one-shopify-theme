@@ -189,7 +189,7 @@ git status                   # Check current status
 
 ```cmd
 # Save current work without committing
-git stash save "Work in progress on header"
+git stash push -m "Work in progress on header"
 
 # List all saved work
 git stash list
