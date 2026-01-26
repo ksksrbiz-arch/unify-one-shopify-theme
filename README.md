@@ -11,10 +11,21 @@
 
 ---
 
+## 🚀 Quick Start with GitHub Codespaces
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ksksrbiz-arch/unify-one-shopify-theme)
+
+Get started in seconds with a fully configured cloud development environment! No local setup required.
+
+**New?** → Start here: **[CODESPACES_SETUP.md](./CODESPACES_SETUP.md)** - Complete guide to GitHub Codespaces & deployment setup
+
+---
+
 ## 📋 Quick Navigation
 
 | Document | Purpose | For Who |
 |----------|---------|----------|
+| **[CODESPACES_SETUP.md](./CODESPACES_SETUP.md)** | 🚀 GitHub Codespaces setup & deployment | All Team Members |
 | **[DEPLOYMENT_QUICK_REF.md](./DEPLOYMENT_QUICK_REF.md)** | ⚡ Quick deployment & monitoring guide | All Team Members |
 | **[SETUP.md](./SETUP.md)** | Local dev setup & deployment | Developers |
 | **[UPTIME_MONITORING.md](./UPTIME_MONITORING.md)** | Production uptime & incident response | DevOps & Support |
