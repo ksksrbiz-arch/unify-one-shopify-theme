@@ -325,6 +325,112 @@ git fetch upstream
 git rebase upstream/main
 ```
 
+### Advanced Git Commands
+
+#### Stash (Temporarily Save Work)
+```powershell
+# Save current changes without committing
+git stash save "Work in progress on product section"
+
+# List all stashes
+git stash list
+
+# Apply latest stash and remove it
+git stash pop
+
+# Apply latest stash but keep it
+git stash apply
+
+# Drop a specific stash
+git stash drop stash@{0}
+```
+
+**Use case:** You're editing theme files but need to urgently switch to fix a bug.
+
+#### Cherry-pick (Apply Specific Commits)
+```powershell
+# Find the commit you need
+git log --oneline features/bug-fix
+
+# Apply that commit to current branch
+git cherry-pick a1b2c3d
+
+# Cherry-pick multiple commits
+git cherry-pick commit1 commit2 commit3
+
+# Cherry-pick without auto-commit
+git cherry-pick -n a1b2c3d
+```
+
+**Use case:** Apply a critical bug fix from a feature branch to production without merging the entire feature.
+
+#### Rebase (Keep Branch Updated)
+```powershell
+# Update feature branch with latest from develop
+git checkout features/newsletter
+git rebase develop
+
+# Resolve conflicts if they occur
+# Edit conflicting files, then:
+git add .
+git rebase --continue
+
+# Or abort the rebase
+git rebase --abort
+```
+
+**Use case:** Keep your feature branch synchronized with team changes before creating a PR.
+
+#### Reflog (Recover Lost Commits)
+```powershell
+# View all recent Git actions
+git reflog
+
+# Checkout a lost commit
+git checkout abc123
+
+# Create branch from lost commit
+git branch recover-work abc123
+```
+
+**Use case:** Accidentally deleted commits or reset too far - recover your work.
+
+#### Interactive Rebase (Clean History)
+```powershell
+# Rebase last 5 commits interactively
+git rebase -i HEAD~5
+
+# In editor:
+# - Change 'pick' to 'squash' to combine commits
+# - Change 'pick' to 'edit' to modify commit
+# - Reorder lines to reorder commits
+# Save and exit
+
+# After squashing, edit commit message
+# Save and exit
+```
+
+**Use case:** Clean up multiple small commits into logical commits before creating PR.
+
+#### Clean (Remove Untracked Files)
+```powershell
+# Preview what will be deleted
+git clean -n
+
+# Remove untracked files
+git clean -f
+
+# Remove untracked files and directories
+git clean -fd
+
+# Include ignored files (be careful!)
+git clean -fdx
+```
+
+**Use case:** Remove temporary test files or reset working directory to clean state.
+
+**📚 Complete Guide:** See [docs/GIT_WORKFLOW.md](../docs/GIT_WORKFLOW.md) for comprehensive examples and workflows.
+
 ---
 
 ## 🚨 Troubleshooting
