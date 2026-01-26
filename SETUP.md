@@ -8,7 +8,7 @@
 
 - **Node.js** 18+ ([download](https://nodejs.org))
 - **npm** 9+ (comes with Node.js)
-- **Shopify CLI** - Install with: `npm install -g @shopify/cli @shopify/hydrogen`
+- **Shopify CLI** - Install with: `npm install -g @shopify/cli @shopify/theme @shopify/hydrogen`
 - **Git** - For version control and GitHub integration
 - **GitHub Account** - For CI/CD workflows
 
@@ -267,7 +267,7 @@ npm run dev
 ### Issue: "Cannot find module '@shopify/cli'"
 
 ```bash
-npm install -g @shopify/cli @shopify/hydrogen
+npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 ```
 
 ### Issue: "Theme deployment failed"

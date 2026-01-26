@@ -38,7 +38,7 @@ jobs:
         run: npx shopify theme check --fail-level error
 
       - name: Install Shopify CLI globally
-        run: npm install -g @shopify/cli @shopify/hydrogen
+        run: npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 
       - name: Get release version
         id: version

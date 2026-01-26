@@ -74,7 +74,7 @@ jobs:
         continue-on-error: true
 
       - name: Install Shopify CLI globally
-        run: npm install -g @shopify/cli @shopify/hydrogen
+        run: npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 
       - name: Deploy to Staging Theme
         env:

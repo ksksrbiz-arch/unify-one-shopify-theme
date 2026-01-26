@@ -210,9 +210,9 @@ shopify theme pull --allow-live                    # Pull current theme
 shopify theme delete --store 1commerce.shop 123456 # Delete theme by ID
 ```
 
-**Note:** For foolproof deployments, Shopify CLI with Hydrogen support is installed globally in GitHub Actions via:
+**Note:** For foolproof deployments, Shopify CLI with Theme and Hydrogen support is installed globally in GitHub Actions via:
 ```bash
-npm install -g @shopify/cli @shopify/hydrogen
+npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 ```
 
 ---
