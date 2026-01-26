@@ -210,6 +210,11 @@ shopify theme pull --allow-live                    # Pull current theme
 shopify theme delete --store 1commerce.shop 123456 # Delete theme by ID
 ```
 
+**Note:** For foolproof deployments, Shopify CLI with Hydrogen support is installed globally in GitHub Actions via:
+```bash
+npm install -g @shopify/cli @shopify/hydrogen
+```
+
 ---
 
 ## 🐛 Troubleshooting Quick Fixes
@@ -271,6 +276,7 @@ SHOPIFY_STORE_NAME=1commerce.shop
 SHOPIFY_THEME_TOKEN=shptka_[token from Shopify Admin]
 SHOPIFY_STAGING_THEME_ID=987654321
 SHOPIFY_PRODUCTION_THEME_ID=123456789
+OXYGEN_DEPLOYMENT_TOKEN_1000088857=[token from Shopify Oxygen] (optional, for Hydrogen apps)
 SLACK_WEBHOOK=https://hooks.slack.com/... (optional)
 ```
 

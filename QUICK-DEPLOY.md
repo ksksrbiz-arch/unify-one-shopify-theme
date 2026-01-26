@@ -221,7 +221,7 @@ v2.0.0  "Major redesign with new layout"
 |-------|----------|
 | PowerShell won't run script | `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` |
 | Git not found | Install from https://git-scm.com/ |
-| Shopify CLI not found | `npm install -g @shopify/cli @shopify/theme` |
+| Shopify CLI not found | `npm install -g @shopify/cli @shopify/hydrogen` |
 | Not in git repo | `cd` to theme root directory |
 | Push rejected | Run `git pull origin develop` first |
 | Uncommitted changes | Run `git add . && git commit -m "..."` |
