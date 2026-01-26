@@ -9,32 +9,6 @@
  */
 {
   "current": {
-    "search_show_products_only": false,
-    "sections": {
-      "header": {
-        "type": "header",
-        "settings": {
-          "logo_width": 150,
-          "menu": "main-menu"
-        }
-      },
-      "footer": {
-        "type": "footer",
-        "settings": {
-          "about_heading": "About Us",
-          "about_text": "<p>Your store description goes here.</p>",
-          "links_heading": "Quick Links",
-          "menu": "footer",
-          "contact_heading": "Contact Us",
-          "contact_email": "",
-          "contact_phone": "",
-          "social_heading": "Follow Us",
-          "social_facebook": "",
-          "social_instagram": "",
-          "social_twitter": ""
-        }
-      }
-    },
     "content_for_index": [],
     "blocks": {
       "14060646107696862457": {
