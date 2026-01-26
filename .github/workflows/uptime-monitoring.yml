@@ -154,30 +154,37 @@ jobs:
             
             if (issues.data.length === 0) {
               // Create new incident issue
-              const issueBody = `## 🚨 Production Uptime Alert
+              const homepageStatus = '${{ steps.homepage_check.outputs.status }}';
+              const homepageCode = '${{ steps.homepage_check.outputs.http_code }}';
+              const homepageTime = '${{ steps.homepage_check.outputs.response_time }}';
+              const assetsStatus = '${{ steps.assets_check.outputs.status }}';
+              const cssStatus = '${{ steps.assets_check.outputs.css_status }}';
+              const jsStatus = '${{ steps.assets_check.outputs.js_status }}';
+              const productStatus = '${{ steps.product_check.outputs.status }}';
+              const productCode = '${{ steps.product_check.outputs.http_code }}';
+              const cartStatus = '${{ steps.cart_check.outputs.status }}';
+              const cartCode = '${{ steps.cart_check.outputs.http_code }}';
               
-**Status**: ${healthStatus.toUpperCase()}
-**Failed Checks**: ${failedChecks}/4
-**Timestamp**: ${new Date().toISOString()}
-
-### Check Results:
-- Homepage: ${{ steps.homepage_check.outputs.status }} (HTTP ${{ steps.homepage_check.outputs.http_code }}, ${{ steps.homepage_check.outputs.response_time }}s)
-- Assets: ${{ steps.assets_check.outputs.status }} (CSS: ${{ steps.assets_check.outputs.css_status }}, JS: ${{ steps.assets_check.outputs.js_status }})
-- Products: ${{ steps.product_check.outputs.status }} (HTTP ${{ steps.product_check.outputs.http_code }})
-- Cart: ${{ steps.cart_check.outputs.status }} (HTTP ${{ steps.cart_check.outputs.http_code }})
-
-### Recommended Actions:
-1. Check [GitHub Actions workflows](${context.payload.repository.html_url}/actions) for recent deployment failures
-2. Verify Shopify store status at https://1commerce.myshopify.com/admin
-3. Review recent commits for breaking changes
-4. Check Shopify status page: https://status.shopify.com/
-
-**Workflow Run**: ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+              let issueBody = '## 🚨 Production Uptime Alert\n\n';
+              issueBody += '**Status**: ' + healthStatus.toUpperCase() + '\n';
+              issueBody += '**Failed Checks**: ' + failedChecks + '/4\n';
+              issueBody += '**Timestamp**: ' + new Date().toISOString() + '\n\n';
+              issueBody += '### Check Results:\n';
+              issueBody += '- Homepage: ' + homepageStatus + ' (HTTP ' + homepageCode + ', ' + homepageTime + 's)\n';
+              issueBody += '- Assets: ' + assetsStatus + ' (CSS: ' + cssStatus + ', JS: ' + jsStatus + ')\n';
+              issueBody += '- Products: ' + productStatus + ' (HTTP ' + productCode + ')\n';
+              issueBody += '- Cart: ' + cartStatus + ' (HTTP ' + cartCode + ')\n\n';
+              issueBody += '### Recommended Actions:\n';
+              issueBody += '1. Check [GitHub Actions workflows](' + context.payload.repository.html_url + '/actions) for recent deployment failures\n';
+              issueBody += '2. Verify Shopify store status at https://1commerce.myshopify.com/admin\n';
+              issueBody += '3. Review recent commits for breaking changes\n';
+              issueBody += '4. Check Shopify status page: https://status.shopify.com/\n\n';
+              issueBody += '**Workflow Run**: ' + context.payload.repository.html_url + '/actions/runs/' + context.runId;
 
               await github.rest.issues.create({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                title: `🚨 Production Uptime Issue Detected - ${healthStatus}`,
+                title: '🚨 Production Uptime Issue Detected - ' + healthStatus,
                 body: issueBody,
                 labels: ['incident', 'uptime', 'critical']
               });
