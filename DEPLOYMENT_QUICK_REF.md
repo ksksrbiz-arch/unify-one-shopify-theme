@@ -5,6 +5,14 @@
 
 ---
 
+## 🚀 GitHub Codespaces Available!
+
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/ksksrbiz-arch/unify-one-shopify-theme)
+
+Get a fully configured cloud development environment in seconds! → [Full Guide](./CODESPACES_SETUP.md)
+
+---
+
 ## 🚀 Quick Deploy Workflow
 
 ### 1. Staging Deployment (Automatic)
