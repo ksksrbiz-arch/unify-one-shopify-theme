@@ -1,0 +1,46 @@
+{
+  "name": "UnifyOne Shopify Theme Development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "Shopify.theme-check-vscode",
+        "sissel.shopify-liquid",
+        "GitHub.copilot",
+        "GitHub.copilot-chat"
+      ],
+      "settings": {
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+        "files.associations": {
+          "*.liquid": "liquid"
+        }
+      }
+    }
+  },
+
+  "postCreateCommand": "npm install && npm install -g @shopify/cli @shopify/theme",
+
+  "forwardPorts": [9000],
+  "portsAttributes": {
+    "9000": {
+      "label": "Shopify Theme Dev Server",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "remoteEnv": {
+    "SHOPIFY_CLI_NO_ANALYTICS": "1"
+  }
+}
