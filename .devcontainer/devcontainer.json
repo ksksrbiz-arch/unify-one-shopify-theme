@@ -42,9 +42,5 @@
 
   "remoteEnv": {
     "SHOPIFY_CLI_NO_ANALYTICS": "1"
-  },
-
-  "mounts": [
-    "source=${localEnv:HOME}/.shopify,target=/home/vscode/.shopify,type=bind,consistency=cached"
-  ]
+  }
 }

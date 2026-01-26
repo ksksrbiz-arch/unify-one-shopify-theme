@@ -54,7 +54,7 @@ Add each of the following secrets by clicking "New repository secret":
 
 To get your `SHOPIFY_THEME_TOKEN`:
 
-1. Log into Shopify Admin: `https://admin.shopify.com/store/1commerce`
+1. Log into Shopify Admin: `https://1commerce.shop/admin` (or `https://admin.shopify.com/store/1commerce`)
 2. Go to **Settings** → **Apps and sales channels**
 3. Click **"Develop apps"** (or **"Create an app"**)
 4. Click **"Create an app"** 

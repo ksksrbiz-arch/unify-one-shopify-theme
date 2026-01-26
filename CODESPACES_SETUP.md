@@ -145,8 +145,8 @@ npm run format
 # Method 1: Use npm script
 npm run deploy:staging
 
-# Method 2: Use Shopify CLI directly
-shopify theme push --store 1commerce.shop --theme $SHOPIFY_STAGING_THEME_ID
+# Method 2: Use Shopify CLI directly (replace THEME_ID with your staging theme ID)
+shopify theme push --store 1commerce.shop --theme 987654321
 ```
 
 ### Deploy to Production
@@ -155,8 +155,8 @@ shopify theme push --store 1commerce.shop --theme $SHOPIFY_STAGING_THEME_ID
 # Method 1: Use npm script (WARNING: This deploys to live store!)
 npm run deploy:production
 
-# Method 2: Use Shopify CLI directly
-shopify theme push --store 1commerce.shop --theme $SHOPIFY_PRODUCTION_THEME_ID --allow-live
+# Method 2: Use Shopify CLI directly (replace THEME_ID with your production theme ID)
+shopify theme push --store 1commerce.shop --theme 123456789 --allow-live
 ```
 
 ⚠️ **WARNING:** Production deployments should typically be done through the GitHub Actions workflow, not manually from Codespace.
