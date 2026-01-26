@@ -15,6 +15,7 @@
 
 | Document | Purpose | For Who |
 |----------|---------|----------|
+| **[DEPLOYMENT_QUICK_REF.md](./DEPLOYMENT_QUICK_REF.md)** | ⚡ Quick deployment & monitoring guide | All Team Members |
 | **[SETUP.md](./SETUP.md)** | Local dev setup & deployment | Developers |
 | **[UPTIME_MONITORING.md](./UPTIME_MONITORING.md)** | Production uptime & incident response | DevOps & Support |
 | **[CSS_INTEGRATION_GUIDE.md](./CSS_INTEGRATION_GUIDE.md)** | CSS integration via GitHub connector | Frontend Developers |
