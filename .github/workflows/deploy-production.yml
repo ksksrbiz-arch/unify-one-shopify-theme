@@ -37,8 +37,8 @@ jobs:
       - name: Run theme validation
         run: npx shopify theme check --fail-level error
 
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+      - name: Install Shopify CLI globally
+        run: npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 
       - name: Get release version
         id: version

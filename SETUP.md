@@ -8,7 +8,7 @@
 
 - **Node.js** 18+ ([download](https://nodejs.org))
 - **npm** 9+ (comes with Node.js)
-- **Shopify CLI** - Install with: `npm install -g @shopify/cli @shopify/theme`
+- **Shopify CLI** - Install with: `npm install -g @shopify/cli @shopify/theme @shopify/hydrogen`
 - **Git** - For version control and GitHub integration
 - **GitHub Account** - For CI/CD workflows
 
@@ -75,6 +75,7 @@ Add these secrets to your GitHub repository (Settings â†’ Secrets & variables â†
 | `SHOPIFY_THEME_TOKEN` | API access token | From Shopify Admin |
 | `SHOPIFY_STAGING_THEME_ID` | Staging theme ID | From Shopify (e.g., 987654321) |
 | `SHOPIFY_PRODUCTION_THEME_ID` | Production theme ID | From Shopify (e.g., 123456789) |
+| `OXYGEN_DEPLOYMENT_TOKEN_1000088857` | (Optional) Oxygen deployment token for Hydrogen apps | From Shopify Oxygen |
 | `SLACK_WEBHOOK` | (Optional) Slack webhook for notifications | https://hooks.slack.com/... |
 
 ### Finding Theme IDs
@@ -266,7 +267,7 @@ npm run dev
 ### Issue: "Cannot find module '@shopify/cli'"
 
 ```bash
-npm install -g @shopify/cli @shopify/theme
+npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 ```
 
 ### Issue: "Theme deployment failed"

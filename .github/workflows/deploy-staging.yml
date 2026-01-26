@@ -73,8 +73,8 @@ jobs:
           echo "CSS validation complete!"
         continue-on-error: true
 
-      - name: Install Shopify CLI
-        run: npm install -g @shopify/cli @shopify/theme
+      - name: Install Shopify CLI globally
+        run: npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 
       - name: Deploy to Staging Theme
         env:
