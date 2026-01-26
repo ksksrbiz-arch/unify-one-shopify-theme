@@ -100,6 +100,91 @@ git push origin v1.0.1
 
 ---
 
+## 🎓 Advanced Git Commands
+
+### Stash Changes Temporarily
+
+```bash
+# Save work in progress
+git stash push -m "Newsletter form - incomplete"
+
+# List all stashes
+git stash list
+
+# Restore latest stash
+git stash pop
+
+# Apply stash without removing it
+git stash apply
+```
+
+**When to use:** Need to switch branches but not ready to commit.
+
+### Cherry-pick Specific Commits
+
+```bash
+# Find commit hash
+git log --oneline features/bug-fix
+
+# Apply specific commit to current branch
+git cherry-pick a1b2c3d
+
+# Apply multiple commits
+git cherry-pick commit1 commit2 commit3
+```
+
+**When to use:** Apply critical fix to production without merging entire feature.
+
+### Keep Feature Branch Updated
+
+```bash
+# Rebase feature branch on develop
+git checkout features/your-feature
+git rebase develop
+
+# Resolve conflicts (if any)
+git add .
+git rebase --continue
+
+# Update PR
+git push --force-with-lease origin features/your-feature
+```
+
+**When to use:** Sync feature branch with latest team changes.
+
+### Recover Lost Work
+
+```bash
+# View all recent actions
+git reflog
+
+# Restore lost commit
+git checkout abc123
+# Or create branch from it
+git branch recover-work abc123
+```
+
+**When to use:** Accidentally deleted commits or reset too far.
+
+### Clean Up Commit History
+
+```bash
+# Interactive rebase last 5 commits
+git rebase -i HEAD~5
+
+# In editor: change 'pick' to 'squash' to combine commits
+# Save and exit
+
+# Update PR with clean history
+git push --force-with-lease origin features/your-feature
+```
+
+**When to use:** Combine small commits before creating PR.
+
+**📖 Full Guide:** See [docs/GIT_WORKFLOW.md](./docs/GIT_WORKFLOW.md) for comprehensive Git command reference.
+
+---
+
 ## 🛠️ Common Commands
 
 ### Development

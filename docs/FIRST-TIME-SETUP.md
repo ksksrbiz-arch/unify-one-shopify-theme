@@ -172,7 +172,80 @@ Watch for:
 
 ---
 
-## Step 7: Understanding the Workflow
+## Step 7: Learn Essential Git Commands
+
+### Basic Commands (You Already Know)
+
+```cmd
+git add .                    # Stage all changes
+git commit -m "message"      # Commit with message
+git push origin main         # Push to main branch
+git status                   # Check current status
+```
+
+### Advanced Commands (Level Up Your Skills)
+
+#### Save Work Temporarily (Stash)
+
+```cmd
+# Save current work without committing
+git stash push -m "Work in progress on header"
+
+# List all saved work
+git stash list
+
+# Restore your work
+git stash pop
+```
+
+**Example:** You're editing CSS but need to urgently fix a bug. Stash your CSS work, fix the bug, then restore your CSS changes.
+
+#### Apply Specific Commits (Cherry-pick)
+
+```cmd
+# Find the commit you want
+git log --oneline features/bug-fix
+
+# Apply just that commit to current branch
+git cherry-pick a1b2c3d
+```
+
+**Example:** You fixed a critical bug on a feature branch but need it in production immediately. Cherry-pick just that fix.
+
+#### Keep Your Branch Updated (Rebase)
+
+```cmd
+# Update your feature branch with latest changes
+git checkout features/your-feature
+git rebase develop
+
+# If conflicts occur, fix them then:
+git add .
+git rebase --continue
+```
+
+**Example:** The team pushed new changes to develop. Rebase to get those changes in your feature branch.
+
+#### Undo Mistakes (Reset & Reflog)
+
+```cmd
+# Undo last commit but keep changes
+git reset HEAD~1
+
+# View history of all actions (even deleted commits)
+git reflog
+
+# Recover a lost commit
+git checkout abc123
+```
+
+**Example:** You committed to wrong branch or want to recover deleted work.
+
+**📚 Complete Guide:** See [docs/GIT_WORKFLOW.md](../docs/GIT_WORKFLOW.md) for detailed examples and all advanced commands.
+
+---
+
+## Step 8: Understanding the Workflow
 
 ### Basic Deployment Flow
 

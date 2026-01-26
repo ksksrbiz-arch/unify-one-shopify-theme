@@ -294,12 +294,75 @@ npm run lint:liquid
 shopify theme check sections/header.liquid
 ```
 
+## 🌿 Advanced Git Workflows
+
+### Using Git Stash
+
+Save work in progress when you need to switch contexts:
+
+```bash
+# Save current changes temporarily
+git stash push -m "Work in progress on product gallery"
+
+# Switch to another branch to fix a bug
+git checkout main
+# Make your fix...
+
+# Return and restore your work
+git checkout features/product-gallery
+git stash pop
+```
+
+**Use case:** You're editing `assets/custom-styles.css` but need to urgently fix a production issue.
+
+### Cherry-picking Commits
+
+Apply specific commits from one branch to another:
+
+```bash
+# Find the commit you need
+git log --oneline features/new-feature
+
+# Apply it to current branch
+git cherry-pick a1b2c3d
+
+# Push the change
+git push origin main
+```
+
+**Use case:** Apply a critical bug fix from a feature branch to production without merging the entire feature.
+
+### Keeping Feature Branches Updated
+
+Use rebase to keep your branch synchronized with develop:
+
+```bash
+# Update your feature branch
+git checkout features/newsletter-form
+git fetch origin
+git rebase origin/develop
+
+# Resolve conflicts if any
+git add .
+git rebase --continue
+
+# Update your PR
+git push --force-with-lease origin features/newsletter-form
+```
+
+**Use case:** Keep your feature branch current with latest changes from the team.
+
+**For more advanced Git commands and workflows**, see [docs/GIT_WORKFLOW.md](./docs/GIT_WORKFLOW.md)
+
+---
+
 ## 📚 Resources
 
 - [Shopify Theme Development](https://shopify.dev/themes/getting-started)
 - [Liquid Template Language](https://shopify.dev/liquid)
 - [Shopify CLI Documentation](https://shopify.dev/themes/tools/cli)
 - [GitHub Actions Documentation](https://docs.github.com/en/actions)
+- [Advanced Git Workflows](./docs/GIT_WORKFLOW.md) - Comprehensive Git command guide
 
 ## 📞 Support
 

@@ -15,6 +15,7 @@
 | **[BACKEND_INTEGRATION.md](./BACKEND_INTEGRATION.md)** | Connect to 19 revenue streams | Full-stack devs |
 | **[ANALYTICS_PIXELS_SETUP.md](./ANALYTICS_PIXELS_SETUP.md)** | Multi-platform pixel tracking | Marketing & Analytics |
 | **[Performance Workflows](./.github/workflows/performance-monitoring.yml)** | Lighthouse CI monitoring | DevOps |
+| **[docs/GIT_WORKFLOW.md](./docs/GIT_WORKFLOW.md)** | Advanced Git commands & workflows | All Developers |
 
 ---
 
@@ -392,6 +393,7 @@ npm run lighthouse:check
 - **Lighthouse CI**: https://github.com/treosh/lighthouse-ci-action
 - **Google Analytics 4**: https://support.google.com/analytics/
 - **Meta Pixel**: https://www.facebook.com/business/help/952192354843008
+- **Advanced Git Workflows**: [docs/GIT_WORKFLOW.md](./docs/GIT_WORKFLOW.md) - Comprehensive Git command reference
 
 ---
 
