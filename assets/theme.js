@@ -366,7 +366,7 @@
         Cart.addToCart(productId, quantity)
           .catch((error) => {
             // Error already handled by Cart.addToCart, but catch to prevent unhandled rejection
-            console.error('Add to cart failed:', error);
+            console.error('Add to cart failed for product', productId, 'quantity', quantity, ':', error);
           });
       });
     });
