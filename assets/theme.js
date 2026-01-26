@@ -23,17 +23,6 @@
   };
 
   /**
-   * Event Delegation
-   */
-  const on = (selector, event, callback) => {
-    document.addEventListener(event, (e) => {
-      if (e.target.matches(selector)) {
-        callback(e);
-      }
-    });
-  };
-
-  /**
    * LocalStorage Manager
    * Note: get() does not check consent to avoid circular dependency
    * set() checks consent except for consent-related keys
@@ -141,15 +130,22 @@
   // ===========================================
 
   const MobileMenu = {
+    // Cache DOM elements to avoid repeated queries
+    elements: {},
+
     init() {
+      // Cache elements once
+      this.elements.toggle = document.querySelector('[data-menu-toggle]');
+      this.elements.menu = document.querySelector('[data-mobile-menu]');
+      this.elements.links = document.querySelectorAll('[data-mobile-menu] a');
+      
       this.setupToggle();
       this.setupCloseOnClick();
       this.setupAccessibility();
     },
 
     setupToggle() {
-      const toggle = document.querySelector('[data-menu-toggle]');
-      const menu = document.querySelector('[data-mobile-menu]');
+      const { toggle, menu } = this.elements;
 
       if (toggle && menu) {
         toggle.addEventListener('click', () => {
@@ -167,9 +163,7 @@
     },
 
     setupCloseOnClick() {
-      const links = document.querySelectorAll('[data-mobile-menu] a');
-      const menu = document.querySelector('[data-mobile-menu]');
-      const toggle = document.querySelector('[data-menu-toggle]');
+      const { links, menu, toggle } = this.elements;
       
       links.forEach((link) => {
         link.addEventListener('click', () => {
@@ -185,13 +179,12 @@
     },
 
     setupAccessibility() {
-      const menu = document.querySelector('[data-mobile-menu]');
+      const { menu, toggle } = this.elements;
       
       if (menu) {
         // Handle Escape key to close menu
         document.addEventListener('keydown', (e) => {
           if (e.key === 'Escape' && menu.classList.contains('is-open')) {
-            const toggle = document.querySelector('[data-menu-toggle]');
             if (toggle) {
               toggle.click();
             }
@@ -370,7 +363,11 @@
           return;
         }
         
-        Cart.addToCart(productId, quantity);
+        Cart.addToCart(productId, quantity)
+          .catch((error) => {
+            // Error already handled by Cart.addToCart, but catch to prevent unhandled rejection
+            console.error('Add to cart failed:', error);
+          });
       });
     });
   });
