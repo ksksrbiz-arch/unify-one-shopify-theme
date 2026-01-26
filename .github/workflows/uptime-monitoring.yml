@@ -1,0 +1,240 @@
+name: Production Uptime Monitoring
+
+on:
+  schedule:
+    # Run every 15 minutes
+    - cron: '*/15 * * * *'
+  workflow_dispatch:
+    inputs:
+      immediate_check:
+        description: 'Run immediate health check'
+        required: false
+        default: 'true'
+
+jobs:
+  health-check:
+    name: Monitor Production Health
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+      
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Check store homepage
+        id: homepage_check
+        run: |
+          echo "Checking production store homepage..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commerce.shop/)
+          HTTP_CODE=$(echo $RESPONSE | cut -d'|' -f1)
+          RESPONSE_TIME=$(echo $RESPONSE | cut -d'|' -f2)
+          
+          echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
+          echo "response_time=$RESPONSE_TIME" >> $GITHUB_OUTPUT
+          
+          if [ "$HTTP_CODE" != "200" ]; then
+            echo "❌ Homepage returned HTTP $HTTP_CODE"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ Homepage is up (HTTP $HTTP_CODE, ${RESPONSE_TIME}s)"
+          echo "status=success" >> $GITHUB_OUTPUT
+        continue-on-error: true
+        
+      - name: Check critical assets
+        id: assets_check
+        run: |
+          echo "Checking critical theme assets..."
+          
+          # Check CSS file
+          CSS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cdn/shop/t/*/assets/custom-styles.css)
+          
+          # Check JS file
+          JS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cdn/shop/t/*/assets/theme.js)
+          
+          echo "css_status=$CSS_RESPONSE" >> $GITHUB_OUTPUT
+          echo "js_status=$JS_RESPONSE" >> $GITHUB_OUTPUT
+          
+          if [ "$CSS_RESPONSE" != "200" ] || [ "$JS_RESPONSE" != "200" ]; then
+            echo "❌ Asset check failed (CSS: $CSS_RESPONSE, JS: $JS_RESPONSE)"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ Critical assets are accessible"
+          echo "status=success" >> $GITHUB_OUTPUT
+        continue-on-error: true
+        
+      - name: Check product pages
+        id: product_check
+        run: |
+          echo "Checking product page availability..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/products)
+          
+          echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
+          
+          if [ "$RESPONSE" != "200" ] && [ "$RESPONSE" != "404" ]; then
+            echo "❌ Product pages check failed (HTTP $RESPONSE)"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ Product pages are accessible (HTTP $RESPONSE)"
+          echo "status=success" >> $GITHUB_OUTPUT
+        continue-on-error: true
+        
+      - name: Check cart functionality
+        id: cart_check
+        run: |
+          echo "Checking cart page availability..."
+          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cart)
+          
+          echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
+          
+          if [ "$RESPONSE" != "200" ]; then
+            echo "❌ Cart page check failed (HTTP $RESPONSE)"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
+          
+          echo "✅ Cart functionality is accessible"
+          echo "status=success" >> $GITHUB_OUTPUT
+        continue-on-error: true
+        
+      - name: Evaluate overall health
+        id: overall_health
+        run: |
+          FAILED=0
+          
+          if [ "${{ steps.homepage_check.outputs.status }}" == "failed" ]; then
+            FAILED=$((FAILED + 1))
+          fi
+          
+          if [ "${{ steps.assets_check.outputs.status }}" == "failed" ]; then
+            FAILED=$((FAILED + 1))
+          fi
+          
+          if [ "${{ steps.product_check.outputs.status }}" == "failed" ]; then
+            FAILED=$((FAILED + 1))
+          fi
+          
+          if [ "${{ steps.cart_check.outputs.status }}" == "failed" ]; then
+            FAILED=$((FAILED + 1))
+          fi
+          
+          echo "failed_checks=$FAILED" >> $GITHUB_OUTPUT
+          
+          if [ $FAILED -gt 0 ]; then
+            echo "health_status=degraded" >> $GITHUB_OUTPUT
+            if [ $FAILED -ge 2 ]; then
+              echo "health_status=critical" >> $GITHUB_OUTPUT
+            fi
+          else
+            echo "health_status=healthy" >> $GITHUB_OUTPUT
+          fi
+        
+      - name: Create incident issue on failure
+        if: steps.overall_health.outputs.health_status != 'healthy'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const healthStatus = '${{ steps.overall_health.outputs.health_status }}';
+            const failedChecks = ${{ steps.overall_health.outputs.failed_checks }};
+            
+            // Check if there's already an open incident
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              labels: 'incident,uptime',
+              state: 'open'
+            });
+            
+            if (issues.data.length === 0) {
+              // Create new incident issue
+              const issueBody = `## 🚨 Production Uptime Alert
+              
+**Status**: ${healthStatus.toUpperCase()}
+**Failed Checks**: ${failedChecks}/4
+**Timestamp**: ${new Date().toISOString()}
+
+### Check Results:
+- Homepage: ${{ steps.homepage_check.outputs.status }} (HTTP ${{ steps.homepage_check.outputs.http_code }}, ${{ steps.homepage_check.outputs.response_time }}s)
+- Assets: ${{ steps.assets_check.outputs.status }} (CSS: ${{ steps.assets_check.outputs.css_status }}, JS: ${{ steps.assets_check.outputs.js_status }})
+- Products: ${{ steps.product_check.outputs.status }} (HTTP ${{ steps.product_check.outputs.http_code }})
+- Cart: ${{ steps.cart_check.outputs.status }} (HTTP ${{ steps.cart_check.outputs.http_code }})
+
+### Recommended Actions:
+1. Check [GitHub Actions workflows](${context.payload.repository.html_url}/actions) for recent deployment failures
+2. Verify Shopify store status at https://1commerce.myshopify.com/admin
+3. Review recent commits for breaking changes
+4. Check Shopify status page: https://status.shopify.com/
+
+**Workflow Run**: ${context.payload.repository.html_url}/actions/runs/${context.runId}`;
+
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `🚨 Production Uptime Issue Detected - ${healthStatus}`,
+                body: issueBody,
+                labels: ['incident', 'uptime', 'critical']
+              });
+            }
+        continue-on-error: true
+        
+      - name: Send Slack notification on failure
+        if: steps.overall_health.outputs.health_status != 'healthy'
+        uses: slackapi/slack-github-action@v1
+        with:
+          payload: |
+            {
+              "text": "🚨 Production Uptime Alert",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "*Production Health Status*: ${{ steps.overall_health.outputs.health_status }}\n*Failed Checks*: ${{ steps.overall_health.outputs.failed_checks }}/4\n*Store*: https://1commerce.shop\n*Time*: <!date^${{ github.event.repository.updated_at }}^{date_short_pretty} {time}|now>"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Homepage*: ${{ steps.homepage_check.outputs.status }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Assets*: ${{ steps.assets_check.outputs.status }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Products*: ${{ steps.product_check.outputs.status }}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Cart*: ${{ steps.cart_check.outputs.status }}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK }}
+          SLACK_WEBHOOK_TYPE: INCOMING_WEBHOOK
+        continue-on-error: true
+        
+      - name: Log health check results
+        if: always()
+        run: |
+          echo "=== Production Health Check Summary ==="
+          echo "Overall Status: ${{ steps.overall_health.outputs.health_status }}"
+          echo "Failed Checks: ${{ steps.overall_health.outputs.failed_checks }}/4"
+          echo "Homepage: ${{ steps.homepage_check.outputs.status }}"
+          echo "Assets: ${{ steps.assets_check.outputs.status }}"
+          echo "Products: ${{ steps.product_check.outputs.status }}"
+          echo "Cart: ${{ steps.cart_check.outputs.status }}"
+          echo "====================================="

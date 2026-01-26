@@ -1,8 +1,13 @@
 # UnifyOne Shopify Theme - Repository Management Guide
 
+[![Production Uptime](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/uptime-monitoring.yml/badge.svg)](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/uptime-monitoring.yml)
+[![Deploy to Production](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/deploy-production.yml/badge.svg)](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/deploy-production.yml)
+[![Performance Monitoring](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/performance-monitoring.yml/badge.svg)](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/performance-monitoring.yml)
+
 **Repository:** [github.com/ksksrbiz-arch/unify-one-shopify-theme](https://github.com/ksksrbiz-arch/unify-one-shopify-theme)  
 **Store Domain:** 1commerce.shop  
-**Last Updated:** January 21, 2026
+**Last Updated:** January 26, 2026  
+**Uptime Monitoring:** 🟢 Active (checks every 15 minutes)
 
 ---
 
@@ -11,6 +16,7 @@
 | Document | Purpose | For Who |
 |----------|---------|----------|
 | **[SETUP.md](./SETUP.md)** | Local dev setup & deployment | Developers |
+| **[UPTIME_MONITORING.md](./UPTIME_MONITORING.md)** | Production uptime & incident response | DevOps & Support |
 | **[CSS_INTEGRATION_GUIDE.md](./CSS_INTEGRATION_GUIDE.md)** | CSS integration via GitHub connector | Frontend Developers |
 | **[BACKEND_INTEGRATION.md](./BACKEND_INTEGRATION.md)** | Connect to 19 revenue streams | Full-stack devs |
 | **[ANALYTICS_PIXELS_SETUP.md](./ANALYTICS_PIXELS_SETUP.md)** | Multi-platform pixel tracking | Marketing & Analytics |
@@ -97,11 +103,24 @@ snippets/                          # [READY FOR REUSABLE COMPONENTS]
 ├── deploy-production.yml          # Triggers on: git tag v*
 │                                  # - Strict validation (fails on errors)
 │                                  # - Deploys to production theme
+│                                  # - Verifies deployment health
 │                                  # - Creates GitHub Release
 │                                  # - Posts to Slack (optional)
 │
-└── performance-monitoring.yml     # Triggers on: git push origin main (NEW)
-                                   # - Runs Lighthouse CI checks
+├── performance-monitoring.yml     # Triggers on: git push origin main
+│                                  # - Runs Lighthouse CI checks
+│                                  # - Monitors performance metrics
+│                                  # - Verifies performance budgets
+│                                  # - Posts results to PR comments
+│
+└── uptime-monitoring.yml          # Triggers on: cron */15 * * * * (NEW)
+                                   # - Monitors production health (every 15 min)
+                                   # - Checks homepage, assets, cart, products
+                                   # - Creates incidents on failures
+                                   # - Sends Slack alerts
+                                   # - See: UPTIME_MONITORING.md
+```
+---
                                    # - Monitors performance metrics
                                    # - Verifies performance budgets
                                    # - Posts results to PR comments
@@ -363,6 +382,7 @@ npm run lighthouse:check
 
 | Task | Frequency | Owner |
 |------|-----------|-------|
+| Uptime health checks | Every 15 minutes | CI/CD (automated) |
 | Dependency updates | Quarterly | Dev Lead |
 | Performance audit | Monthly | Dev Lead |
 | Security check | Weekly | DevOps |
@@ -370,6 +390,7 @@ npm run lighthouse:check
 | Code review | Per PR | Dev Team |
 | Analytics review | Weekly | Marketing |
 | Lighthouse reports | Per deployment | CI/CD |
+| Incident response review | Monthly | DevOps Team |
 
 ---
 
@@ -428,8 +449,18 @@ npm run lighthouse:check
 
 ---
 
-## 📊 What's New (January 21, 2026)
+## 📊 What's New
 
+### January 26, 2026 - Production Uptime Monitoring
+✨ **New Features**:
+- 🔄 **Automated Uptime Monitoring** - Health checks every 15 minutes (24/7)
+- 🚨 **Automatic Incident Creation** - GitHub issues created on failures
+- ✅ **Deployment Verification** - Post-deployment health validation
+- 📊 **Health Status Dashboard** - Real-time production monitoring via GitHub Actions
+- 📚 **Incident Response Guide** - Comprehensive troubleshooting documentation
+- 🔔 **Slack Alerts** - Instant notifications for production issues
+
+### January 21, 2026 - Analytics & Performance
 ✨ **New Features**:
 - 🔗 **Backend Integration Guide** - Connect to 19 OneCommerce revenue streams
 - 📊 **Analytics & Pixels Setup** - Multi-platform conversion tracking
