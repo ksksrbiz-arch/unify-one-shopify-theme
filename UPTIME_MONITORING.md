@@ -24,10 +24,12 @@ This document describes the production uptime monitoring system for the UnifyOne
 | Endpoint | Check Type | Success Criteria | Impact |
 |----------|------------|------------------|--------|
 | `https://1commerce.shop/` | Homepage | HTTP 200, < 3s response | Critical |
-| `https://1commerce.shop/cdn/shop/t/*/assets/custom-styles.css` | CSS Asset | HTTP 200 | High |
-| `https://1commerce.shop/cdn/shop/t/*/assets/theme.js` | JS Asset | HTTP 200 | High |
+| `https://1commerce.shop/assets/custom-styles.css` | CSS Asset | HTTP 200 (or fallback paths) | High |
+| `https://1commerce.shop/assets/theme.js` | JS Asset | HTTP 200 (or fallback paths) | High |
 | `https://1commerce.shop/products` | Product Pages | HTTP 200/404 | High |
 | `https://1commerce.shop/cart` | Cart Functionality | HTTP 200 | Critical |
+
+**Note**: Asset URLs may vary based on Shopify CDN configuration. The monitoring checks multiple common paths.
 
 ### Health Status Levels
 
