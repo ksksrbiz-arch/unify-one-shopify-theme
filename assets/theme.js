@@ -11,14 +11,17 @@
   // ===========================================
 
   /**
-   * DOM Query Helper
+   * DOM Query Helper - Single element query
    */
-  const $ = (selector) => {
+  const querySingleElement = (selector) => {
     const element = document.querySelector(selector);
     return element ? [element] : [];
   };
 
-  const $$ = (selector) => {
+  /**
+   * DOM Query Helper - Multiple elements query
+   */
+  const queryAllElements = (selector) => {
     return document.querySelectorAll(selector);
   };
 
@@ -97,14 +100,14 @@
     },
 
     setupListeners() {
-      const acceptBtn = document.getElementById('cookie-accept');
-      const declineBtn = document.getElementById('cookie-decline');
+      const acceptButton = document.getElementById('cookie-accept');
+      const declineButton = document.getElementById('cookie-decline');
 
-      if (acceptBtn) {
-        acceptBtn.addEventListener('click', () => this.accept());
+      if (acceptButton) {
+        acceptButton.addEventListener('click', () => this.accept());
       }
-      if (declineBtn) {
-        declineBtn.addEventListener('click', () => this.decline());
+      if (declineButton) {
+        declineButton.addEventListener('click', () => this.decline());
       }
     },
 
@@ -137,7 +140,7 @@
       // Cache elements once
       this.elements.toggle = document.querySelector('[data-menu-toggle]');
       this.elements.menu = document.querySelector('[data-mobile-menu]');
-      this.elements.links = document.querySelectorAll('[data-mobile-menu] a');
+      this.elements.menuLinks = document.querySelectorAll('[data-mobile-menu] a');
       
       this.setupToggle();
       this.setupCloseOnClick();
@@ -163,9 +166,9 @@
     },
 
     setupCloseOnClick() {
-      const { links, menu, toggle } = this.elements;
+      const { menuLinks, menu, toggle } = this.elements;
       
-      links.forEach((link) => {
+      menuLinks.forEach((link) => {
         link.addEventListener('click', () => {
           if (menu && toggle) {
             menu.classList.remove('is-open');
@@ -183,8 +186,8 @@
       
       if (menu) {
         // Handle Escape key to close menu
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && menu.classList.contains('is-open')) {
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && menu.classList.contains('is-open')) {
             if (toggle) {
               toggle.click();
             }
@@ -210,14 +213,14 @@
       const thumbnails = document.querySelectorAll('[data-gallery-thumbnail]');
       const mainImage = document.querySelector('[data-gallery-main-image]');
 
-      thumbnails.forEach((thumb) => {
-        thumb.addEventListener('click', () => {
-          const src = thumb.dataset.galleryThumbnail;
-          if (mainImage && src) {
-            mainImage.src = src;
-            mainImage.alt = thumb.alt;
-            thumbnails.forEach((t) => t.classList.remove('is-active'));
-            thumb.classList.add('is-active');
+      thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener('click', () => {
+          const imageSrc = thumbnail.dataset.galleryThumbnail;
+          if (mainImage && imageSrc) {
+            mainImage.src = imageSrc;
+            mainImage.alt = thumbnail.alt;
+            thumbnails.forEach((thumbnailElement) => thumbnailElement.classList.remove('is-active'));
+            thumbnail.classList.add('is-active');
           }
         });
       });
@@ -247,10 +250,10 @@
           }
           return response.json();
         })
-        .then((json) => {
+        .then((cartData) => {
           this.updateCartCount();
           this.showNotification('Product added to cart');
-          return json;
+          return cartData;
         })
         .catch((error) => {
           // Retry logic for network errors
@@ -269,10 +272,10 @@
     updateCartCount() {
       fetch('/cart.js')
         .then((response) => response.json())
-        .then((json) => {
-          const cartCount = document.querySelector('[data-cart-count]');
-          if (cartCount) {
-            cartCount.textContent = json.item_count;
+        .then((cartData) => {
+          const cartCountElement = document.querySelector('[data-cart-count]');
+          if (cartCountElement) {
+            cartCountElement.textContent = cartData.item_count;
           }
         });
     },
@@ -310,25 +313,25 @@
     },
 
     setupIntersectionObserver(images) {
-      const observer = new IntersectionObserver((entries) => {
+      const imageObserver = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const img = entry.target;
-            img.src = img.dataset.lazyLoad;
-            img.removeAttribute('data-lazy-load');
-            observer.unobserve(img);
+            const imageElement = entry.target;
+            imageElement.src = imageElement.dataset.lazyLoad;
+            imageElement.removeAttribute('data-lazy-load');
+            imageObserver.unobserve(imageElement);
           }
         });
       }, {
         rootMargin: '50px' // Load images 50px before they enter viewport
       });
 
-      images.forEach((img) => observer.observe(img));
+      images.forEach((imageElement) => imageObserver.observe(imageElement));
     },
 
     setupFallback(images) {
-      images.forEach((img) => {
-        img.src = img.dataset.lazyLoad;
+      images.forEach((imageElement) => {
+        imageElement.src = imageElement.dataset.lazyLoad;
       });
     }
   };
@@ -344,11 +347,11 @@
     LazyLoad.init();
 
     // Setup cart listeners
-    document.querySelectorAll('[data-add-to-cart]').forEach((btn) => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        const productId = btn.dataset.addToCart;
-        const quantity = parseInt(btn.dataset.quantity || 1, 10);
+    document.querySelectorAll('[data-add-to-cart]').forEach((addButton) => {
+      addButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const productId = addButton.dataset.addToCart;
+        const quantity = parseInt(addButton.dataset.quantity || 1, 10);
         
         // Shopify variant IDs are numeric strings (e.g., "12345678901")
         const isValidVariantId = /^\d+$/.test(productId);
