@@ -40,13 +40,10 @@
       {%- comment -%} Desktop Navigation {%- endcomment -%}
       <nav class="header__nav" role="navigation" aria-label="Main navigation">
         <ul class="nav-list">
-          {% for link in linklists[section.settings.menu].links %}
-            <li class="nav-item">
-              <a href="{{ link.url }}" class="nav-link">
-                {{ link.title }}
-              </a>
-            </li>
-          {% endfor %}
+          {% render 'menu-links', 
+            menu: section.settings.menu,
+            item_class: 'nav-item',
+            link_class: 'nav-link' %}
         </ul>
       </nav>
 
@@ -67,13 +64,10 @@
     <div class="mobile-menu" data-mobile-menu id="mobile-menu" aria-hidden="true">
       <nav class="mobile-menu__nav" role="navigation" aria-label="Mobile navigation">
         <ul class="mobile-nav-list">
-          {% for link in linklists[section.settings.menu].links %}
-            <li class="mobile-nav-item">
-              <a href="{{ link.url }}" class="mobile-nav-link">
-                {{ link.title }}
-              </a>
-            </li>
-          {% endfor %}
+          {% render 'menu-links', 
+            menu: section.settings.menu,
+            item_class: 'mobile-nav-item',
+            link_class: 'mobile-nav-link' %}
         </ul>
       </nav>
     </div>
