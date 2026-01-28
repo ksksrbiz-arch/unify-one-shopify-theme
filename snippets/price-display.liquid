@@ -16,9 +16,11 @@
   assign wrapper_class = wrapper_class | default: 'price-wrapper'
 -%}
 
-<div class="{{ wrapper_class }}">
-  <span class="price">{{ product.price | money }}</span>
-  {% if product.compare_at_price > product.price %}
-    <span class="price--compare">{{ product.compare_at_price | money }}</span>
-  {% endif %}
-</div>
+{% if product %}
+  <div class="{{ wrapper_class }}">
+    <span class="price">{{ product.price | money }}</span>
+    {% if product.compare_at_price > product.price %}
+      <span class="price--compare">{{ product.compare_at_price | money }}</span>
+    {% endif %}
+  </div>
+{% endif %}
