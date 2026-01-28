@@ -10,11 +10,7 @@
           "throughputKbps": 10240,
           "cpuSlowdownMultiplier": 1
         },
-        "chromeFlags": [
-          "--disable-gpu",
-          "--no-sandbox",
-          "--chrome-flags=--disable-dev-shm-usage"
-        ]
+        "chromeFlags": ["--disable-gpu", "--no-sandbox", "--chrome-flags=--disable-dev-shm-usage"]
       }
     },
     "assert": {
@@ -30,7 +26,7 @@
         "categories:accessibility": [
           "error",
           {
-            "minScore": 0.90,
+            "minScore": 0.9,
             "strategy": "median"
           }
         ],
@@ -44,7 +40,7 @@
         "categories:seo": [
           "error",
           {
-            "minScore": 0.90,
+            "minScore": 0.9,
             "strategy": "median"
           }
         ],

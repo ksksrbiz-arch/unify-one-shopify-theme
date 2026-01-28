@@ -85,17 +85,11 @@
               class="quantity-input">
           </div>
 
-          <button 
-            type="submit" 
-            name="add"
-            class="btn btn--primary btn--lg product__add-to-cart"
-            {% unless product.available %}disabled{% endunless %}>
-            {% if product.available %}
-              Add to Cart
-            {% else %}
-              Sold Out
-            {% endif %}
-          </button>
+          {% render 'product-availability-button', 
+            product: product,
+            button_class: 'product__add-to-cart',
+            button_size: 'lg',
+            button_type: 'submit' %}
         {%- endform -%}
       </div>
     </div>
