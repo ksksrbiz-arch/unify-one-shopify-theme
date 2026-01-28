@@ -26,7 +26,7 @@ This document describes the production uptime monitoring system for the UnifyOne
 | `https://1commerce.shop/` | Homepage | HTTP 2xx/3xx (follows redirects), < 3s response | Critical |
 | `https://1commerce.shop/assets/custom-styles.css` | CSS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
 | `https://1commerce.shop/assets/theme.js` | JS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
-| `https://1commerce.shop/products` | Product Pages | HTTP 2xx/3xx/404 (follows redirects) | High |
+| `https://1commerce.shop/products` | Product Pages | HTTP 2xx/3xx/4xx (follows redirects; any client error such as 404 is acceptable) | High |
 | `https://1commerce.shop/cart` | Cart Functionality | HTTP 2xx/3xx (follows redirects) | Critical |
 
 **Note**: The monitoring system follows HTTP redirects (301/302) and treats them as successful responses, as they indicate the site is operational and properly configured for redirects (e.g., HTTPS enforcement, www subdomain redirection, or custom domain setup).
