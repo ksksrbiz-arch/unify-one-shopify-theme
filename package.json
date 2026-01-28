@@ -25,12 +25,11 @@
   "author": "PNW Enterprises",
   "license": "PROPRIETARY",
   "devDependencies": {
-    "@shopify/cli": "^3.50.0",
-    "@shopify/theme": "^3.50.0",
-    "eslint": "^8.50.0",
+    "@shopify/cli": "^3.89.0",
+    "eslint": "^8.57.0",
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^30.2.0",
-    "prettier": "^3.1.0"
+    "prettier": "^3.8.0"
   },
   "engines": {
     "node": ">=18.0.0",
