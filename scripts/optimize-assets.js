@@ -48,37 +48,37 @@ if (cssFiles.length === 0) {
   warnings.push('No CSS files found');
 }
 
-cssFiles.forEach(file => {
-  const filePath = path.join(ASSETS_DIR, file);
-  let content, size;
+cssFiles.forEach(cssFile => {
+  const cssFilePath = path.join(ASSETS_DIR, cssFile);
+  let cssContent, cssFileSize;
   
   try {
-    content = fs.readFileSync(filePath, 'utf8');
-    size = Buffer.byteLength(content, 'utf8');
+    cssContent = fs.readFileSync(cssFilePath, 'utf8');
+    cssFileSize = Buffer.byteLength(cssContent, 'utf8');
   } catch (error) {
-    console.error(`  ❌ Error reading ${file}: ${error.message}`);
+    console.error(`  ❌ Error reading ${cssFile}: ${error.message}`);
     hasErrors = true;
     return;
   }
   
-  console.log(`  ✓ ${file}: ${size} bytes`);
+  console.log(`  ✓ ${cssFile}: ${cssFileSize} bytes`);
   
   // Check file size
-  if (size > MAX_CSS_SIZE) {
-    console.warn(`  ⚠️  Warning: ${file} exceeds recommended size (${size} > ${MAX_CSS_SIZE} bytes)`);
-    warnings.push(`${file} is too large`);
+  if (cssFileSize > MAX_CSS_SIZE) {
+    console.warn(`  ⚠️  Warning: ${cssFile} exceeds recommended size (${cssFileSize} > ${MAX_CSS_SIZE} bytes)`);
+    warnings.push(`${cssFile} is too large`);
   }
   
   // Check for Liquid syntax in CSS
-  if (content.includes('{{') || content.includes('{%')) {
-    console.warn(`  ⚠️  Warning: ${file} contains Liquid syntax. Consider using CSS variables instead.`);
-    warnings.push(`${file} contains Liquid syntax`);
+  if (cssContent.includes('{{') || cssContent.includes('{%')) {
+    console.warn(`  ⚠️  Warning: ${cssFile} contains Liquid syntax. Consider using CSS variables instead.`);
+    warnings.push(`${cssFile} contains Liquid syntax`);
   }
   
   // Check for source maps
-  if (content.includes('sourceMappingURL')) {
-    console.warn(`  ⚠️  Warning: ${file} contains source map reference. Remove for production.`);
-    warnings.push(`${file} has source map`);
+  if (cssContent.includes('sourceMappingURL')) {
+    console.warn(`  ⚠️  Warning: ${cssFile} contains source map reference. Remove for production.`);
+    warnings.push(`${cssFile} has source map`);
   }
 });
 
@@ -99,38 +99,38 @@ if (jsFiles.length === 0) {
   warnings.push('No JavaScript files found');
 }
 
-jsFiles.forEach(file => {
-  const filePath = path.join(ASSETS_DIR, file);
-  let content, size;
+jsFiles.forEach(jsFile => {
+  const jsFilePath = path.join(ASSETS_DIR, jsFile);
+  let jsContent, jsFileSize;
   
   try {
-    content = fs.readFileSync(filePath, 'utf8');
-    size = Buffer.byteLength(content, 'utf8');
+    jsContent = fs.readFileSync(jsFilePath, 'utf8');
+    jsFileSize = Buffer.byteLength(jsContent, 'utf8');
   } catch (error) {
-    console.error(`  ❌ Error reading ${file}: ${error.message}`);
+    console.error(`  ❌ Error reading ${jsFile}: ${error.message}`);
     hasErrors = true;
     return;
   }
   
-  console.log(`  ✓ ${file}: ${size} bytes`);
+  console.log(`  ✓ ${jsFile}: ${jsFileSize} bytes`);
   
   // Check file size
-  if (size > MAX_JS_SIZE) {
-    console.warn(`  ⚠️  Warning: ${file} exceeds recommended size (${size} > ${MAX_JS_SIZE} bytes)`);
-    warnings.push(`${file} is too large`);
+  if (jsFileSize > MAX_JS_SIZE) {
+    console.warn(`  ⚠️  Warning: ${jsFile} exceeds recommended size (${jsFileSize} > ${MAX_JS_SIZE} bytes)`);
+    warnings.push(`${jsFile} is too large`);
   }
   
   // Check for console methods (console.log, console.warn, console.error, etc.)
-  const consoleCallCount = (content.match(/console\.\w+/g) || []).length;
+  const consoleCallCount = (jsContent.match(/console\.\w+/g) || []).length;
   if (consoleCallCount > 0) {
-    console.warn(`  ⚠️  Warning: ${file} contains ${consoleCallCount} console method calls`);
-    warnings.push(`${file} has ${consoleCallCount} console calls`);
+    console.warn(`  ⚠️  Warning: ${jsFile} contains ${consoleCallCount} console method calls`);
+    warnings.push(`${jsFile} has ${consoleCallCount} console calls`);
   }
   
   // Check for source maps
-  if (content.includes('sourceMappingURL')) {
-    console.warn(`  ⚠️  Warning: ${file} contains source map reference. Remove for production.`);
-    warnings.push(`${file} has source map`);
+  if (jsContent.includes('sourceMappingURL')) {
+    console.warn(`  ⚠️  Warning: ${jsFile} contains source map reference. Remove for production.`);
+    warnings.push(`${jsFile} has source map`);
   }
 });
 
@@ -147,11 +147,11 @@ try {
 }
 
 const ignoredDirs = ['__tests__', 'tests', '.git'];
-const subdirs = items.filter(item => item.isDirectory() && !ignoredDirs.includes(item.name));
+const subdirectories = items.filter(item => item.isDirectory() && !ignoredDirs.includes(item.name));
 
-if (subdirs.length > 0) {
+if (subdirectories.length > 0) {
   console.error('❌ Error: Subdirectories found in assets/. Shopify requires all assets in root.');
-  subdirs.forEach(dir => console.error(`  - ${dir.name}/`));
+  subdirectories.forEach(directory => console.error(`  - ${directory.name}/`));
   hasErrors = true;
 } else {
   console.log('  ✓ No problematic subdirectories found');
