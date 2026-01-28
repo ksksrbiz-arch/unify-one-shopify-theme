@@ -27,21 +27,23 @@ jobs:
         id: homepage_check
         run: |
           echo "Checking production store homepage..."
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commerce.shop/)
+          # Follow redirects with -L and capture final status code
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commerce.shop/ || echo "000|0")
           HTTP_CODE=$(echo $RESPONSE | cut -d'|' -f1)
           RESPONSE_TIME=$(echo $RESPONSE | cut -d'|' -f2)
           
           echo "http_code=$HTTP_CODE" >> $GITHUB_OUTPUT
           echo "response_time=$RESPONSE_TIME" >> $GITHUB_OUTPUT
           
-          if [ "$HTTP_CODE" != "200" ]; then
+          # Accept 2xx and 3xx status codes as success (site is reachable)
+          if [[ "$HTTP_CODE" =~ ^[23][0-9][0-9]$ ]]; then
+            echo "✅ Homepage is up (HTTP $HTTP_CODE, ${RESPONSE_TIME}s)"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
             echo "❌ Homepage returned HTTP $HTTP_CODE"
             echo "status=failed" >> $GITHUB_OUTPUT
             exit 1
           fi
-          
-          echo "✅ Homepage is up (HTTP $HTTP_CODE, ${RESPONSE_TIME}s)"
-          echo "status=success" >> $GITHUB_OUTPUT
         continue-on-error: true
         
       - name: Check critical assets
@@ -49,27 +51,27 @@ jobs:
         run: |
           echo "Checking critical theme assets..."
           
-          # Check CSS file - using the production asset URL
-          CSS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/assets/custom-styles.css || echo "404")
+          # Check CSS file - using the production asset URL with redirect following
+          CSS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/assets/custom-styles.css || echo "000")
           
-          # Check JS file - using the production asset URL  
-          JS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/assets/theme.js || echo "404")
+          # Check JS file - using the production asset URL with redirect following
+          JS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/assets/theme.js || echo "000")
           
           # If the /assets/ path doesn't work, assets might be in the root
-          if [ "$CSS_RESPONSE" == "404" ]; then
-            CSS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/custom-styles.css || echo "404")
+          if [[ ! "$CSS_RESPONSE" =~ ^[23][0-9][0-9]$ ]]; then
+            CSS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/custom-styles.css || echo "000")
           fi
           
-          if [ "$JS_RESPONSE" == "404" ]; then
-            JS_RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/theme.js || echo "404")
+          if [[ ! "$JS_RESPONSE" =~ ^[23][0-9][0-9]$ ]]; then
+            JS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/theme.js || echo "000")
           fi
           
           echo "css_status=$CSS_RESPONSE" >> $GITHUB_OUTPUT
           echo "js_status=$JS_RESPONSE" >> $GITHUB_OUTPUT
           
-          # Success if either path works (200) or if we get any non-error response from homepage
+          # Success if either path works (2xx or 3xx) or if we get any non-error response from homepage
           # Assets are cached by CDN so might not be individually testable
-          if [ "$CSS_RESPONSE" == "200" ] || [ "$JS_RESPONSE" == "200" ]; then
+          if [[ "$CSS_RESPONSE" =~ ^[23][0-9][0-9]$ ]] || [[ "$JS_RESPONSE" =~ ^[23][0-9][0-9]$ ]]; then
             echo "✅ Critical assets are accessible"
             echo "status=success" >> $GITHUB_OUTPUT
           else
@@ -82,36 +84,40 @@ jobs:
         id: product_check
         run: |
           echo "Checking product page availability..."
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/products)
+          # Follow redirects with -L
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/products || echo "000")
           
           echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
           
-          if [ "$RESPONSE" != "200" ] && [ "$RESPONSE" != "404" ]; then
+          # Accept 2xx, 3xx, and 404 (no products page is acceptable)
+          if [[ "$RESPONSE" =~ ^[23][0-9][0-9]$ ]] || [ "$RESPONSE" == "404" ]; then
+            echo "✅ Product pages are accessible (HTTP $RESPONSE)"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
             echo "❌ Product pages check failed (HTTP $RESPONSE)"
             echo "status=failed" >> $GITHUB_OUTPUT
             exit 1
           fi
-          
-          echo "✅ Product pages are accessible (HTTP $RESPONSE)"
-          echo "status=success" >> $GITHUB_OUTPUT
         continue-on-error: true
         
       - name: Check cart functionality
         id: cart_check
         run: |
           echo "Checking cart page availability..."
-          RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cart)
+          # Follow redirects with -L
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cart || echo "000")
           
           echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
           
-          if [ "$RESPONSE" != "200" ]; then
+          # Accept 2xx and 3xx status codes as success
+          if [[ "$RESPONSE" =~ ^[23][0-9][0-9]$ ]]; then
+            echo "✅ Cart functionality is accessible (HTTP $RESPONSE)"
+            echo "status=success" >> $GITHUB_OUTPUT
+          else
             echo "❌ Cart page check failed (HTTP $RESPONSE)"
             echo "status=failed" >> $GITHUB_OUTPUT
             exit 1
           fi
-          
-          echo "✅ Cart functionality is accessible"
-          echo "status=success" >> $GITHUB_OUTPUT
         continue-on-error: true
         
       - name: Evaluate overall health

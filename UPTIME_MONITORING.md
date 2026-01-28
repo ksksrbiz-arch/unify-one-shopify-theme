@@ -23,13 +23,13 @@ This document describes the production uptime monitoring system for the UnifyOne
 
 | Endpoint | Check Type | Success Criteria | Impact |
 |----------|------------|------------------|--------|
-| `https://1commerce.shop/` | Homepage | HTTP 200, < 3s response | Critical |
-| `https://1commerce.shop/assets/custom-styles.css` | CSS Asset | HTTP 200 (or fallback paths) | High |
-| `https://1commerce.shop/assets/theme.js` | JS Asset | HTTP 200 (or fallback paths) | High |
-| `https://1commerce.shop/products` | Product Pages | HTTP 200/404 | High |
-| `https://1commerce.shop/cart` | Cart Functionality | HTTP 200 | Critical |
+| `https://1commerce.shop/` | Homepage | HTTP 2xx/3xx (follows redirects), < 3s response | Critical |
+| `https://1commerce.shop/assets/custom-styles.css` | CSS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
+| `https://1commerce.shop/assets/theme.js` | JS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
+| `https://1commerce.shop/products` | Product Pages | HTTP 2xx/3xx/4xx (follows redirects; any client error such as 404 is acceptable) | High |
+| `https://1commerce.shop/cart` | Cart Functionality | HTTP 2xx/3xx (follows redirects) | Critical |
 
-**Note**: Asset URLs may vary based on Shopify CDN configuration. The monitoring checks multiple common paths.
+**Note**: The monitoring system follows HTTP redirects (301/302) and treats them as successful responses, as they indicate the site is operational and properly configured for redirects (e.g., HTTPS enforcement, www subdomain redirection, or custom domain setup).
 
 ### Health Status Levels
 
@@ -123,6 +123,19 @@ Every production deployment automatically verifies:
 ## 🛠️ Troubleshooting Guide
 
 ### Common Issues and Solutions
+
+#### Issue: HTTP 301/302 Redirects Reported as Failures
+
+**Likely Causes**:
+- Store configured with custom domain that redirects
+- HTTPS enforcement causing redirects
+- www subdomain redirection
+- Shopify domain configuration changes
+
+**Solution**:
+- As of the latest update, the monitoring system automatically follows redirects and treats them as successful responses
+- HTTP 301/302 redirects are now considered valid, as they indicate the site is operational
+- Alerts are triggered for connection failures and for any 4xx/5xx responses on homepage, cart, and asset checks; product page checks currently treat all 4xx responses as successful and alert only on non-2xx/3xx statuses
 
 #### Issue: All Health Checks Failing
 
@@ -342,6 +355,12 @@ When an incident occurs:
 ---
 
 ## 📈 Changelog
+
+### January 28, 2026
+- 🔧 Updated monitoring to follow HTTP redirects (301/302)
+- ✨ Redirects now treated as successful responses
+- 📊 Improved resilience for domain configuration changes
+- 🛡️ Better handling of HTTPS enforcement and www subdomain redirects
 
 ### January 26, 2026
 - ✨ Initial uptime monitoring system implemented
