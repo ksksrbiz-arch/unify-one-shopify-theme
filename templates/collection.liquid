@@ -41,18 +41,9 @@
                 </div>
               </a>
               
-              <button 
-                type="button"
-                class="btn btn--primary btn--sm"
-                data-add-to-cart="{{ product.selected_or_first_available_variant.id }}"
-                data-quantity="1"
-                {% unless product.available %}disabled{% endunless %}>
-                {% if product.available %}
-                  Add to Cart
-                {% else %}
-                  Sold Out
-                {% endif %}
-              </button>
+              {% render 'product-availability-button', 
+                product: product,
+                button_size: 'sm' %}
             </div>
           {% endfor %}
         </div>
