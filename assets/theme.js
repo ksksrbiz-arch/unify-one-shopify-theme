@@ -11,21 +11,6 @@
   // ===========================================
 
   /**
-   * DOM Query Helper - Single element query
-   */
-  const querySingleElement = (selector) => {
-    const element = document.querySelector(selector);
-    return element ? [element] : [];
-  };
-
-  /**
-   * DOM Query Helper - Multiple elements query
-   */
-  const queryAllElements = (selector) => {
-    return document.querySelectorAll(selector);
-  };
-
-  /**
    * LocalStorage Manager
    * Note: get() does not check consent to avoid circular dependency
    * set() checks consent except for consent-related keys
@@ -219,7 +204,7 @@
           if (mainImage && imageSrc) {
             mainImage.src = imageSrc;
             mainImage.alt = thumbnail.alt;
-            thumbnails.forEach((thumbnailElement) => thumbnailElement.classList.remove('is-active'));
+            thumbnails.forEach((thumb) => thumb.classList.remove('is-active'));
             thumbnail.classList.add('is-active');
           }
         });
