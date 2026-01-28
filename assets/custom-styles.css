@@ -100,6 +100,9 @@
   --transition-fast: 150ms ease-in-out;
   --transition-normal: 250ms ease-in-out;
   --transition-slow: 350ms ease-in-out;
+  
+  /* Focus Ring - Consistent across all focusable elements */
+  --focus-ring-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
 }
 
 /* ============================================
@@ -199,7 +202,7 @@ code {
 .btn:focus {
   outline: 2px solid transparent;
   outline-offset: 2px;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  box-shadow: var(--focus-ring-shadow);
 }
 
 /* Primary Button */
@@ -293,7 +296,7 @@ code {
 .form-select:focus {
   outline: none;
   border-color: var(--primary-color);
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  box-shadow: var(--focus-ring-shadow);
 }
 
 .form-textarea {

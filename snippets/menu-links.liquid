@@ -1,0 +1,29 @@
+{% comment %}
+  Reusable Menu Links Snippet
+  
+  Usage:
+    {% render 'menu-links', 
+      menu: section.settings.menu,
+      item_class: 'nav-item',
+      link_class: 'nav-link'
+    %}
+  
+  Parameters:
+    - menu: The menu handle (required)
+    - item_class: CSS class for list items (optional, default: 'menu-item')
+    - link_class: CSS class for links (optional, default: 'menu-link')
+{% endcomment %}
+
+{%- liquid
+  assign menu_handle = menu | default: 'main-menu'
+  assign item_class = item_class | default: 'menu-item'
+  assign link_class = link_class | default: 'menu-link'
+-%}
+
+{% for link in linklists[menu_handle].links %}
+  <li class="{{ item_class }}">
+    <a href="{{ link.url }}" class="{{ link_class }}">
+      {{ link.title }}
+    </a>
+  </li>
+{% endfor %}
