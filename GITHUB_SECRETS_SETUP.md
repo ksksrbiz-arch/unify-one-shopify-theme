@@ -163,9 +163,12 @@ ID             NAME          ROLE
    - ✅ `unauthenticated_write_checkouts`
 7. Click **"Save"**
 8. Go to **API credentials** tab
-9. Under **Storefront API access token**, you'll see:
-   - **Public token** → Use for `PUBLIC_STOREFRONT_API_TOKEN`
-   - **Admin API access token** → Use for `PRIVATE_STOREFRONT_API_TOKEN`
+9. Copy the **Storefront API access token** → Use for `PUBLIC_STOREFRONT_API_TOKEN`
+10. For `PRIVATE_STOREFRONT_API_TOKEN`:
+    - In the same app, go to **Configuration** tab
+    - Enable required **Admin API scopes** (e.g., `read_products`, `write_checkouts`)
+    - Go back to **API credentials** tab
+    - Copy the **Admin API access token** (starts with `shpat_`) → Use for `PRIVATE_STOREFRONT_API_TOKEN`
 
 #### Getting Customer Account API Credentials
 
@@ -193,8 +196,9 @@ ID             NAME          ROLE
 
 1. The Storefront ID is typically found in:
    - Your Shopify Admin → **Settings** → **Apps** → App details
-   - Or via API: `GET /admin/api/2024-01/storefronts.json`
+   - Or via API: `GET /admin/api/[VERSION]/storefronts.json` (use latest API version)
 2. It's a numeric identifier unique to your storefront configuration
+3. Check [Shopify API documentation](https://shopify.dev/api/admin-rest) for the latest supported API version
 
 #### Generating Session Secret
 

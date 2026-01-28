@@ -17,6 +17,9 @@ This document provides a comprehensive reference for all environment variables u
 4. [Shop and Session Configuration](#shop-and-session-configuration)
 5. [Optional Integrations](#optional-integrations)
 6. [Setting Up Environment Variables](#setting-up-environment-variables)
+7. [Security Best Practices](#-security-best-practices)
+8. [Related Documentation](#-related-documentation)
+9. [Troubleshooting](#-troubleshooting)
 
 ---
 
@@ -121,8 +124,8 @@ Required for headless/API-based storefront operations, product queries, and cart
 ### SESSION_SECRET
 - **Type:** Required (Secret)
 - **Description:** Secret key for session encryption and JWT signing
-- **Example:** `bff8097d82fc3545402dc711765f05dcb9857d90`
-- **Format:** Minimum 32 characters, hexadecimal recommended
+- **Example:** `bff8097d82fc3545402dc711765f05dcb9857d90c8e9f1a2b3c4d5e6f7a8b9c0`
+- **Format:** Minimum 64 characters (32 bytes), hexadecimal recommended
 - **Security:** Must be kept secret, rotate periodically
 - **How to generate:**
   ```bash
