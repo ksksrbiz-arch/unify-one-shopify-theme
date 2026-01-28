@@ -88,8 +88,8 @@
   text-decoration: none;
 }
 
-/* Cart Icon */
-[data-section-type="header"] .header__cart {
+/* Mobile Menu Toggle */
+[data-section-type="header"] .header__menu-toggle {
   display: none;
   background: none;
   border: none;

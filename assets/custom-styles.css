@@ -420,7 +420,8 @@ code {
   transition: color var(--transition-fast);
 }
 
-.interactive-link:hover {
+.interactive-link:hover,
+.interactive-link:focus-visible {
   color: var(--primary-color);
   text-decoration: none;
 }
@@ -429,7 +430,8 @@ code {
   color: var(--bg-light);
 }
 
-.interactive-link--light:hover {
+.interactive-link--light:hover,
+.interactive-link--light:focus-visible {
   color: var(--bg-white);
 }
 
@@ -447,7 +449,8 @@ code {
   transition: all var(--transition-normal);
 }
 
-.icon-button:hover {
+.icon-button:hover,
+.icon-button:focus-visible {
   background-color: var(--primary-color);
   transform: translateY(-2px);
 }

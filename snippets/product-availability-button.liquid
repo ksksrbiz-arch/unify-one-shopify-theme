@@ -19,15 +19,18 @@
 {% endcomment %}
 
 {%- liquid
-  assign variant_id = variant_id | default: product.selected_or_first_available_variant.id
-  assign quantity = quantity | default: '1'
-  assign button_type = button_type | default: 'button'
-  assign button_size_class = ''
-  if button_size == 'sm'
-    assign button_size_class = ' btn--sm'
-  elsif button_size == 'lg'
-    assign button_size_class = ' btn--lg'
-  endif
+  if product == blank or product.selected_or_first_available_variant == blank
+    echo '<!-- Product parameter is required and must have variants -->'
+  else
+    assign variant_id = variant_id | default: product.selected_or_first_available_variant.id
+    assign quantity = quantity | default: '1'
+    assign button_type = button_type | default: 'button'
+    assign button_size_class = ''
+    if button_size == 'sm'
+      assign button_size_class = ' btn--sm'
+    elsif button_size == 'lg'
+      assign button_size_class = ' btn--lg'
+    endif
 -%}
 
 <button 
@@ -45,3 +48,5 @@
     Sold Out
   {% endif %}
 </button>
+
+{%- endif -%}
