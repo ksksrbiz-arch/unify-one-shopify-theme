@@ -204,7 +204,7 @@
           if (mainImage && imageSrc) {
             mainImage.src = imageSrc;
             mainImage.alt = thumbnail.alt;
-            thumbnails.forEach((thumb) => thumb.classList.remove('is-active'));
+            thumbnails.forEach((otherThumbnail) => otherThumbnail.classList.remove('is-active'));
             thumbnail.classList.add('is-active');
           }
         });
