@@ -35,7 +35,13 @@ if (!fs.existsSync(ASSETS_DIR)) {
  * Analyze CSS files
  */
 console.log('📝 Analyzing CSS files...');
-const cssFiles = fs.readdirSync(ASSETS_DIR).filter(file => file.endsWith('.css'));
+let cssFiles = [];
+try {
+  cssFiles = fs.readdirSync(ASSETS_DIR).filter(file => file.endsWith('.css'));
+} catch (error) {
+  console.error(`❌ Error reading assets directory: ${error.message}`);
+  process.exit(1);
+}
 
 if (cssFiles.length === 0) {
   console.warn('⚠️  Warning: No CSS files found in assets/');
@@ -44,8 +50,16 @@ if (cssFiles.length === 0) {
 
 cssFiles.forEach(file => {
   const filePath = path.join(ASSETS_DIR, file);
-  const content = fs.readFileSync(filePath, 'utf8');
-  const size = Buffer.byteLength(content, 'utf8');
+  let content, size;
+  
+  try {
+    content = fs.readFileSync(filePath, 'utf8');
+    size = Buffer.byteLength(content, 'utf8');
+  } catch (error) {
+    console.error(`  ❌ Error reading ${file}: ${error.message}`);
+    hasErrors = true;
+    return;
+  }
   
   console.log(`  ✓ ${file}: ${size} bytes`);
   
@@ -72,7 +86,13 @@ cssFiles.forEach(file => {
  * Analyze JavaScript files
  */
 console.log('\n📝 Analyzing JavaScript files...');
-const jsFiles = fs.readdirSync(ASSETS_DIR).filter(file => file.endsWith('.js'));
+let jsFiles = [];
+try {
+  jsFiles = fs.readdirSync(ASSETS_DIR).filter(file => file.endsWith('.js'));
+} catch (error) {
+  console.error(`❌ Error reading assets directory: ${error.message}`);
+  process.exit(1);
+}
 
 if (jsFiles.length === 0) {
   console.warn('⚠️  Warning: No JavaScript files found in assets/');
@@ -81,8 +101,16 @@ if (jsFiles.length === 0) {
 
 jsFiles.forEach(file => {
   const filePath = path.join(ASSETS_DIR, file);
-  const content = fs.readFileSync(filePath, 'utf8');
-  const size = Buffer.byteLength(content, 'utf8');
+  let content, size;
+  
+  try {
+    content = fs.readFileSync(filePath, 'utf8');
+    size = Buffer.byteLength(content, 'utf8');
+  } catch (error) {
+    console.error(`  ❌ Error reading ${file}: ${error.message}`);
+    hasErrors = true;
+    return;
+  }
   
   console.log(`  ✓ ${file}: ${size} bytes`);
   
@@ -92,11 +120,11 @@ jsFiles.forEach(file => {
     warnings.push(`${file} is too large`);
   }
   
-  // Check for console.log (should be removed in production)
-  const consoleLogCount = (content.match(/console\.log/g) || []).length;
-  if (consoleLogCount > 0) {
-    console.warn(`  ⚠️  Warning: ${file} contains ${consoleLogCount} console.log statements`);
-    warnings.push(`${file} has ${consoleLogCount} console.log calls`);
+  // Check for console methods (console.log, console.warn, console.error, etc.)
+  const consoleCallCount = (content.match(/console\.\w+/g) || []).length;
+  if (consoleCallCount > 0) {
+    console.warn(`  ⚠️  Warning: ${file} contains ${consoleCallCount} console method calls`);
+    warnings.push(`${file} has ${consoleCallCount} console calls`);
   }
   
   // Check for source maps
@@ -110,7 +138,14 @@ jsFiles.forEach(file => {
  * Check for subdirectories in assets (Shopify doesn't support them)
  */
 console.log('\n📁 Checking directory structure...');
-const items = fs.readdirSync(ASSETS_DIR, { withFileTypes: true });
+let items = [];
+try {
+  items = fs.readdirSync(ASSETS_DIR, { withFileTypes: true });
+} catch (error) {
+  console.error(`❌ Error reading assets directory: ${error.message}`);
+  process.exit(1);
+}
+
 const ignoredDirs = ['__tests__', 'tests', '.git'];
 const subdirs = items.filter(item => item.isDirectory() && !ignoredDirs.includes(item.name));
 
