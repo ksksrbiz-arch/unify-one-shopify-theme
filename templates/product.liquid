@@ -44,12 +44,9 @@
       <div class="product__info">
         <h1 class="product__title">{{ product.title }}</h1>
         
-        <div class="product__price">
-          <span class="price">{{ product.price | money }}</span>
-          {% if product.compare_at_price > product.price %}
-            <span class="price--compare">{{ product.compare_at_price | money }}</span>
-          {% endif %}
-        </div>
+        {% render 'price-display', 
+          product: product,
+          wrapper_class: 'product__price' %}
 
         {% if product.description != blank %}
           <div class="product__description">

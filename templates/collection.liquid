@@ -35,12 +35,9 @@
                 
                 <div class="product-card__info">
                   <h3 class="product-card__title">{{ product.title }}</h3>
-                  <div class="product-card__price">
-                    <span class="price">{{ product.price | money }}</span>
-                    {% if product.compare_at_price > product.price %}
-                      <span class="price--compare">{{ product.compare_at_price | money }}</span>
-                    {% endif %}
-                  </div>
+                  {% render 'price-display', 
+                    product: product,
+                    wrapper_class: 'product-card__price' %}
                 </div>
               </a>
               

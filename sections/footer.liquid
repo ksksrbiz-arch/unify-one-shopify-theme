@@ -23,13 +23,10 @@
         <h3 class="footer__heading">{{ section.settings.links_heading }}</h3>
         <nav class="footer__nav" role="navigation" aria-label="Footer navigation">
           <ul class="footer__list">
-            {% for link in linklists[section.settings.menu].links %}
-              <li class="footer__item">
-                <a href="{{ link.url }}" class="footer__link">
-                  {{ link.title }}
-                </a>
-              </li>
-            {% endfor %}
+            {% render 'menu-links', 
+              menu: section.settings.menu,
+              item_class: 'footer__item',
+              link_class: 'footer__link' %}
           </ul>
         </nav>
       </div>
