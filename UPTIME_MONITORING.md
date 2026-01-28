@@ -135,7 +135,7 @@ Every production deployment automatically verifies:
 **Solution**:
 - As of the latest update, the monitoring system automatically follows redirects and treats them as successful responses
 - HTTP 301/302 redirects are now considered valid, as they indicate the site is operational
-- Only 4xx client errors and 5xx server errors will trigger alerts
+- Only connection failures and 4xx/5xx error status codes (except 404 for product pages) will trigger alerts
 
 #### Issue: All Health Checks Failing
 

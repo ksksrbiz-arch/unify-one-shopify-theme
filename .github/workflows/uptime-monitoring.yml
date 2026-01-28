@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Checking production store homepage..."
           # Follow redirects with -L and capture final status code
-          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commerce.shop/)
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commerce.shop/ || echo "000|0")
           HTTP_CODE=$(echo $RESPONSE | cut -d'|' -f1)
           RESPONSE_TIME=$(echo $RESPONSE | cut -d'|' -f2)
           
@@ -85,12 +85,12 @@ jobs:
         run: |
           echo "Checking product page availability..."
           # Follow redirects with -L
-          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/products)
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/products || echo "000")
           
           echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
           
           # Accept 2xx, 3xx, and 404 (no products page is acceptable)
-          if [[ "$RESPONSE" =~ ^[234][0-9][0-9]$ ]]; then
+          if [[ "$RESPONSE" =~ ^[23][0-9][0-9]$ ]] || [ "$RESPONSE" == "404" ]; then
             echo "✅ Product pages are accessible (HTTP $RESPONSE)"
             echo "status=success" >> $GITHUB_OUTPUT
           else
@@ -105,7 +105,7 @@ jobs:
         run: |
           echo "Checking cart page availability..."
           # Follow redirects with -L
-          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cart)
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cart || echo "000")
           
           echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
           
