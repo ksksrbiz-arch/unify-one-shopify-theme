@@ -123,7 +123,7 @@ PRIVATE_STOREFRONT_API_TOKEN=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
 PUBLIC_STOREFRONT_ID=1000089718
 
 # Session Management
-SESSION_SECRET=bff8097d82fc3545402dc711765f05dcb9857d90
+SESSION_SECRET=bff8097d82fc3545402dc711765f05dcb9857d90c8e9f1a2b3c4d5e6f7a8b9c0
 ```
 
 These example values are now properly documented in `.env.example` as placeholders with clear instructions on how to obtain real values.
