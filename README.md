@@ -27,6 +27,8 @@ Get started in seconds with a fully configured cloud development environment! No
 |----------|---------|----------|
 | **[CODESPACES_SETUP.md](./CODESPACES_SETUP.md)** | 🚀 GitHub Codespaces setup & deployment | All Team Members |
 | **[DEPLOYMENT_QUICK_REF.md](./DEPLOYMENT_QUICK_REF.md)** | ⚡ Quick deployment & monitoring guide | All Team Members |
+| **[ENVIRONMENT_VARIABLES_REFERENCE.md](./ENVIRONMENT_VARIABLES_REFERENCE.md)** | 🔑 Complete environment variables guide | All Developers |
+| **[GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)** | 🔒 GitHub secrets configuration | DevOps & Admins |
 | **[SETUP.md](./SETUP.md)** | Local dev setup & deployment | Developers |
 | **[UPTIME_MONITORING.md](./UPTIME_MONITORING.md)** | Production uptime & incident response | DevOps & Support |
 | **[CSS_INTEGRATION_GUIDE.md](./CSS_INTEGRATION_GUIDE.md)** | CSS integration via GitHub connector | Frontend Developers |

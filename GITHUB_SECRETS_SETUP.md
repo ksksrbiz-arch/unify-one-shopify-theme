@@ -50,6 +50,50 @@ Add each of the following secrets by clicking "New repository secret":
 - **Value:** Your Slack webhook URL (e.g., `https://hooks.slack.com/services/...`)
 - **Description:** Slack webhook for deployment notifications
 
+### Additional Shopify Configuration Secrets
+
+These additional secrets are required for advanced Shopify features like customer account management and storefront API integration:
+
+#### 6. PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID
+- **Name:** `PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID`
+- **Value:** Your Shopify Customer Account API Client ID
+- **Description:** OAuth client ID for customer authentication
+
+#### 7. PUBLIC_CUSTOMER_ACCOUNT_API_URL
+- **Name:** `PUBLIC_CUSTOMER_ACCOUNT_API_URL`
+- **Value:** `https://shopify.com/[SHOP_ID]`
+- **Description:** Customer Account API endpoint URL
+
+#### 8. PUBLIC_STORE_DOMAIN
+- **Name:** `PUBLIC_STORE_DOMAIN`
+- **Value:** Your Shopify store domain (e.g., `yourstore.myshopify.com`)
+- **Description:** Full myshopify.com domain for your store
+
+#### 9. PUBLIC_STOREFRONT_API_TOKEN
+- **Name:** `PUBLIC_STOREFRONT_API_TOKEN`
+- **Value:** Your Storefront API access token
+- **Description:** Public token for Storefront API access
+
+#### 10. PRIVATE_STOREFRONT_API_TOKEN
+- **Name:** `PRIVATE_STOREFRONT_API_TOKEN`
+- **Value:** Your private Storefront API access token (starts with `shpat_`)
+- **Description:** Private token for secure Storefront API operations
+
+#### 11. PUBLIC_STOREFRONT_ID
+- **Name:** `PUBLIC_STOREFRONT_ID`
+- **Value:** Your Storefront ID (numeric)
+- **Description:** Unique identifier for your storefront
+
+#### 12. SESSION_SECRET
+- **Name:** `SESSION_SECRET`
+- **Value:** A secure random string (minimum 32 characters)
+- **Description:** Secret key for session encryption and management
+
+#### 13. SHOP_ID
+- **Name:** `SHOP_ID`
+- **Value:** Your Shopify shop ID (numeric)
+- **Description:** Unique numeric identifier for your Shopify shop
+
 ### Step 3: Get Shopify Theme Access Token
 
 To get your `SHOPIFY_THEME_TOKEN`:
@@ -102,18 +146,105 @@ ID             NAME          ROLE
 4. Look at the URL: `https://admin.shopify.com/store/1commerce/themes/[THEME_ID]`
 5. The number at the end is your theme ID
 
-### Step 5: Verify Secrets Are Set
+### Step 5: Get Additional Shopify API Credentials
+
+#### Getting Storefront API Tokens
+
+1. Log into Shopify Admin: `https://1commerce.shop/admin`
+2. Go to **Settings** → **Apps and sales channels**
+3. Click **"Develop apps"** (or find your existing app)
+4. Create a new app or use existing: `UnifyOne Storefront API`
+5. Go to **Configuration** tab
+6. Under **Storefront API access scopes**, enable:
+   - ✅ `unauthenticated_read_product_listings`
+   - ✅ `unauthenticated_read_product_inventory`
+   - ✅ `unauthenticated_read_product_tags`
+   - ✅ `unauthenticated_read_checkouts`
+   - ✅ `unauthenticated_write_checkouts`
+7. Click **"Save"**
+8. Go to **API credentials** tab
+9. Copy the **Storefront API access token** → Use for `PUBLIC_STOREFRONT_API_TOKEN`
+10. For `PRIVATE_STOREFRONT_API_TOKEN`:
+    - In the same app, go to **Configuration** tab
+    - Enable required **Admin API scopes** (e.g., `read_products`, `write_checkouts`)
+    - Go back to **API credentials** tab
+    - Copy the **Admin API access token** (starts with `shpat_`) → Use for `PRIVATE_STOREFRONT_API_TOKEN`
+
+#### Getting Customer Account API Credentials
+
+1. In Shopify Admin, go to **Settings** → **Customer accounts**
+2. Enable **New customer accounts** (if not already enabled)
+3. Go to **Settings** → **Apps and sales channels** → Your app
+4. Under **Configuration**, enable **Customer Account API** scopes:
+   - ✅ `openid`
+   - ✅ `email`
+   - ✅ `profile`
+5. Copy the **Client ID** → Use for `PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID`
+6. The API URL format is: `https://shopify.com/[YOUR_SHOP_ID]`
+
+#### Getting Shop ID and Store Domain
+
+1. In Shopify Admin, go to **Settings** → **General**
+2. Under **Store details**, you'll find:
+   - **Store name** section shows your Shop ID in the URL
+   - **Primary domain** shows your myshopify.com domain
+3. Alternatively, check the admin URL:
+   - Format: `https://admin.shopify.com/store/[YOUR_SHOP_ID]`
+   - Or: Look at admin page source for `Shopify.shop_id`
+
+#### Getting Storefront ID
+
+1. The Storefront ID is typically found in:
+   - Your Shopify Admin → **Settings** → **Apps** → App details
+   - Or via API: `GET /admin/api/[VERSION]/storefronts.json` (use latest API version)
+2. It's a numeric identifier unique to your storefront configuration
+3. Check [Shopify API documentation](https://shopify.dev/api/admin-rest) for the latest supported API version
+
+#### Generating Session Secret
+
+Generate a secure random string (32+ characters) using one of these methods:
+
+**Option A: Using Node.js**
+```bash
+node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+```
+
+**Option B: Using OpenSSL**
+```bash
+openssl rand -hex 32
+```
+
+**Option C: Using Python**
+```bash
+python3 -c "import secrets; print(secrets.token_hex(32))"
+```
+
+### Step 6: Verify Secrets Are Set
 
 1. Go back to **Settings** → **Secrets and variables** → **Actions**
 2. You should see all secrets listed (values are hidden)
 3. Verify you have:
+   
+   **Required for Basic Deployment:**
    - ✅ SHOPIFY_STORE_NAME
    - ✅ SHOPIFY_THEME_TOKEN
    - ✅ SHOPIFY_STAGING_THEME_ID
    - ✅ SHOPIFY_PRODUCTION_THEME_ID
-   - ✅ SLACK_WEBHOOK (optional)
+   
+   **Required for Advanced Features:**
+   - ✅ PUBLIC_CUSTOMER_ACCOUNT_API_CLIENT_ID
+   - ✅ PUBLIC_CUSTOMER_ACCOUNT_API_URL
+   - ✅ PUBLIC_STORE_DOMAIN
+   - ✅ PUBLIC_STOREFRONT_API_TOKEN
+   - ✅ PRIVATE_STOREFRONT_API_TOKEN
+   - ✅ PUBLIC_STOREFRONT_ID
+   - ✅ SESSION_SECRET
+   - ✅ SHOP_ID
+   
+   **Optional:**
+   - ⭕ SLACK_WEBHOOK
 
-### Step 6: Test Deployment
+### Step 7: Test Deployment
 
 Once secrets are configured:
 
