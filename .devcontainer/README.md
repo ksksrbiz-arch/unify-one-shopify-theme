@@ -137,7 +137,7 @@ This workflow lets you develop entirely offline and use CI/CD to test on real Sh
 | Commit changes | ❌ No | `git commit -am "..."` |
 | Preview in browser | ✅ Yes | `npm run dev` |
 | Deploy to staging | ❌ No* | `git push origin main` |
-| Deploy to production | ❌ No* | `git push origin v1.0.0` |
+| Deploy to production | ❌ No* | `git tag v1.0.0 && git push origin v1.0.0` |
 
 *Deployments use GitHub Actions, not local server
 
