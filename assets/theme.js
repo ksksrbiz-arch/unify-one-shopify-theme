@@ -3,8 +3,8 @@
  * Last Updated: January 21, 2026
  */
 
-(function() {
-  'use strict';
+(function () {
+  "use strict";
 
   // ===========================================
   // UTILITY FUNCTIONS
@@ -28,11 +28,11 @@
     set: (key, value) => {
       try {
         // Bypass consent check for consent-related keys to avoid circular dependency
-        const consentKeys = ['cookie-consent', 'cookie-dismissed'];
+        const consentKeys = ["cookie-consent", "cookie-dismissed"];
         if (!consentKeys.includes(key)) {
           // For non-consent keys, check if consent exists directly
-          const hasConsent = localStorage.getItem('cookie-consent');
-          if (hasConsent !== 'true') {
+          const hasConsent = localStorage.getItem("cookie-consent");
+          if (hasConsent !== "true") {
             return;
           }
         }
@@ -47,7 +47,7 @@
       } catch (e) {
         // Silent fail for storage errors
       }
-    }
+    },
   };
 
   // ===========================================
@@ -63,24 +63,24 @@
     },
 
     hasConsent() {
-      return Storage.get('cookie-consent') === true;
+      return Storage.get("cookie-consent") === true;
     },
 
     isDismissed() {
-      return Storage.get('cookie-dismissed') === true;
+      return Storage.get("cookie-dismissed") === true;
     },
 
     show() {
-      const banner = document.getElementById('cookie-banner');
+      const banner = document.getElementById("cookie-banner");
       if (banner) {
-        banner.style.display = 'block';
+        banner.style.display = "block";
       }
     },
 
     hide() {
-      const banner = document.getElementById('cookie-banner');
+      const banner = document.getElementById("cookie-banner");
       if (banner) {
-        banner.style.display = 'none';
+        banner.style.display = "none";
       }
     },
 
@@ -97,20 +97,20 @@
     },
 
     accept() {
-      Storage.set('cookie-consent', true);
+      Storage.set("cookie-consent", true);
       this.hide();
       this.loadAnalytics();
     },
 
     decline() {
-      Storage.set('cookie-dismissed', true);
+      Storage.set("cookie-dismissed", true);
       this.hide();
     },
 
     loadAnalytics() {
       // Load Google Analytics or other tracking scripts
       // TODO: Implement actual analytics loading (GA4, Meta Pixel, etc.)
-    }
+    },
   };
 
   // ===========================================
@@ -132,20 +132,31 @@
       this.setupAccessibility();
     },
 
+    closeMenu() {
+      const { menu, toggle } = this.elements;
+      if (menu && toggle) {
+        menu.classList.remove("is-open");
+        toggle.classList.remove("is-active");
+        toggle.setAttribute("aria-expanded", "false");
+        menu.setAttribute("aria-hidden", "true");
+        document.body.style.overflow = "";
+      }
+    },
+
     setupToggle() {
       const { toggle, menu } = this.elements;
 
       if (toggle && menu) {
-        toggle.addEventListener('click', () => {
-          const isOpen = menu.classList.toggle('is-open');
-          toggle.classList.toggle('is-active');
-          
+        toggle.addEventListener("click", () => {
+          const isOpen = menu.classList.toggle("is-open");
+          toggle.classList.toggle("is-active");
+
           // Update ARIA attributes
-          toggle.setAttribute('aria-expanded', isOpen);
-          menu.setAttribute('aria-hidden', !isOpen);
-          
+          toggle.setAttribute("aria-expanded", isOpen);
+          menu.setAttribute("aria-hidden", !isOpen);
+
           // Prevent body scroll when menu is open
-          document.body.style.overflow = isOpen ? 'hidden' : '';
+          document.body.style.overflow = isOpen ? "hidden" : "";
         });
       }
     },
@@ -168,7 +179,7 @@
 
     setupAccessibility() {
       const { menu, toggle } = this.elements;
-      
+
       if (menu) {
         // Handle Escape key to close menu
         document.addEventListener('keydown', (event) => {
@@ -179,7 +190,7 @@
           }
         });
       }
-    }
+    },
   };
 
   // ===========================================
@@ -188,15 +199,15 @@
 
   const ProductGallery = {
     init() {
-      const gallery = document.querySelector('[data-product-gallery]');
+      const gallery = document.querySelector("[data-product-gallery]");
       if (gallery) {
         this.setupThumbnails();
       }
     },
 
     setupThumbnails() {
-      const thumbnails = document.querySelectorAll('[data-gallery-thumbnail]');
-      const mainImage = document.querySelector('[data-gallery-main-image]');
+      const thumbnails = document.querySelectorAll("[data-gallery-thumbnail]");
+      const mainImage = document.querySelector("[data-gallery-main-image]");
 
       thumbnails.forEach((thumbnail) => {
         thumbnail.addEventListener('click', () => {
@@ -209,7 +220,7 @@
           }
         });
       });
-    }
+    },
   };
 
   // ===========================================
@@ -217,17 +228,32 @@
   // ===========================================
 
   const Cart = {
+    validateProductData(productId, quantity) {
+      // Shopify variant IDs are numeric strings (e.g., "12345678901")
+      const isValidVariantId = /^\d+$/.test(productId);
+
+      if (!productId || !isValidVariantId) {
+        return { valid: false, error: "Invalid product ID" };
+      }
+
+      if (isNaN(quantity) || quantity < 1) {
+        return { valid: false, error: "Invalid quantity" };
+      }
+
+      return { valid: true };
+    },
+
     addToCart(productId, quantity = 1, retries = 2) {
       const formData = new FormData();
-      formData.append('id', productId);
-      formData.append('quantity', quantity);
+      formData.append("id", productId);
+      formData.append("quantity", quantity);
 
-      return fetch('/cart/add.js', {
-        method: 'POST',
+      return fetch("/cart/add.js", {
+        method: "POST",
         body: formData,
         headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        }
+          "X-Requested-With": "XMLHttpRequest",
+        },
       })
         .then((response) => {
           if (!response.ok) {
@@ -249,13 +275,13 @@
               }, 1000);
             });
           }
-          this.showNotification('Unable to add product to cart. Please try again.', 'error');
+          this.showNotification("Unable to add product to cart. Please try again.", "error");
           throw error;
         });
     },
 
     updateCartCount() {
-      fetch('/cart.js')
+      fetch("/cart.js")
         .then((response) => response.json())
         .then((cartData) => {
           const cartCountElement = document.querySelector('[data-cart-count]');
@@ -265,22 +291,22 @@
         });
     },
 
-    showNotification(message, type = 'success') {
+    showNotification(message, type = "success") {
       // Validate notification type
-      const validTypes = ['success', 'error', 'warning', 'info'];
-      const notificationType = validTypes.includes(type) ? type : 'info';
-      
-      const notification = document.createElement('div');
+      const validTypes = ["success", "error", "warning", "info"];
+      const notificationType = validTypes.includes(type) ? type : "info";
+
+      const notification = document.createElement("div");
       notification.className = `notification notification--${notificationType}`;
-      notification.setAttribute('role', 'alert');
-      notification.setAttribute('aria-live', 'polite');
+      notification.setAttribute("role", "alert");
+      notification.setAttribute("aria-live", "polite");
       notification.textContent = message;
       document.body.appendChild(notification);
 
       setTimeout(() => {
         notification.remove();
       }, 3000);
-    }
+    },
   };
 
   // ===========================================
@@ -289,8 +315,8 @@
 
   const LazyLoad = {
     init() {
-      const images = document.querySelectorAll('[data-lazy-load]');
-      if ('IntersectionObserver' in window) {
+      const images = document.querySelectorAll("[data-lazy-load]");
+      if ("IntersectionObserver" in window) {
         this.setupIntersectionObserver(images);
       } else {
         this.setupFallback(images);
@@ -318,14 +344,14 @@
       images.forEach((imageElement) => {
         imageElement.src = imageElement.dataset.lazyLoad;
       });
-    }
+    },
   };
 
   // ===========================================
   // INITIALIZATION
   // ===========================================
 
-  document.addEventListener('DOMContentLoaded', () => {
+  document.addEventListener("DOMContentLoaded", () => {
     CookieConsent.init();
     MobileMenu.init();
     ProductGallery.init();
@@ -350,12 +376,18 @@
           Cart.showNotification('Invalid quantity', 'error');
           return;
         }
-        
-        Cart.addToCart(productId, quantity)
-          .catch((error) => {
-            // Error already handled by Cart.addToCart, but catch to prevent unhandled rejection
-            console.error('Add to cart failed for product', productId, 'quantity', quantity, ':', error);
-          });
+
+        Cart.addToCart(productId, quantity).catch((error) => {
+          // Error already handled by Cart.addToCart, but catch to prevent unhandled rejection
+          console.error(
+            "Add to cart failed for product",
+            productId,
+            "quantity",
+            quantity,
+            ":",
+            error
+          );
+        });
       });
     });
   });
