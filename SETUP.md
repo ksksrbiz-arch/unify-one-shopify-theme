@@ -55,13 +55,15 @@ shopify auth login --store 1commerce.shop
 
 This creates a local authentication session.
 
-### 5. Start Development Server
+### 5. Start Development Server (Optional)
 
 ```bash
 npm run dev
 ```
 
-This launches a local development server with live reload at `http://localhost:9000`
+This launches a local dev server with live reload at `http://localhost:9000`
+
+**Note:** The dev server is **optional**. See the "Working Without Dev Server" section below for offline development.
 
 ## 🚀 Deployment Pipeline
 
@@ -193,6 +195,98 @@ Edit `config/settings_schema.json` to add theme customization options visible in
 3. Include in templates: `{% section 'new-section' %}`
 
 ## 🧪 Testing & Validation
+
+### Working Without Dev Server
+
+You can develop the theme **without running the Shopify dev server**. This is ideal for:
+- Offline development
+- Quick edits and commits
+- CI/CD-based workflow (push to deploy)
+- Working without Shopify authentication
+
+#### What Works Without Server
+
+**✅ File Editing**
+```bash
+# Edit any theme file in your editor
+code assets/custom-styles.css
+code sections/header.liquid
+code assets/theme.js
+```
+
+**✅ Linting & Validation**
+```bash
+# Lint Liquid templates
+npm run lint:liquid
+
+# Full theme check
+npm run lint
+
+# Format all code
+npm run format
+```
+
+**✅ Testing**
+```bash
+# Run Jest tests
+npm test
+
+# Watch mode
+npm test -- --watch
+```
+
+**✅ Git Operations**
+```bash
+# Commit and push (triggers CI/CD deployment)
+git add .
+git commit -m "Update header section"
+git push origin main
+```
+
+**✅ Asset Optimization**
+```bash
+npm run optimize
+```
+
+#### When You Need the Dev Server
+
+The dev server (`npm run dev`) is **only required** for:
+- Live preview in browser with real Shopify data
+- Testing dynamic content (products, cart, checkout)
+- Real-time hot-reload during development
+- Debugging Liquid with store context
+
+#### Recommended Offline Workflow
+
+1. **Make changes** - Edit theme files locally
+2. **Validate** - Run `npm run lint`
+3. **Test** - Run `npm test` (if applicable)
+4. **Commit** - `git commit -am "Description"`
+5. **Deploy** - `git push origin main` (auto-deploys to staging via GitHub Actions)
+6. **Verify** - Check staging theme at https://1commerce.shop
+
+This workflow eliminates the need for local Shopify authentication and leverages CI/CD for testing.
+
+#### Quick Reference: Server vs No Server
+
+| Development Task | Requires Dev Server? | Command/Action |
+|-----------------|---------------------|----------------|
+| **Edit Liquid files** | ❌ No | Open in VS Code/editor |
+| **Edit CSS files** | ❌ No | Open in VS Code/editor |
+| **Edit JavaScript** | ❌ No | Open in VS Code/editor |
+| **Lint Liquid templates** | ❌ No | `npm run lint:liquid` |
+| **Format code** | ❌ No | `npm run format` |
+| **Run tests** | ❌ No | `npm test` |
+| **Optimize assets** | ❌ No | `npm run optimize` |
+| **Commit to Git** | ❌ No | `git commit` |
+| **Push to GitHub** | ❌ No | `git push` |
+| **Deploy to staging** | ❌ No | `git push origin main` (GitHub Actions) |
+| **Deploy to production** | ❌ No | `git tag v1.0.0 && git push origin v1.0.0` |
+| **Preview in browser** | ✅ **Yes** | `npm run dev` + visit localhost:9000 |
+| **Test dynamic content** | ✅ **Yes** | `npm run dev` + Shopify store data |
+| **Hot-reload development** | ✅ **Yes** | `npm run dev` |
+
+**Summary:** Most development tasks can be done **without** running the dev server. The server is only needed for live browser preview with real Shopify store data.
 
 ### Lint Liquid Templates
 
