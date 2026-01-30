@@ -20,7 +20,7 @@
       try {
         const value = localStorage.getItem(key);
         return value ? JSON.parse(value) : defaultValue;
-      } catch (e) {
+      } catch (error) {
         // Silent fail for storage errors
         return defaultValue;
       }
@@ -37,14 +37,14 @@
           }
         }
         localStorage.setItem(key, JSON.stringify(value));
-      } catch (e) {
+      } catch (error) {
         // Silent fail for storage errors (quota exceeded, private mode, etc.)
       }
     },
     remove: (key) => {
       try {
         localStorage.removeItem(key);
-      } catch (e) {
+      } catch (error) {
         // Silent fail for storage errors
       }
     },
