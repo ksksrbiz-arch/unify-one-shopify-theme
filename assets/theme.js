@@ -11,18 +11,6 @@
   // ===========================================
 
   /**
-   * DOM Query Helper
-   */
-  const $ = (selector) => {
-    const element = document.querySelector(selector);
-    return element ? [element] : [];
-  };
-
-  const $$ = (selector) => {
-    return document.querySelectorAll(selector);
-  };
-
-  /**
    * LocalStorage Manager
    * Note: get() does not check consent to avoid circular dependency
    * set() checks consent except for consent-related keys
@@ -32,7 +20,7 @@
       try {
         const value = localStorage.getItem(key);
         return value ? JSON.parse(value) : defaultValue;
-      } catch (e) {
+      } catch (error) {
         // Silent fail for storage errors
         return defaultValue;
       }
@@ -49,14 +37,14 @@
           }
         }
         localStorage.setItem(key, JSON.stringify(value));
-      } catch (e) {
+      } catch (error) {
         // Silent fail for storage errors (quota exceeded, private mode, etc.)
       }
     },
     remove: (key) => {
       try {
         localStorage.removeItem(key);
-      } catch (e) {
+      } catch (error) {
         // Silent fail for storage errors
       }
     },
@@ -97,14 +85,14 @@
     },
 
     setupListeners() {
-      const acceptBtn = document.getElementById("cookie-accept");
-      const declineBtn = document.getElementById("cookie-decline");
+      const acceptButton = document.getElementById('cookie-accept');
+      const declineButton = document.getElementById('cookie-decline');
 
-      if (acceptBtn) {
-        acceptBtn.addEventListener("click", () => this.accept());
+      if (acceptButton) {
+        acceptButton.addEventListener('click', () => this.accept());
       }
-      if (declineBtn) {
-        declineBtn.addEventListener("click", () => this.decline());
+      if (declineButton) {
+        declineButton.addEventListener('click', () => this.decline());
       }
     },
 
@@ -135,10 +123,10 @@
 
     init() {
       // Cache elements once
-      this.elements.toggle = document.querySelector("[data-menu-toggle]");
-      this.elements.menu = document.querySelector("[data-mobile-menu]");
-      this.elements.links = document.querySelectorAll("[data-mobile-menu] a");
-
+      this.elements.toggle = document.querySelector('[data-menu-toggle]');
+      this.elements.menu = document.querySelector('[data-mobile-menu]');
+      this.elements.menuLinks = document.querySelectorAll('[data-mobile-menu] a');
+      
       this.setupToggle();
       this.setupCloseOnClick();
       this.setupAccessibility();
@@ -174,11 +162,17 @@
     },
 
     setupCloseOnClick() {
-      const { links } = this.elements;
-
-      links.forEach((link) => {
-        link.addEventListener("click", () => {
-          this.closeMenu();
+      const { menuLinks, menu, toggle } = this.elements;
+      
+      menuLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          if (menu && toggle) {
+            menu.classList.remove('is-open');
+            toggle.classList.remove('is-active');
+            toggle.setAttribute('aria-expanded', 'false');
+            menu.setAttribute('aria-hidden', 'true');
+            document.body.style.overflow = '';
+          }
         });
       });
     },
@@ -188,8 +182,8 @@
 
       if (menu) {
         // Handle Escape key to close menu
-        document.addEventListener("keydown", (e) => {
-          if (e.key === "Escape" && menu.classList.contains("is-open")) {
+        document.addEventListener('keydown', (event) => {
+          if (event.key === 'Escape' && menu.classList.contains('is-open')) {
             if (toggle) {
               toggle.click();
             }
@@ -215,14 +209,14 @@
       const thumbnails = document.querySelectorAll("[data-gallery-thumbnail]");
       const mainImage = document.querySelector("[data-gallery-main-image]");
 
-      thumbnails.forEach((thumb) => {
-        thumb.addEventListener("click", () => {
-          const src = thumb.dataset.galleryThumbnail;
-          if (mainImage && src) {
-            mainImage.src = src;
-            mainImage.alt = thumb.alt;
-            thumbnails.forEach((t) => t.classList.remove("is-active"));
-            thumb.classList.add("is-active");
+      thumbnails.forEach((thumbnail) => {
+        thumbnail.addEventListener('click', () => {
+          const imageSrc = thumbnail.dataset.galleryThumbnail;
+          if (mainImage && imageSrc) {
+            mainImage.src = imageSrc;
+            mainImage.alt = thumbnail.alt;
+            thumbnails.forEach((otherThumbnail) => otherThumbnail.classList.remove('is-active'));
+            thumbnail.classList.add('is-active');
           }
         });
       });
@@ -267,10 +261,10 @@
           }
           return response.json();
         })
-        .then((json) => {
+        .then((cartData) => {
           this.updateCartCount();
-          this.showNotification("Product added to cart");
-          return json;
+          this.showNotification('Product added to cart');
+          return cartData;
         })
         .catch((error) => {
           // Retry logic for network errors
@@ -289,10 +283,10 @@
     updateCartCount() {
       fetch("/cart.js")
         .then((response) => response.json())
-        .then((json) => {
-          const cartCount = document.querySelector("[data-cart-count]");
-          if (cartCount) {
-            cartCount.textContent = json.item_count;
+        .then((cartData) => {
+          const cartCountElement = document.querySelector('[data-cart-count]');
+          if (cartCountElement) {
+            cartCountElement.textContent = cartData.item_count;
           }
         });
     },
@@ -330,28 +324,25 @@
     },
 
     setupIntersectionObserver(images) {
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              const img = entry.target;
-              img.src = img.dataset.lazyLoad;
-              img.removeAttribute("data-lazy-load");
-              observer.unobserve(img);
-            }
-          });
-        },
-        {
-          rootMargin: "50px", // Load images 50px before they enter viewport
-        }
-      );
+      const imageObserver = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const imageElement = entry.target;
+            imageElement.src = imageElement.dataset.lazyLoad;
+            imageElement.removeAttribute('data-lazy-load');
+            imageObserver.unobserve(imageElement);
+          }
+        });
+      }, {
+        rootMargin: '50px' // Load images 50px before they enter viewport
+      });
 
-      images.forEach((img) => observer.observe(img));
+      images.forEach((imageElement) => imageObserver.observe(imageElement));
     },
 
     setupFallback(images) {
-      images.forEach((img) => {
-        img.src = img.dataset.lazyLoad;
+      images.forEach((imageElement) => {
+        imageElement.src = imageElement.dataset.lazyLoad;
       });
     },
   };
@@ -367,15 +358,22 @@
     LazyLoad.init();
 
     // Setup cart listeners
-    document.querySelectorAll("[data-add-to-cart]").forEach((btn) => {
-      btn.addEventListener("click", (e) => {
-        e.preventDefault();
-        const productId = btn.dataset.addToCart;
-        const quantity = parseInt(btn.dataset.quantity || 1, 10);
-
-        const validation = Cart.validateProductData(productId, quantity);
-        if (!validation.valid) {
-          Cart.showNotification(validation.error, "error");
+    document.querySelectorAll('[data-add-to-cart]').forEach((addButton) => {
+      addButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        const productId = addButton.dataset.addToCart;
+        const quantity = parseInt(addButton.dataset.quantity || 1, 10);
+        
+        // Shopify variant IDs are numeric strings (e.g., "12345678901")
+        const isValidVariantId = /^\d+$/.test(productId);
+        
+        if (!productId || !isValidVariantId) {
+          Cart.showNotification('Invalid product ID', 'error');
+          return;
+        }
+        
+        if (isNaN(quantity) || quantity < 1) {
+          Cart.showNotification('Invalid quantity', 'error');
           return;
         }
 
