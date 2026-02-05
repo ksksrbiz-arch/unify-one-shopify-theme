@@ -109,7 +109,7 @@ The Shopify dev server (`npm run dev`) is **only needed** when you want to:
 To use the dev server:
 ```bash
 # Requires Shopify authentication
-shopify auth login --store 1commerce.shop
+shopify auth login --store 1commercesolutions.shop
 
 # Start dev server on port 9000
 npm run dev

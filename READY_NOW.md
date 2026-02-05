@@ -139,8 +139,8 @@ git push origin main
 
 ✅ **Stable Base URLs**:
 ```
-Production: https://api.1commerce.shop/v1
-Staging:    https://staging-api.1commerce.shop/v1
+Production: https://api.1commercesolutions.shop/v1
+Staging:    https://staging-api.1commercesolutions.shop/v1
 ```
 
 ✅ **Liquid Sections Pre-Tagged for Connection**:
@@ -154,7 +154,7 @@ Staging:    https://staging-api.1commerce.shop/v1
 1. **Deploy Cloud Run** with the 19 endpoints
 2. **Update .env.local**:
    ```env
-   BACKEND_API_BASE_URL=https://api.1commerce.shop/v1
+   BACKEND_API_BASE_URL=https://api.1commercesolutions.shop/v1
    BACKEND_API_KEY=sk_live_xxxxx
    ```
 3. **Update theme.js** to call backend (calls are already stubbed/commented)

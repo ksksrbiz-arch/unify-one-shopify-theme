@@ -2,7 +2,7 @@
 
 **Last Updated:** January 21, 2026  
 **Theme:** UnifyOne Shopify Theme  
-**Store:** 1commerce.shop
+**Store:** 1commercesolutions.shop
 
 ---
 
@@ -81,7 +81,7 @@ Each Lighthouse CI run:
   uses: treosh/lighthouse-ci-action@v10
   with:
     urls: |
-      https://1commerce.shop/?preview_theme_id=${{ secrets.SHOPIFY_STAGING_THEME_ID }}
+      https://1commercesolutions.shop/?preview_theme_id=${{ secrets.SHOPIFY_STAGING_THEME_ID }}
     uploadArtifacts: true
     temporaryPublicStorage: true
 ```
@@ -152,7 +152,7 @@ Manual access via GitHub Actions logs
 npm install -g @lhci/cli@latest
 
 # Run locally against staging theme
-lhci collect --config=lighthouserc.json --url="https://1commerce.shop/?preview_theme_id=STAGING_THEME_ID"
+lhci collect --config=lighthouserc.json --url="https://1commercesolutions.shop/?preview_theme_id=STAGING_THEME_ID"
 
 # View results
 lhci view

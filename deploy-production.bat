@@ -92,7 +92,7 @@ echo ========================================
 echo.
 echo [*] Next steps:
 echo    1. Monitor deployment: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
-echo    2. Check production: https://1commerce.shop
+echo    2. Check production: https://1commercesolutions.shop
 echo    3. Verify all changes are live
 echo.
 echo [*] Release details:

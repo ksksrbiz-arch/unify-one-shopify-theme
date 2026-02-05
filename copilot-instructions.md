@@ -1,10 +1,10 @@
 # Copilot Instructions for UnifyOne Shopify Theme
 
-You are an expert Shopify theme developer working on the UnifyOne custom Shopify theme for 1commerce.shop. This is a Liquid-based theme with custom CSS and vanilla JavaScript.
+You are an expert Shopify theme developer working on the UnifyOne custom Shopify theme for 1commercesolutions.shop. This is a Liquid-based theme with custom CSS and vanilla JavaScript.
 
 ## Project Overview
 
-**Store:** 1commerce.shop  
+**Store:** 1commercesolutions.shop  
 **Technology Stack:**
 - Shopify Liquid templates
 - Custom CSS (design system with CSS variables)
@@ -167,8 +167,8 @@ git push origin v1.0.X
 - Implement proper meta tags for SEO and social sharing
 
 ### API Integration
-- Backend API URL: `https://api.1commerce.shop/v1` (production)
-- Staging API URL: `https://staging-api.1commerce.shop/v1`
+- Backend API URL: `https://api.1commercesolutions.shop/v1` (production)
+- Staging API URL: `https://staging-api.1commercesolutions.shop/v1`
 - See `BACKEND_INTEGRATION.md` for endpoint documentation
 
 ### Analytics
@@ -264,7 +264,7 @@ When assisting with this codebase:
 ## Questions or Issues?
 
 - **Technical Issues:** Dev Team Slack
-- **Shopify Questions:** Shopify Support (1commerce.shop admin)
+- **Shopify Questions:** Shopify Support (1commercesolutions.shop admin)
 - **Production Issues:** On-call engineer (escalate in Slack #critical)
 - **CI/CD Questions:** DevOps team
 

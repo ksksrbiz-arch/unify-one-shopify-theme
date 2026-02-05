@@ -260,7 +260,7 @@ git checkout abc123
    ⬇️
 5. GitHub Actions deploys automatically
    ⬇️
-6. Verify in staging: https://1commerce.shop
+6. Verify in staging: https://1commercesolutions.shop
    ⬇️
 7. Create tag: git tag v1.0.1 ...
    ⬇️
@@ -377,7 +377,7 @@ git push origin develop
 https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
 
 # 6. After ~5 minutes, preview staging:
-https://1commerce.shop
+https://1commercesolutions.shop
 ```
 
 ---

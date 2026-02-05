@@ -1,6 +1,6 @@
 # UnifyOne Shopify Theme - Setup Guide
 
-**Domain:** `1commerce.shop`  
+**Domain:** `1commercesolutions.shop`  
 **Migrated From:** GoDaddy  
 **Last Updated:** January 21, 2026
 
@@ -33,7 +33,7 @@ Create `.env.local` in the root directory:
 
 ```bash
 # .env.local
-SHOPIFY_STORE_NAME=1commerce.shop
+SHOPIFY_STORE_NAME=1commercesolutions.shop
 SHOPIFY_THEME_TOKEN=your_theme_token_here
 ```
 
@@ -50,7 +50,7 @@ SHOPIFY_THEME_TOKEN=your_theme_token_here
 ### 4. Authenticate with Shopify
 
 ```bash
-shopify auth login --store 1commerce.shop
+shopify auth login --store 1commercesolutions.shop
 ```
 
 This creates a local authentication session.
@@ -73,7 +73,7 @@ Add these secrets to your GitHub repository (Settings → Secrets & variables �
 
 | Secret Name | Description | Value |
 |-----------|-------------|-------|
-| `SHOPIFY_STORE_NAME` | Shopify store name | `1commerce.shop` |
+| `SHOPIFY_STORE_NAME` | Shopify store name | `1commercesolutions.shop` |
 | `SHOPIFY_THEME_TOKEN` | API access token | From Shopify Admin |
 | `SHOPIFY_STAGING_THEME_ID` | Staging theme ID | From Shopify (e.g., 987654321) |
 | `SHOPIFY_PRODUCTION_THEME_ID` | Production theme ID | From Shopify (e.g., 123456789) |
@@ -83,7 +83,7 @@ Add these secrets to your GitHub repository (Settings → Secrets & variables �
 ### Finding Theme IDs
 
 ```bash
-shopify theme list --store 1commerce.shop
+shopify theme list --store 1commercesolutions.shop
 ```
 
 Output example:
@@ -263,7 +263,7 @@ The dev server (`npm run dev`) is **only required** for:
 3. **Test** - Run `npm test` (if applicable)
 4. **Commit** - `git commit -am "Description"`
 5. **Deploy** - `git push origin main` (auto-deploys to staging via GitHub Actions)
-6. **Verify** - Check staging theme at https://1commerce.shop
+6. **Verify** - Check staging theme at https://1commercesolutions.shop
 
 This workflow eliminates the need for local Shopify authentication and leverages CI/CD for testing.
 
@@ -335,7 +335,7 @@ npm run dev
     ┌────────────────────────────────────┐
     │  Auto-Deploy to Staging Theme      │
     │  (GitHub Actions workflow)         │
-    │  TEST: https://1commerce.shop      │
+    │  TEST: https://1commercesolutions.shop      │
     └────────────┬───────────────────────┘
                  │
         ┌────────▼──────────┐
@@ -352,7 +352,7 @@ npm run dev
     ┌────────────────────────────────────┐
     │  Auto-Deploy to Production         │
     │  (GitHub Actions workflow)         │
-    │  LIVE: https://1commerce.shop      │
+    │  LIVE: https://1commercesolutions.shop      │
     └────────────────────────────────────┘
 ```
 
@@ -367,7 +367,7 @@ npm install -g @shopify/cli @shopify/theme @shopify/hydrogen
 ### Issue: "Theme deployment failed"
 
 1. Verify `SHOPIFY_THEME_TOKEN` is valid
-2. Check theme ID exists: `shopify theme list --store 1commerce.shop`
+2. Check theme ID exists: `shopify theme list --store 1commercesolutions.shop`
 3. Review workflow logs in GitHub Actions
 
 ### Issue: Local development server won't start

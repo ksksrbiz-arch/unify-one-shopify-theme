@@ -15,11 +15,11 @@ cd unify-one-shopify-theme
 npm install
 
 # 3. Create .env.local with your Shopify token
-echo "SHOPIFY_STORE_NAME=1commerce.shop" > .env.local
+echo "SHOPIFY_STORE_NAME=1commercesolutions.shop" > .env.local
 echo "SHOPIFY_THEME_TOKEN=your_token" >> .env.local
 
 # 4. Authenticate
-shopify auth login --store 1commerce.shop
+shopify auth login --store 1commercesolutions.shop
 
 # 5. Start development server
 npm run dev
@@ -72,7 +72,7 @@ git push origin develop
 # GitHub Actions automatically:
 # ✅ Validates theme
 # ✅ Deploys to staging theme
-# ✅ Ready for QA at https://1commerce.shop
+# ✅ Ready for QA at https://1commercesolutions.shop
 
 # Monitor deployment
 # GitHub Repo → Actions → Latest workflow run
@@ -95,7 +95,7 @@ git push origin v1.0.1
 # ✅ Strict validation
 # ✅ Creates GitHub Release
 # ✅ Deploys to production theme
-# ✅ NOW LIVE at https://1commerce.shop
+# ✅ NOW LIVE at https://1commercesolutions.shop
 ```
 
 ---
@@ -204,10 +204,10 @@ npm run deploy:prod      # Manual deploy to production
 
 ### Shopify CLI (advanced)
 ```bash
-shopify theme list --store 1commerce.shop          # List all themes
+shopify theme list --store 1commercesolutions.shop          # List all themes
 shopify theme check sections/header.liquid         # Validate specific file
 shopify theme pull --allow-live                    # Pull current theme
-shopify theme delete --store 1commerce.shop 123456 # Delete theme by ID
+shopify theme delete --store 1commercesolutions.shop 123456 # Delete theme by ID
 ```
 
 **Note:** For foolproof deployments, Shopify CLI with Theme and Hydrogen support is installed globally in GitHub Actions via:
@@ -246,8 +246,8 @@ npm run lint:liquid
 
 ### Can't authenticate
 ```bash
-shopify auth logout --store 1commerce.shop
-shopify auth login --store 1commerce.shop
+shopify auth logout --store 1commercesolutions.shop
+shopify auth login --store 1commercesolutions.shop
 # Paste the authorization code when prompted
 ```
 
@@ -272,7 +272,7 @@ shopify auth login --store 1commerce.shop
 Add to: GitHub Repo → Settings → Secrets & Variables → Actions
 
 ```
-SHOPIFY_STORE_NAME=1commerce.shop
+SHOPIFY_STORE_NAME=1commercesolutions.shop
 SHOPIFY_THEME_TOKEN=shptka_[token from Shopify Admin]
 SHOPIFY_STAGING_THEME_ID=987654321
 SHOPIFY_PRODUCTION_THEME_ID=123456789
@@ -282,7 +282,7 @@ SLACK_WEBHOOK=https://hooks.slack.com/... (optional)
 
 **How to get theme IDs:**
 ```bash
-shopify theme list --store 1commerce.shop
+shopify theme list --store 1commercesolutions.shop
 ```
 
 ---
@@ -333,7 +333,7 @@ Auto-Deploy to STAGING
       ↓
 QA Testing
       ↓
-   [Test theme at https://1commerce.shop]
+   [Test theme at https://1commercesolutions.shop]
       ↓
 Tag Release
       ↓
@@ -352,8 +352,8 @@ Auto-Deploy to PRODUCTION
 
 - **GitHub Repo**: https://github.com/ksksrbiz-arch/unify-one-shopify-theme
 - **GitHub Actions**: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
-- **Shopify Admin**: https://admin.shopify.com/store/1commerce
-- **Store Frontend**: https://1commerce.shop
+- **Shopify Admin**: https://admin.shopify.com/store/1commercesolutions
+- **Store Frontend**: https://1commercesolutions.shop
 - **Full Setup Guide**: See `SETUP.md` in repo
 - **Full Docs**: See `README.md` in repo
 
@@ -372,11 +372,11 @@ Before pushing to production:
 - [ ] Images optimized
 - [ ] Accessibility tested
 - [ ] Documentation updated
-- [ ] Staging tested on 1commerce.shop
+- [ ] Staging tested on 1commercesolutions.shop
 - [ ] QA approval received
 
 ---
 
 **Version**: 1.0.0  
 **Last Updated**: January 21, 2026  
-**Store**: 1commerce.shop
+**Store**: 1commercesolutions.shop

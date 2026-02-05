@@ -63,7 +63,7 @@ Write-Host ""
 Write-Host "📍 Next steps:" -ForegroundColor Cyan
 Write-Host "  1. Check deployment: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions"
 Write-Host "  2. View Lighthouse CI: Check the 'Run Lighthouse CI' step in Actions"
-Write-Host "  3. Preview staging: https://1commerce.shop/?preview_theme_id=<STAGING_THEME_ID>"
+Write-Host "  3. Preview staging: https://1commercesolutions.shop/?preview_theme_id=<STAGING_THEME_ID>"
 Write-Host "  4. After QA approval, run deploy-production.ps1 to release"
 Write-Host ""
 Write-Host "Last commit:" -ForegroundColor Yellow

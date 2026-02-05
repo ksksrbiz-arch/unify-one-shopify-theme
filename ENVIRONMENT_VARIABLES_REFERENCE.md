@@ -30,7 +30,7 @@ These variables are required for basic theme deployment and management.
 ### SHOPIFY_STORE_NAME
 - **Type:** Required
 - **Description:** Your Shopify store domain (without https://)
-- **Example:** `1commerce.shop` or `jbghfe-hp.myshopify.com`
+- **Example:** `1commercesolutions.shop` or `jbghfe-hp.myshopify.com`
 - **Where to find:** Shopify Admin → Settings → General → Store details
 
 ### SHOPIFY_THEME_TOKEN
@@ -158,7 +158,7 @@ Required for headless/API-based storefront operations, product queries, and cart
 ### BACKEND_API_URL
 - **Type:** Optional
 - **Description:** Base URL for backend API endpoints
-- **Example:** `https://api.1commerce.shop/v1`
+- **Example:** `https://api.1commercesolutions.shop/v1`
 - **Where to get:** Backend service provider
 
 ---

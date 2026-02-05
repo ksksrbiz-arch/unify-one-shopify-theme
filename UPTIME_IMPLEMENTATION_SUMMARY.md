@@ -9,7 +9,7 @@
 
 ## 🎯 Objective
 
-Implement comprehensive uptime monitoring and reliability features to ensure constant availability for the production Shopify theme environment at https://1commerce.shop.
+Implement comprehensive uptime monitoring and reliability features to ensure constant availability for the production Shopify theme environment at https://1commercesolutions.shop.
 
 ---
 

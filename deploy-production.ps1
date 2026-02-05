@@ -89,7 +89,7 @@ Write-Host "========================================" -ForegroundColor Cyan
 Write-Host ""
 Write-Host "📍 Next steps:" -ForegroundColor Cyan
 Write-Host "  1. Monitor deployment: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions"
-Write-Host "  2. Check production: https://1commerce.shop"
+Write-Host "  2. Check production: https://1commercesolutions.shop"
 Write-Host "  3. Verify all changes are live"
 Write-Host ""
 Write-Host "📄 Release details:" -ForegroundColor Yellow

@@ -5,7 +5,7 @@
 [![Performance Monitoring](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/performance-monitoring.yml/badge.svg)](https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions/workflows/performance-monitoring.yml)
 
 **Repository:** [github.com/ksksrbiz-arch/unify-one-shopify-theme](https://github.com/ksksrbiz-arch/unify-one-shopify-theme)  
-**Store Domain:** 1commerce.shop  
+**Store Domain:** 1commercesolutions.shop  
 **Last Updated:** January 26, 2026  
 **Uptime Monitoring:** 🟢 Active (checks every 15 minutes)
 
@@ -159,7 +159,7 @@ git push origin main
 # 3. Runs Lighthouse performance checks
 # 4. Deploys to staging theme (ID from GitHub secrets)
 # 5. Posts deployment status
-# 6. Ready for QA testing at https://1commerce.shop
+# 6. Ready for QA testing at https://1commercesolutions.shop
 ```
 
 ### Production Deployment (Manual)
@@ -218,10 +218,10 @@ Add these to repository settings (Settings → Secrets & Variables → Actions):
 
 | Secret | Value | Where to Get |
 |--------|-------|---------------|
-| `SHOPIFY_STORE_NAME` | `1commerce.shop` | N/A |
+| `SHOPIFY_STORE_NAME` | `1commercesolutions.shop` | N/A |
 | `SHOPIFY_THEME_TOKEN` | `shptka_xxxxx...` | Shopify Admin → Develop apps → Token |
-| `SHOPIFY_STAGING_THEME_ID` | `987654321` | `shopify theme list --store 1commerce.shop` |
-| `SHOPIFY_PRODUCTION_THEME_ID` | `123456789` | `shopify theme list --store 1commerce.shop` |
+| `SHOPIFY_STAGING_THEME_ID` | `987654321` | `shopify theme list --store 1commercesolutions.shop` |
+| `SHOPIFY_PRODUCTION_THEME_ID` | `123456789` | `shopify theme list --store 1commercesolutions.shop` |
 | `SLACK_WEBHOOK` (optional) | `https://hooks.slack.com/...` | Slack workspace settings |
 | `BACKEND_API_KEY` (optional) | `sk_live_xxxxx` | OneCommerce backend |
 
@@ -246,8 +246,8 @@ Your theme can call backend endpoints for:
 
 **Key URLs**:
 ```
-Production: https://api.1commerce.shop/v1
-Staging:    https://staging-api.1commerce.shop/v1
+Production: https://api.1commercesolutions.shop/v1
+Staging:    https://staging-api.1commercesolutions.shop/v1
 ```
 
 ---
@@ -411,7 +411,7 @@ npm run lighthouse:check
 ## 📞 Contacts & Escalation
 
 - **Technical Issues**: Dev Team Slack
-- **Shopify Questions**: Shopify Support (1commerce.shop admin)
+- **Shopify Questions**: Shopify Support (1commercesolutions.shop admin)
 - **Production Issues**: On-call engineer (escalate in Slack #critical)
 - **Questions on CI/CD**: DevOps team
 - **Analytics Questions**: Marketing team
@@ -450,7 +450,7 @@ npm run lighthouse:check
 
 ### Testing & Validation
 - [ ] Local development tested (`npm run dev`)
-- [ ] Staging theme tested at https://1commerce.shop
+- [ ] Staging theme tested at https://1commercesolutions.shop
 - [ ] Performance budgets verified (Lighthouse scores > targets)
 - [ ] Analytics funnel tested (make test purchase, verify events fire)
 - [ ] Backend integration tested (if applicable)

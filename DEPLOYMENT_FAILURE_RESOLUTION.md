@@ -95,7 +95,7 @@ A complete English locale file with standard Shopify theme translations includin
 Follow the guide: [GITHUB_SECRETS_SETUP.md](./GITHUB_SECRETS_SETUP.md)
 
 You must configure these secrets in GitHub repository settings:
-1. `SHOPIFY_STORE_NAME` = `1commerce.shop`
+1. `SHOPIFY_STORE_NAME` = `1commercesolutions.shop`
 2. `SHOPIFY_THEME_TOKEN` = Your Shopify API token
 3. `SHOPIFY_STAGING_THEME_ID` = Your staging theme ID
 4. `SHOPIFY_PRODUCTION_THEME_ID` = Your production theme ID

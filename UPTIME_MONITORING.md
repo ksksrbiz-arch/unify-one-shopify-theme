@@ -1,6 +1,6 @@
 # Production Uptime Monitoring & Incident Response Guide
 
-**Store**: https://1commerce.shop  
+**Store**: https://1commercesolutions.shop  
 **Repository**: github.com/ksksrbiz-arch/unify-one-shopify-theme  
 **Last Updated**: January 26, 2026
 
@@ -23,11 +23,11 @@ This document describes the production uptime monitoring system for the UnifyOne
 
 | Endpoint | Check Type | Success Criteria | Impact |
 |----------|------------|------------------|--------|
-| `https://1commerce.shop/` | Homepage | HTTP 2xx/3xx (follows redirects), < 3s response | Critical |
-| `https://1commerce.shop/assets/custom-styles.css` | CSS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
-| `https://1commerce.shop/assets/theme.js` | JS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
-| `https://1commerce.shop/products` | Product Pages | HTTP 2xx/3xx/4xx (follows redirects; any client error such as 404 is acceptable) | High |
-| `https://1commerce.shop/cart` | Cart Functionality | HTTP 2xx/3xx (follows redirects) | Critical |
+| `https://1commercesolutions.shop/` | Homepage | HTTP 2xx/3xx (follows redirects), < 3s response | Critical |
+| `https://1commercesolutions.shop/assets/custom-styles.css` | CSS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
+| `https://1commercesolutions.shop/assets/theme.js` | JS Asset | HTTP 2xx/3xx (follows redirects, or fallback paths) | High |
+| `https://1commercesolutions.shop/products` | Product Pages | HTTP 2xx/3xx/4xx (follows redirects; any client error such as 404 is acceptable) | High |
+| `https://1commercesolutions.shop/cart` | Cart Functionality | HTTP 2xx/3xx (follows redirects) | Critical |
 
 **Note**: The monitoring system follows HTTP redirects (301/302) and treats them as successful responses, as they indicate the site is operational and properly configured for redirects (e.g., HTTPS enforcement, www subdomain redirection, or custom domain setup).
 
@@ -146,8 +146,8 @@ Every production deployment automatically verifies:
 
 **Actions**:
 1. Check Shopify status: https://status.shopify.com/
-2. Verify store admin access: https://1commerce.myshopify.com/admin
-3. Check DNS resolution: `nslookup 1commerce.shop`
+2. Verify store admin access: https://1commercesolutions.myshopify.com/admin
+3. Check DNS resolution: `nslookup 1commercesolutions.shop`
 4. Contact Shopify support if platform issue
 
 #### Issue: Asset Checks Failing

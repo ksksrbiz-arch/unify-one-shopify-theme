@@ -29,7 +29,7 @@ Before you can deploy from Codespaces or GitHub Actions, you need to configure t
 
 | Secret Name | Description | How to Get |
 |-------------|-------------|------------|
-| `SHOPIFY_STORE_NAME` | Your Shopify store domain | Example: `1commerce.shop` |
+| `SHOPIFY_STORE_NAME` | Your Shopify store domain | Example: `1commercesolutions.shop` |
 | `SHOPIFY_THEME_TOKEN` | Shopify Theme Access API token | See instructions below |
 | `SHOPIFY_STAGING_THEME_ID` | Theme ID for staging environment | Run `shopify theme list` |
 | `SHOPIFY_PRODUCTION_THEME_ID` | Theme ID for live production theme | Run `shopify theme list` |
@@ -61,10 +61,10 @@ In your Codespace terminal (or local terminal if authenticated):
 
 ```bash
 # Authenticate with Shopify (first time only)
-shopify auth login --store 1commerce.shop
+shopify auth login --store 1commercesolutions.shop
 
 # List all themes to get their IDs
-shopify theme list --store 1commerce.shop
+shopify theme list --store 1commercesolutions.shop
 ```
 
 Output will look like:
@@ -90,7 +90,7 @@ Once your Codespace is running:
 
 ```bash
 # Set up environment variables (optional, for convenience)
-export SHOPIFY_STORE_NAME="1commerce.shop"
+export SHOPIFY_STORE_NAME="1commercesolutions.shop"
 
 # Authenticate with Shopify
 shopify auth login --store $SHOPIFY_STORE_NAME
@@ -106,7 +106,7 @@ shopify whoami
 npm run dev
 
 # Or use the Shopify CLI directly
-shopify theme dev --store 1commerce.shop
+shopify theme dev --store 1commercesolutions.shop
 ```
 
 The dev server will be accessible at the forwarded port (usually port 9000).
@@ -146,7 +146,7 @@ npm run format
 npm run deploy:staging
 
 # Method 2: Use Shopify CLI directly (replace THEME_ID with your staging theme ID)
-shopify theme push --store 1commerce.shop --theme 987654321
+shopify theme push --store 1commercesolutions.shop --theme 987654321
 ```
 
 ### Deploy to Production
@@ -156,7 +156,7 @@ shopify theme push --store 1commerce.shop --theme 987654321
 npm run deploy:production
 
 # Method 2: Use Shopify CLI directly (replace THEME_ID with your production theme ID)
-shopify theme push --store 1commerce.shop --theme 123456789 --allow-live
+shopify theme push --store 1commercesolutions.shop --theme 123456789 --allow-live
 ```
 
 ⚠️ **WARNING:** Production deployments should typically be done through the GitHub Actions workflow, not manually from Codespace.
@@ -190,11 +190,11 @@ GitHub Actions will automatically:
 
 ### Issue: "Authorization is required"
 
-**Solution:** Run `shopify auth login --store 1commerce.shop` in the terminal.
+**Solution:** Run `shopify auth login --store 1commercesolutions.shop` in the terminal.
 
 ### Issue: "Theme not found"
 
-**Solution:** Verify your theme IDs with `shopify theme list --store 1commerce.shop`
+**Solution:** Verify your theme IDs with `shopify theme list --store 1commercesolutions.shop`
 
 ### Issue: GitHub Actions deployment fails with empty secrets
 

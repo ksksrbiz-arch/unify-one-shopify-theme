@@ -2,7 +2,7 @@
 
 **Last Updated:** January 25, 2026  
 **Theme Version:** 1.0.0  
-**Shopify Store:** 1commerce.shop
+**Shopify Store:** 1commercesolutions.shop
 
 ---
 
@@ -156,7 +156,7 @@ Local Development → Git Commit → GitHub Repository → Shopify GitHub Integr
 ```bash
 # Already configured in this repository
 # See .github/workflows/deploy-staging.yml
-shopify theme push --store 1commerce.shop
+shopify theme push --store 1commercesolutions.shop
 ```
 
 ### Step 2: Verify File Paths
@@ -316,10 +316,10 @@ shopify theme list
 **Via Shopify CLI:**
 ```bash
 # List themes
-shopify theme list --store 1commerce.shop
+shopify theme list --store 1commercesolutions.shop
 
 # Push to specific theme
-shopify theme push --theme-id 987654321 --store 1commerce.shop
+shopify theme push --theme-id 987654321 --store 1commercesolutions.shop
 ```
 
 #### CI/CD Workflow (Already Configured):
@@ -336,7 +336,7 @@ shopify theme push --theme-id 987654321 --store 1commerce.shop
 
 **Staging Theme URL:**
 ```
-https://1commerce.shop/?preview_theme_id=987654321
+https://1commercesolutions.shop/?preview_theme_id=987654321
 ```
 
 ### Testing Checklist
@@ -384,7 +384,7 @@ Before deploying CSS changes to production:
   uses: treosh/lighthouse-ci-action@v10
   with:
     urls: |
-      https://1commerce.shop/?preview_theme_id=${{ secrets.SHOPIFY_STAGING_THEME_ID }}
+      https://1commercesolutions.shop/?preview_theme_id=${{ secrets.SHOPIFY_STAGING_THEME_ID }}
 ```
 
 ---
