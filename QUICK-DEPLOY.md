@@ -121,14 +121,14 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 1. Visit: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
 2. Check latest run status
 3. View Lighthouse CI results
-4. Preview at: https://1commerce.shop
+4. Preview at: https://1commercesolutions.shop
 ```
 
 ### Check Production (After git tag)
 ```
 1. Visit: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
 2. Verify production deployment completed
-3. Check live store: https://1commerce.shop
+3. Check live store: https://1commercesolutions.shop
 4. Verify all changes visible
 ```
 
@@ -169,7 +169,7 @@ Check full results: [Performance Monitoring Guide](./docs/PERFORMANCE-MONITORING
      - Runs Lighthouse CI
      - Posts results
      ↑
-⑦ Preview at https://1commerce.shop
+⑦ Preview at https://1commercesolutions.shop
      ↑
 ⑧ If approved, create tag (git tag v1.0.1 ...)
      ↑
@@ -208,10 +208,10 @@ v2.0.0  "Major redesign with new layout"
 ## 📝 Useful Links
 
 - **GitHub Repo:** https://github.com/ksksrbiz-arch/unify-one-shopify-theme
-- **Store:** https://1commerce.shop
+- **Store:** https://1commercesolutions.shop
 - **GitHub Actions:** https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
 - **Lighthouse Reports:** Check Actions tab for temporary public storage links
-- **Shopify Admin:** https://1commerce.shop/admin
+- **Shopify Admin:** https://1commercesolutions.shop/admin
 
 ---
 

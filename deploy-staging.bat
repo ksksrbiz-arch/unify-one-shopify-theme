@@ -66,7 +66,7 @@ echo.
 echo [*] Next steps:
 echo    1. Check deployment: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
 echo    2. View Lighthouse CI: Check the Actions tab
-echo    3. Preview staging: https://1commerce.shop
+echo    3. Preview staging: https://1commercesolutions.shop
 echo.
 echo [*] Last commit:
 git log --oneline -1

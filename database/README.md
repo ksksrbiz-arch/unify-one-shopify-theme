@@ -105,12 +105,12 @@ For local development, staging, and production environments:
 
 2. **Staging**:
    ```bash
-   export DATABASE_URL=postgresql://staging-db.1commerce.shop:5432/unify_staging
+   export DATABASE_URL=postgresql://staging-db.1commercesolutions.shop:5432/unify_staging
    ```
 
 3. **Production**:
    ```bash
-   export DATABASE_URL=postgresql://prod-db.1commerce.shop:5432/unify_production
+   export DATABASE_URL=postgresql://prod-db.1commercesolutions.shop:5432/unify_production
    ```
 
 ## Testing Migrations

@@ -70,7 +70,7 @@ jobs:
         id: deploy
         env:
           SHOPIFY_CLI_THEME_TOKEN: ${{ secrets.SHOPIFY_THEME_TOKEN }}
-          SHOPIFY_STORE: 1commerce.shop
+          SHOPIFY_STORE: 1commercesolutions.shop
           SHOPIFY_PRODUCTION_THEME_ID: ${{ secrets.SHOPIFY_PRODUCTION_THEME_ID }}
         run: |
           echo "Deploying version: ${{ steps.version.outputs.version }}"
@@ -90,15 +90,15 @@ jobs:
           echo "Verifying production deployment..."
           
           # Check homepage - follow redirects
-          HOMEPAGE_STATUS=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/ || echo "000")
+          HOMEPAGE_STATUS=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/ || echo "000")
           echo "Homepage status: $HOMEPAGE_STATUS"
           
           # Check CSS asset - follow redirects
-          CSS_STATUS=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cdn/shop/t/*/assets/custom-styles.css || echo "000")
+          CSS_STATUS=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/cdn/shop/t/*/assets/custom-styles.css || echo "000")
           echo "CSS asset status: $CSS_STATUS"
           
           # Check JS asset - follow redirects
-          JS_STATUS=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cdn/shop/t/*/assets/theme.js || echo "000")
+          JS_STATUS=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/cdn/shop/t/*/assets/theme.js || echo "000")
           echo "JS asset status: $JS_STATUS"
           
           # Verify all checks passed - accept 2xx and 3xx status codes
@@ -138,7 +138,7 @@ jobs:
               repo: context.repo.repo,
               deployment_id: ${{ steps.deployment.outputs.result }},
               state: 'success',
-              environment_url: 'https://1commerce.shop',
+              environment_url: 'https://1commercesolutions.shop',
               description: 'Successfully deployed to production',
               auto_inactive: false
             });

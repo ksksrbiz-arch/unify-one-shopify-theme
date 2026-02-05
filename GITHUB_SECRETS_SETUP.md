@@ -2,6 +2,21 @@
 
 This guide explains how to configure the required GitHub secrets to enable successful CI/CD deployments for the UnifyOne Shopify Theme.
 
+## ⚠️ IMPORTANT: Domain Update Required
+
+**The production domain has changed from `1commerce.shop` to `1commercesolutions.shop`.**
+
+**ACTION REQUIRED:** Update the `SHOPIFY_STORE_NAME` secret in your GitHub repository to `1commercesolutions.shop` if it is currently set to the old domain.
+
+To update:
+1. Go to GitHub repository: https://github.com/ksksrbiz-arch/unify-one-shopify-theme
+2. Navigate to **Settings** → **Secrets and variables** → **Actions**
+3. Find `SHOPIFY_STORE_NAME` and click the edit icon
+4. Update the value to `1commercesolutions.shop`
+5. Click **Update secret**
+
+---
+
 ## 🚨 Current Issue
 
 The deployment workflow is failing because required GitHub secrets are not configured or are empty:
@@ -27,7 +42,7 @@ Add each of the following secrets by clicking "New repository secret":
 
 #### 1. SHOPIFY_STORE_NAME
 - **Name:** `SHOPIFY_STORE_NAME`
-- **Value:** `1commerce.shop`
+- **Value:** `1commercesolutions.shop`
 - **Description:** Your Shopify store domain without https://
 
 #### 2. SHOPIFY_THEME_TOKEN
@@ -98,7 +113,7 @@ These additional secrets are required for advanced Shopify features like custome
 
 To get your `SHOPIFY_THEME_TOKEN`:
 
-1. Log into Shopify Admin: `https://1commerce.shop/admin` (or `https://admin.shopify.com/store/1commerce`)
+1. Log into Shopify Admin: `https://1commercesolutions.shop/admin` (or `https://admin.shopify.com/store/1commercesolutions`)
 2. Go to **Settings** → **Apps and sales channels**
 3. Click **"Develop apps"** (or **"Create an app"**)
 4. Click **"Create an app"** 
@@ -125,10 +140,10 @@ To get your theme IDs, you have two options:
 
 ```bash
 # First, authenticate
-shopify auth login --store 1commerce.shop
+shopify auth login --store 1commercesolutions.shop
 
 # List all themes
-shopify theme list --store 1commerce.shop
+shopify theme list --store 1commercesolutions.shop
 ```
 
 Output example:
@@ -143,14 +158,14 @@ ID             NAME          ROLE
 1. Go to Shopify Admin
 2. Navigate to **Online Store** → **Themes**
 3. Click on a theme name
-4. Look at the URL: `https://admin.shopify.com/store/1commerce/themes/[THEME_ID]`
+4. Look at the URL: `https://admin.shopify.com/store/1commercesolutions/themes/[THEME_ID]`
 5. The number at the end is your theme ID
 
 ### Step 5: Get Additional Shopify API Credentials
 
 #### Getting Storefront API Tokens
 
-1. Log into Shopify Admin: `https://1commerce.shop/admin`
+1. Log into Shopify Admin: `https://1commercesolutions.shop/admin`
 2. Go to **Settings** → **Apps and sales channels**
 3. Click **"Develop apps"** (or find your existing app)
 4. Create a new app or use existing: `UnifyOne Storefront API`

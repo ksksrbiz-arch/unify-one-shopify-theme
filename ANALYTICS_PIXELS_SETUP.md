@@ -12,7 +12,7 @@ Your OneCommerce Shopify store integrates with **6 major advertising platforms**
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│           Shopify Store (1commerce.shop)                    │
+│           Shopify Store (1commercesolutions.shop)                    │
 ├─────────────────────────────────────────────────────────────┤
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
 │  │ Custom Pixel │  │ GA4 + Google │  │ Meta Pixel   │      │
@@ -194,7 +194,7 @@ The **Facebook & Instagram by Meta** app automatically:
 **Advanced**: Create custom audiences for retargeting:
 1. In Facebook Ads Manager → Audiences → Create Audience → Custom Audience
 2. Select "Shopify" as source
-3. Select your store (1commerce.shop)
+3. Select your store (1commercesolutions.shop)
 4. Create audience based on customers who viewed specific products
 
 ---
@@ -451,7 +451,7 @@ In your `custom-pixel` code, add:
 // Send custom events to your backend
 analytics.publish('purchase_completed', (event) => {
   // Also send to your OneCommerce API for deeper analysis
-  fetch('https://api.1commerce.shop/v1/analytics-engine/track', {
+  fetch('https://api.1commercesolutions.shop/v1/analytics-engine/track', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
