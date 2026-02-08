@@ -2,7 +2,7 @@
 
 **Last Updated:** January 21, 2026  
 **Theme:** UnifyOne Shopify Theme  
-**Store:** 1commerce.shop
+**Store:** 1commercesolutions.shop
 
 ---
 
@@ -184,7 +184,7 @@ git push origin develop
 
 ```powershell
 # 1. Ensure everything is tested on staging
-# Check: https://1commerce.shop (preview staging theme)
+# Check: https://1commercesolutions.shop (preview staging theme)
 # Check: GitHub Actions for Lighthouse CI results
 
 # 2. Create a version tag
@@ -197,7 +197,7 @@ git push origin v1.0.1
 # Monitor: https://github.com/ksksrbiz-arch/unify-one-shopify-theme/actions
 
 # 5. Verify production deployment
-# Visit: https://1commerce.shop (live store)
+# Visit: https://1commercesolutions.shop (live store)
 ```
 
 ### Workflow 4: Fix a Bug in Production
@@ -565,7 +565,7 @@ git pull origin develop
 Before pushing to production:
 
 - [ ] Code tested locally with `npm run dev`
-- [ ] Changes reviewed on staging at https://1commerce.shop
+- [ ] Changes reviewed on staging at https://1commercesolutions.shop
 - [ ] Lighthouse CI passed (check Actions tab)
 - [ ] No console errors in browser DevTools
 - [ ] Mobile responsive tested

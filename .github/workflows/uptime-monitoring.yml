@@ -28,7 +28,7 @@ jobs:
         run: |
           echo "Checking production store homepage..."
           # Follow redirects with -L and capture final status code
-          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commerce.shop/ || echo "000|0")
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}|%{time_total}" https://1commercesolutions.shop/ || echo "000|0")
           HTTP_CODE=$(echo $RESPONSE | cut -d'|' -f1)
           RESPONSE_TIME=$(echo $RESPONSE | cut -d'|' -f2)
           
@@ -52,18 +52,18 @@ jobs:
           echo "Checking critical theme assets..."
           
           # Check CSS file - using the production asset URL with redirect following
-          CSS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/assets/custom-styles.css || echo "000")
+          CSS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/assets/custom-styles.css || echo "000")
           
           # Check JS file - using the production asset URL with redirect following
-          JS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/assets/theme.js || echo "000")
+          JS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/assets/theme.js || echo "000")
           
           # If the /assets/ path doesn't work, assets might be in the root
           if [[ ! "$CSS_RESPONSE" =~ ^[23][0-9][0-9]$ ]]; then
-            CSS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/custom-styles.css || echo "000")
+            CSS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/custom-styles.css || echo "000")
           fi
           
           if [[ ! "$JS_RESPONSE" =~ ^[23][0-9][0-9]$ ]]; then
-            JS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/theme.js || echo "000")
+            JS_RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/theme.js || echo "000")
           fi
           
           echo "css_status=$CSS_RESPONSE" >> $GITHUB_OUTPUT
@@ -85,7 +85,7 @@ jobs:
         run: |
           echo "Checking product page availability..."
           # Follow redirects with -L
-          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/products || echo "000")
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/products || echo "000")
           
           echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
           
@@ -105,7 +105,7 @@ jobs:
         run: |
           echo "Checking cart page availability..."
           # Follow redirects with -L
-          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commerce.shop/cart || echo "000")
+          RESPONSE=$(curl -L -s -o /dev/null -w "%{http_code}" https://1commercesolutions.shop/cart || echo "000")
           
           echo "http_code=$RESPONSE" >> $GITHUB_OUTPUT
           
@@ -219,7 +219,7 @@ jobs:
                   "type": "section",
                   "text": {
                     "type": "mrkdwn",
-                    "text": "*Production Health Status*: ${{ steps.overall_health.outputs.health_status }}\n*Failed Checks*: ${{ steps.overall_health.outputs.failed_checks }}/4\n*Store*: https://1commerce.shop\n*Workflow*: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
+                    "text": "*Production Health Status*: ${{ steps.overall_health.outputs.health_status }}\n*Failed Checks*: ${{ steps.overall_health.outputs.failed_checks }}/4\n*Store*: https://1commercesolutions.shop\n*Workflow*: <${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}|View Run>"
                   }
                 },
                 {

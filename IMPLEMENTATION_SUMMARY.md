@@ -282,7 +282,7 @@ When creating new sections:
 
 ### Repository
 - **GitHub**: [github.com/ksksrbiz-arch/unify-one-shopify-theme](https://github.com/ksksrbiz-arch/unify-one-shopify-theme)
-- **Store**: 1commerce.shop
+- **Store**: 1commercesolutions.shop
 
 ---
 

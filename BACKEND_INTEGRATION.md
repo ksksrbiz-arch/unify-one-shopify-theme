@@ -12,7 +12,7 @@ The UnifyOne Shopify Theme connects to a **Google Cloud Run API** that powers 19
 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│         UnifyOne Shopify Theme (1commerce.shop)                │
+│         UnifyOne Shopify Theme (1commercesolutions.shop)                │
 │  ┌──────────────────────────────────────────────────────────┐  │
 │  │  HTML/CSS/JS (custom-styles.css + theme.js)             │  │
 │  │  Liquid Templates (product, collection, page, etc)      │  │
@@ -40,12 +40,12 @@ The UnifyOne Shopify Theme connects to a **Google Cloud Run API** that powers 19
 
 ### Base URL (Production)
 ```
-https://api.1commerce.shop/v1
+https://api.1commercesolutions.shop/v1
 ```
 
 ### Base URL (Staging - During Development)
 ```
-https://staging-api.1commerce.shop/v1
+https://staging-api.1commercesolutions.shop/v1
 ```
 
 ---
@@ -61,7 +61,7 @@ All endpoints return JSON and support CORS for theme access.
 
 ```javascript
 // theme.js example
-fetch('https://api.1commerce.shop/v1/core-api/products', {
+fetch('https://api.1commercesolutions.shop/v1/core-api/products', {
   method: 'GET',
   headers: { 'Authorization': 'Bearer ' + shopToken },
 })
@@ -132,7 +132,7 @@ fetch('https://api.1commerce.shop/v1/core-api/products', {
 ### 6️⃣ OneCommerce Manager
 **Endpoint**: `/onecommerce-manager`  
 **Methods**: GET, POST, PUT, DELETE  
-**Purpose**: Manage all 1commerce.shop settings, users, stores
+**Purpose**: Manage all 1commercesolutions.shop settings, users, stores
 
 **Sub-endpoints**:
 - `GET /onecommerce-manager/stores` - List managed stores
@@ -303,8 +303,8 @@ Create `.env.local` in theme root (NOT committed to Git):
 
 ```env
 # Backend API Configuration
-BACKEND_API_BASE_URL=https://api.1commerce.shop/v1
-BACKEND_API_STAGING_URL=https://staging-api.1commerce.shop/v1
+BACKEND_API_BASE_URL=https://api.1commercesolutions.shop/v1
+BACKEND_API_STAGING_URL=https://staging-api.1commercesolutions.shop/v1
 BACKEND_ENVIRONMENT=production
 
 # API Authentication
@@ -334,7 +334,7 @@ ENABLE_ACADEMY=true
 ### CORS Configuration
 Backend should allow:
 ```
-Access-Control-Allow-Origin: https://1commerce.shop
+Access-Control-Allow-Origin: https://1commercesolutions.shop
 Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS
 Access-Control-Allow-Headers: Content-Type, Authorization, X-API-Key
 ```
@@ -352,7 +352,7 @@ X-RateLimit-Reset: 1674345600
 
 ### Health Check (Always Available)
 ```bash
-curl https://api.1commerce.shop/v1/health
+curl https://api.1commercesolutions.shop/v1/health
 # Response:
 # { "status": "healthy", "timestamp": "2026-01-21T06:14:00Z" }
 ```
@@ -360,12 +360,12 @@ curl https://api.1commerce.shop/v1/health
 ### Test Core API
 ```bash
 curl -H "Authorization: Bearer YOUR_API_KEY" \
-  https://api.1commerce.shop/v1/core-api/products
+  https://api.1commercesolutions.shop/v1/core-api/products
 ```
 
 ### Test Analytics
 ```bash
-curl -X POST https://api.1commerce.shop/v1/analytics-engine/track \
+curl -X POST https://api.1commercesolutions.shop/v1/analytics-engine/track \
   -H "Content-Type: application/json" \
   -d '{"event":"page_view","timestamp":"2026-01-21T06:14:00Z"}'
 ```

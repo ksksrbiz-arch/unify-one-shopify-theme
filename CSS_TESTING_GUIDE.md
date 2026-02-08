@@ -118,7 +118,7 @@ getComputedStyle(document.querySelector('[data-section-type="header"] .nav-link'
 **Lighthouse Test:**
 ```bash
 # Run from command line
-npx lighthouse https://1commerce.shop/?preview_theme_id=STAGING_ID \
+npx lighthouse https://1commercesolutions.shop/?preview_theme_id=STAGING_ID \
   --only-categories=performance \
   --view
 

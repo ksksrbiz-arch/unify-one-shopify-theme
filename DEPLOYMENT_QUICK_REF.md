@@ -93,7 +93,7 @@ Homepage: 500, CSS: 404, JS: 200
    - Review the "Verify deployment health" step
 
 2. **Verify store manually**
-   - Visit https://1commerce.shop
+   - Visit https://1commercesolutions.shop
    - Open browser console for errors
    - Check network tab for failed assets
 

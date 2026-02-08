@@ -20,7 +20,7 @@ This theme deploys to Shopify using:
 
 ### Deployment Endpoints
 
-- **Store Domain**: 1commerce.shop
+- **Store Domain**: 1commercesolutions.shop
 - **Staging Theme**: Deployed on push to `main` branch
 - **Production Theme**: Deployed on version tags (e.g., `v1.0.0`)
 
