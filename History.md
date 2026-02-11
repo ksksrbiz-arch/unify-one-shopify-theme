@@ -257,7 +257,7 @@ Security fix, cherry-picked from master (4e14a65):
 
 ## 2.6.0 / 2013-11-25
 
-IMPORTANT: Liquid 2.6 is going to be the last version of Liquid which maintains explicit Ruby 1.8 compatability.
+IMPORTANT: Liquid 2.6 is going to be the last version of Liquid which maintains explicit Ruby 1.8 compatibility.
 The following releases will only be tested against Ruby 1.9 and Ruby 2.0 and are likely to break on Ruby 1.8.
 
 * Bugfix for #106: fix example servlet [gnowoel]
@@ -342,7 +342,7 @@ Yanked from rubygems, as it contained too many changes that broke compatibility.
 ## 2.2.0 / 2010-08-22
 
 * Compatible with Ruby 1.8.7, 1.9.1 and 1.9.2-p0
-* Merged some changed made by the community
+* Merged some changes made by the community
 
 
 ## 1.9.0 / 2008-03-04
