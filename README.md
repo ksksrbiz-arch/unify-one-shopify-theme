@@ -33,6 +33,7 @@ Get started in seconds with a fully configured cloud development environment! No
 | **[UPTIME_MONITORING.md](./UPTIME_MONITORING.md)** | Production uptime & incident response | DevOps & Support |
 | **[CSS_INTEGRATION_GUIDE.md](./CSS_INTEGRATION_GUIDE.md)** | CSS integration via GitHub connector | Frontend Developers |
 | **[BACKEND_INTEGRATION.md](./BACKEND_INTEGRATION.md)** | Connect to 19 revenue streams | Full-stack devs |
+| **[INDEXING.md](./INDEXING.md)** | 🗂️ Database indexing benefits & best practices | Backend Developers & DBAs |
 | **[ANALYTICS_PIXELS_SETUP.md](./ANALYTICS_PIXELS_SETUP.md)** | Multi-platform pixel tracking | Marketing & Analytics |
 | **[Performance Workflows](./.github/workflows/performance-monitoring.yml)** | Lighthouse CI monitoring | DevOps |
 | **[docs/GIT_WORKFLOW.md](./docs/GIT_WORKFLOW.md)** | Advanced Git commands & workflows | All Developers |
