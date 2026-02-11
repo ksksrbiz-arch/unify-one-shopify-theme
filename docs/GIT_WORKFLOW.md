@@ -4,6 +4,20 @@ Having a strong command of Git allows you to work with more flexibility and conf
 
 ---
 
+## Table of Contents
+
+1. [git stash](#1-git-stash) - Temporarily save work in progress
+2. [git cherry-pick](#2-git-cherry-pick) - Apply specific commits to another branch
+3. [git rebase](#3-git-rebase) - Reapply commits on top of another base
+4. [git reset](#4-git-reset) - Undo commits by moving branch pointer
+5. [git revert](#5-git-revert) - Safely undo commits on shared branches
+6. [git reflog](#6-git-reflog) - View history of all Git operations
+7. [git bisect](#7-git-bisect) - Find bug-introducing commits with binary search
+8. [git worktree](#8-git-worktree) - Work on multiple branches simultaneously
+9. [git clean](#9-git-clean) - Remove untracked files from working directory
+
+---
+
 ## 1. `git stash`
 
 **Purpose:**  
@@ -218,7 +232,86 @@ git reset --hard HEAD~1
 
 ---
 
-## 5. `git reflog`
+## 5. `git revert`
+
+**Purpose:**  
+Create a new commit that undoes changes from a previous commit, preserving history. Unlike `git reset`, this is safe for shared branches.
+
+**Usage:**  
+- Revert a single commit:
+  ```sh
+  git revert a1b2c3d
+  ```
+- Revert without auto-committing (allows editing):
+  ```sh
+  git revert -n a1b2c3d
+  ```
+- Revert multiple commits:
+  ```sh
+  git revert a1b2c3d b2c3d4e c3d4e5f
+  ```
+- Revert a merge commit (specify parent):
+  ```sh
+  git revert -m 1 merge_commit_sha
+  ```
+- Abort a revert in progress:
+  ```sh
+  git revert --abort
+  ```
+
+**Example scenario:**  
+```sh
+# A bug was introduced in production by commit a1b2c3d
+# Revert it safely without rewriting history
+
+# 1. Find the problematic commit
+git log --oneline
+# Output: a1b2c3d feat: add new checkout flow (this broke something)
+
+# 2. Revert the commit
+git revert a1b2c3d
+
+# 3. Git creates a new commit that undoes the changes
+# Commit message: "Revert 'feat: add new checkout flow'"
+# Edit the message if needed, then save
+
+# 4. Push to production
+git push origin main
+# This triggers deployment with the fix
+```
+
+**Use case for this project:**
+- Undo a deployment that broke production (safe for shared branches)
+- Roll back a CSS change that caused layout issues
+- Reverse a Liquid template change that introduced bugs
+- Undo a merge that wasn't supposed to happen
+
+**🔄 `git revert` vs `git reset`:**
+
+| Feature | `git revert` | `git reset` |
+|---------|--------------|-------------|
+| **Creates new commit** | ✅ Yes | ❌ No |
+| **Rewrites history** | ❌ No | ✅ Yes |
+| **Safe for shared branches** | ✅ Yes | ❌ No |
+| **Safe for local work** | ✅ Yes | ✅ Yes |
+| **Use when** | Undoing pushed commits | Undoing local commits |
+| **Effect** | Adds inverse commit | Moves branch pointer back |
+
+**When to use `git revert`:**
+- The commit has been pushed to a shared branch (main, develop)
+- You want to maintain complete history
+- Multiple people are working on the branch
+- You need to undo changes in production safely
+
+**When to use `git reset`:**
+- Working on a local branch that hasn't been pushed
+- You want to clean up commits before pushing
+- Reorganizing your local work
+- The changes haven't been shared with others
+
+---
+
+## 6. `git reflog`
 
 **Purpose:**  
 View a log of all ref updates (commits, checkouts, resets) - your safety net to recover "lost" commits.
@@ -258,7 +351,7 @@ git branch recover-newsletter d4e5f6g
 
 ---
 
-## 6. `git bisect`
+## 7. `git bisect`
 
 **Purpose:**  
 Use binary search to find which commit introduced a bug.
@@ -311,7 +404,7 @@ git bisect reset
 
 ---
 
-## 7. `git worktree`
+## 8. `git worktree`
 
 **Purpose:**  
 Work on multiple branches simultaneously by checking them out in different directories.
@@ -358,7 +451,7 @@ cd ../unify-one-shopify-theme
 
 ---
 
-## 8. `git clean`
+## 9. `git clean`
 
 **Purpose:**  
 Remove untracked files from your working directory.
@@ -494,6 +587,33 @@ git reflog
 git reset --hard HEAD@{5}
 ```
 
+### Scenario 6: Reverting a Bad Production Deployment
+
+```sh
+# A deployment to production caused issues
+# Find the problematic commit
+git log --oneline main -10
+# Output shows: abc1234 feat: new checkout flow (deployed 2 hours ago)
+
+# Option 1: Revert the specific commit (recommended for production)
+git checkout main
+git pull origin main
+git revert abc1234
+# Edit commit message: "Revert checkout flow - caused payment errors"
+git push origin main
+# Triggers immediate redeployment with the fix
+
+# Option 2: If multiple commits need reverting
+git revert abc1234 def5678 ghi9012
+# Or revert a range (newest to oldest)
+git revert --no-commit abc1234^..def5678
+git commit -m "Revert problematic checkout changes"
+git push origin main
+
+# The bad code is now undone, but history is preserved
+# You can still review what went wrong by looking at the reverted commits
+```
+
 ---
 
 ## Best Practices for This Project
@@ -506,6 +626,8 @@ git reset --hard HEAD@{5}
 4. **Cherry-pick critical fixes** to production without waiting for feature completion
 5. **Use reflog** as your safety net when things go wrong
 6. **Clean commit history** before creating PRs (use interactive rebase)
+7. **Use `git revert` for shared branches** - never rewrite public history
+8. **Prefer `git revert` over `git reset`** when working on main or develop branches
 
 ### ❌ Don'ts:
 
@@ -526,6 +648,7 @@ git reset --hard HEAD@{5}
 | `git rebase` | Update feature branch | ⚠️ Medium (don't rebase shared branches) |
 | `git reset --soft` | Undo commit, keep changes | ✅ Safe |
 | `git reset --hard` | Discard everything | 🔴 Dangerous |
+| `git revert` | Undo pushed commits safely | ✅ Safe (for shared branches) |
 | `git reflog` | Recover lost commits | ✅ Safe (read-only) |
 | `git bisect` | Find bug-introducing commit | ✅ Safe |
 | `git worktree` | Work on multiple branches | ✅ Safe |
