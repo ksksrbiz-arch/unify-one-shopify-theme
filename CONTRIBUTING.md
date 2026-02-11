@@ -9,7 +9,7 @@
 
 ## Things we won't merge
 
-* Code that introduces considerable performance degrations
+* Code that introduces considerable performance degradations
 * Code that touches performance-critical parts of Liquid and comes without benchmarks
 * Features that are not important for most people (we want to keep the core Liquid code small and tidy)
 * Features that can easily be implemented on top of Liquid (for example as a custom filter or custom filesystem)
