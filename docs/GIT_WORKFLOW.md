@@ -605,7 +605,8 @@ git push origin main
 
 # Option 2: If multiple commits need reverting
 git revert abc1234 def5678 ghi9012
-# Or revert a range (newest to oldest)
+# This will create a separate revert commit for each of the listed commits.
+# Or revert a range (newest to oldest) and create a single combined revert commit:
 git revert --no-commit abc1234^..def5678
 git commit -m "Revert problematic checkout changes"
 git push origin main
