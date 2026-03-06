@@ -1,6 +1,18 @@
 /**
- * UnifyOne Shopify Theme - Main JavaScript
- * Last Updated: January 21, 2026
+ * JIMBO'S IRON & THREAD SUPPLY CO.
+ * Theme JavaScript — v2.0.0
+ * Rebuilt: March 2026
+ *
+ * Modules:
+ *  1. Storage + Cookie Consent
+ *  2. Mobile Menu
+ *  3. Product Gallery
+ *  4. Cart (ATC + Cart Drawer)
+ *  5. Lazy Load
+ *  6. Sticky Header
+ *  7. Announcement Bar
+ *  8. Pixel Event Helpers
+ *  9. Quantity Selector
  */
 
 (function () {
@@ -392,7 +404,201 @@
     });
   });
 
-  // Expose to global scope if needed
+  // ===========================================
+  // CART DRAWER
+  // ===========================================
+
+  const CartDrawer = {
+    drawer: null,
+    overlay: null,
+    body: null,
+    isOpen: false,
+
+    init() {
+      this.drawer = document.getElementById('cart-drawer');
+      this.overlay = document.getElementById('cart-drawer-overlay');
+      this.body = document.getElementById('cart-drawer-body');
+      if (!this.drawer) return;
+
+      document.getElementById('cart-drawer-close')?.addEventListener('click', () => this.close());
+      this.overlay?.addEventListener('click', () => this.close());
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && this.isOpen) this.close(); });
+
+      document.querySelectorAll('[data-cart-trigger], .header__cart-link').forEach(el => {
+        el.addEventListener('click', (e) => { e.preventDefault(); this.open(); });
+      });
+    },
+
+    open() {
+      this.isOpen = true;
+      this.drawer.setAttribute('aria-hidden', 'false');
+      this.drawer.classList.add('cart-drawer--open');
+      document.body.classList.add('cart-drawer-active');
+      this.render();
+    },
+
+    close() {
+      this.isOpen = false;
+      this.drawer.setAttribute('aria-hidden', 'true');
+      this.drawer.classList.remove('cart-drawer--open');
+      document.body.classList.remove('cart-drawer-active');
+    },
+
+    render() {
+      if (!this.body) return;
+      this.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;padding:48px"><div class="spinner"></div></div>';
+      fetch('/cart.js')
+        .then(r => r.json())
+        .then(cart => {
+          this.body.innerHTML = this.buildCartHTML(cart);
+          this.bindCartEvents();
+          document.querySelectorAll('[data-cart-count]').forEach(el => {
+            el.textContent = cart.item_count;
+            el.style.display = cart.item_count > 0 ? '' : 'none';
+          });
+        })
+        .catch(() => { this.body.innerHTML = '<p style="padding:24px;text-align:center">Unable to load cart. <a href="/cart">View cart</a></p>'; });
+    },
+
+    buildCartHTML(cart) {
+      if (cart.item_count === 0) {
+        return `<div style="text-align:center;padding:48px 24px">
+          <p style="margin-bottom:16px;opacity:0.5">Your cart is empty.</p>
+          <a href="/collections/all" class="btn btn--primary">Start Shopping</a>
+        </div>`;
+      }
+      const items = cart.items.map(item => `
+        <div class="cart-item" data-variant-id="${item.variant_id}">
+          <a href="${item.url}"><img src="${item.image}" alt="${item.title}" width="80" height="80" loading="lazy" style="width:80px;height:80px;object-fit:cover;border-radius:8px"></a>
+          <div style="flex:1">
+            <a href="${item.url}" style="font-size:.875rem;font-weight:600;display:block;margin-bottom:4px">${item.product_title}</a>
+            ${item.variant_title && item.variant_title !== 'Default Title' ? `<p style="font-size:.75rem;opacity:.6;margin-bottom:8px">${item.variant_title}</p>` : ''}
+            <div style="display:flex;align-items:center;gap:8px">
+              <button class="quantity-selector__btn" data-cart-qty-minus data-variant-id="${item.variant_id}" data-current-qty="${item.quantity}" style="width:28px;height:28px;background:none;border:1px solid rgba(255,255,255,.2);border-radius:4px;cursor:pointer;color:inherit" aria-label="Decrease">−</button>
+              <span style="min-width:24px;text-align:center;font-size:.875rem">${item.quantity}</span>
+              <button class="quantity-selector__btn" data-cart-qty-plus data-variant-id="${item.variant_id}" data-current-qty="${item.quantity}" style="width:28px;height:28px;background:none;border:1px solid rgba(255,255,255,.2);border-radius:4px;cursor:pointer;color:inherit" aria-label="Increase">+</button>
+              <span style="margin-left:auto;font-weight:700;font-size:.875rem">$${(item.final_line_price/100).toFixed(2)}</span>
+              <button data-cart-remove data-variant-id="${item.variant_id}" style="background:none;border:none;cursor:pointer;opacity:.5;padding:4px" aria-label="Remove">✕</button>
+            </div>
+          </div>
+        </div>`).join('');
+      return `<div>${items}</div><div style="display:flex;justify-content:space-between;font-weight:700;padding:12px 0;border-top:1px solid rgba(255,255,255,.1);margin-top:8px"><span>Subtotal</span><span>$${(cart.total_price/100).toFixed(2)}</span></div>`;
+    },
+
+    bindCartEvents() {
+      this.body.querySelectorAll('[data-cart-remove]').forEach(btn => {
+        btn.addEventListener('click', () => this.updateItem(btn.dataset.variantId, 0));
+      });
+      this.body.querySelectorAll('[data-cart-qty-minus]').forEach(btn => {
+        btn.addEventListener('click', () => this.updateItem(btn.dataset.variantId, Math.max(0, parseInt(btn.dataset.currentQty, 10) - 1)));
+      });
+      this.body.querySelectorAll('[data-cart-qty-plus]').forEach(btn => {
+        btn.addEventListener('click', () => this.updateItem(btn.dataset.variantId, parseInt(btn.dataset.currentQty, 10) + 1));
+      });
+    },
+
+    updateItem(variantId, quantity) {
+      fetch('/cart/change.js', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+        body: JSON.stringify({ id: variantId, quantity })
+      }).then(() => this.render()).catch(console.error);
+    }
+  };
+
+  // ===========================================
+  // ADD TO CART INTERCEPT (form submit)
+  // ===========================================
+
+  const ATCInterceptor = {
+    init() {
+      document.addEventListener('submit', (e) => {
+        const form = e.target;
+        if (!form.matches('[action="/cart/add"]')) return;
+        e.preventDefault();
+        const formData = new FormData(form);
+        const variantId = formData.get('id');
+        const quantity = parseInt(formData.get('quantity') || 1, 10);
+        const btn = form.querySelector('[type="submit"]');
+        if (btn) { btn.disabled = true; btn._orig = btn.textContent; btn.textContent = 'Adding...'; }
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+          body: JSON.stringify({ id: variantId, quantity })
+        })
+          .then(r => r.json())
+          .then(item => {
+            if (window.JITSPixel) JITSPixel.addToCart(item.variant_id, item.product_title, item.price, item.quantity);
+            CartDrawer.open();
+            if (btn) { btn.disabled = false; btn.textContent = btn._orig || 'Add to Cart'; }
+          })
+          .catch(() => { if (btn) { btn.disabled = false; btn.textContent = btn._orig || 'Add to Cart'; } });
+      });
+    }
+  };
+
+  // ===========================================
+  // STICKY HEADER
+  // ===========================================
+
+  const StickyHeader = {
+    header: null,
+    lastScroll: 0,
+    init() {
+      this.header = document.querySelector('header, .site-header, [data-header]');
+      if (!this.header) return;
+      window.addEventListener('scroll', () => this.onScroll(), { passive: true });
+    },
+    onScroll() {
+      const s = window.scrollY;
+      this.header.classList.toggle('header--scrolled', s > 80);
+      this.header.classList.toggle('header--hidden', s > this.lastScroll && s > 200);
+      this.lastScroll = s;
+    }
+  };
+
+  // ===========================================
+  // ANNOUNCEMENT BAR
+  // ===========================================
+
+  const AnnouncementBar = {
+    init() {
+      const btn = document.querySelector('[data-announcement-dismiss]');
+      const bar = document.querySelector('[data-announcement-bar]');
+      if (!btn || !bar) return;
+      if (sessionStorage.getItem('jits_announcement_dismissed')) bar.style.display = 'none';
+      btn.addEventListener('click', () => { bar.style.display = 'none'; sessionStorage.setItem('jits_announcement_dismissed', '1'); });
+    }
+  };
+
+  // ===========================================
+  // EXTENDED INIT
+  // ===========================================
+
+  document.addEventListener('DOMContentLoaded', () => {
+    CookieConsent.init();
+    MobileMenu.init();
+    ProductGallery.init();
+    LazyLoad.init();
+    CartDrawer.init();
+    ATCInterceptor.init();
+    StickyHeader.init();
+    AnnouncementBar.init();
+
+    // Legacy data-add-to-cart support
+    document.querySelectorAll('[data-add-to-cart]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        const productId = btn.dataset.addToCart;
+        const quantity = parseInt(btn.dataset.quantity || 1, 10);
+        if (!/^\d+$/.test(productId)) { Cart.showNotification('Invalid product ID', 'error'); return; }
+        Cart.addToCart(productId, quantity).catch(console.error);
+      });
+    });
+  });
+
+  // Expose to global scope
   window.ThemeCart = Cart;
   window.ThemeStorage = Storage;
+  window.ThemeCartDrawer = CartDrawer;
 })();

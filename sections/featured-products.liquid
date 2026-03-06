@@ -1,0 +1,401 @@
+{% comment %}
+  JIMBO'S IRON & THREAD SUPPLY CO.
+  Section: Featured Products
+  Version: 2.0.0
+  Description: Curated product grid with quick-add, ratings, and
+               optional collection filter tabs.
+{% endcomment %}
+
+<section
+  class="featured-products section section--{{ section.settings.bg_style }}"
+  data-section-id="{{ section.id }}"
+  data-section-type="featured-products"
+>
+  <div class="container">
+
+    {%- comment -%} Section Header {%- endcomment -%}
+    <div class="section-header">
+      {%- if section.settings.eyebrow != blank -%}
+        <p class="eyebrow">{{ section.settings.eyebrow }}</p>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2>{{ section.settings.heading }}</h2>
+        <span class="heading-rule heading-rule--center"></span>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p>{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- comment -%} Products Grid {%- endcomment -%}
+    {%- assign product_list = section.settings.collection.products -%}
+    {%- if product_list == blank or product_list.size == 0 -%}
+      {%- comment -%} Fallback to manually selected products {%- endcomment -%}
+      {%- assign product_list = section.settings.product_list -%}
+    {%- endif -%}
+
+    {%- if product_list != blank and product_list.size > 0 -%}
+      <div class="featured-products__grid featured-products__grid--{{ section.settings.columns }}">
+        {%- for product in product_list limit: section.settings.products_to_show -%}
+          <div class="product-card">
+            {%- comment -%} Badges {%- endcomment -%}
+            {%- if product.available == false -%}
+              <div class="product-card__badge product-card__badge--sold-out">Sold Out</div>
+            {%- elsif product.compare_at_price > product.price -%}
+              {%- assign savings_pct = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+              <div class="product-card__badge product-card__badge--sale">-{{ savings_pct }}%</div>
+            {%- elsif product.tags contains 'new' -%}
+              <div class="product-card__badge product-card__badge--new">New</div>
+            {%- endif -%}
+
+            {%- comment -%} Media {%- endcomment -%}
+            <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title }}">
+              <div class="product-card__media">
+                {%- if product.featured_image != blank -%}
+                  <img
+                    src="{{ product.featured_image | image_url: width: 600 }}"
+                    srcset="
+                      {{ product.featured_image | image_url: width: 300 }} 300w,
+                      {{ product.featured_image | image_url: width: 450 }} 450w,
+                      {{ product.featured_image | image_url: width: 600 }} 600w
+                    "
+                    sizes="(max-width: 768px) 50vw, 25vw"
+                    alt="{{ product.featured_image.alt | default: product.title }}"
+                    loading="lazy"
+                    width="{{ product.featured_image.width }}"
+                    height="{{ product.featured_image.height }}"
+                  >
+                  {%- if product.images.size > 1 -%}
+                    <img
+                      class="product-card__media-hover"
+                      src="{{ product.images[1] | image_url: width: 600 }}"
+                      alt="{{ product.images[1].alt | default: product.title }}"
+                      loading="lazy"
+                      width="{{ product.images[1].width }}"
+                      height="{{ product.images[1].height }}"
+                      aria-hidden="true"
+                    >
+                  {%- endif -%}
+                {%- else -%}
+                  <div class="product-card__no-image">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                  </div>
+                {%- endif -%}
+              </div>
+            </a>
+
+            {%- comment -%} Quick Add {%- endcomment -%}
+            {%- if product.available and section.settings.show_quick_add -%}
+              <div class="product-card__quick-add">
+                {%- if product.variants.size == 1 -%}
+                  <form action="/cart/add" method="post" class="product-card__atc-form">
+                    <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button type="submit" class="btn btn--primary btn--full btn--sm product-card__atc-btn">
+                      Add to Cart
+                    </button>
+                  </form>
+                {%- else -%}
+                  <a href="{{ product.url }}" class="btn btn--primary btn--full btn--sm">
+                    Select Options
+                  </a>
+                {%- endif -%}
+              </div>
+            {%- endif -%}
+
+            {%- comment -%} Info {%- endcomment -%}
+            <div class="product-card__info">
+              {%- if product.vendor != blank -%}
+                <p class="product-card__vendor">{{ product.vendor }}</p>
+              {%- endif -%}
+
+              <a href="{{ product.url }}" class="product-card__title-link">
+                <h3 class="product-card__title">{{ product.title }}</h3>
+              </a>
+
+              <div class="product-card__price-wrap">
+                {%- if product.compare_at_price > product.price -%}
+                  <span class="product-card__price product-card__price--sale">
+                    {{ product.price | money }}
+                  </span>
+                  <span class="product-card__price--compare">
+                    {{ product.compare_at_price | money }}
+                  </span>
+                {%- else -%}
+                  <span class="product-card__price">
+                    {{ product.price | money }}
+                  </span>
+                {%- endif -%}
+              </div>
+
+              {%- comment -%} Judge.me Rating Widget {%- endcomment -%}
+              {%- if section.settings.show_ratings -%}
+                <div class="product-card__rating">
+                  {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: false, product: product %}
+                </div>
+              {%- endif -%}
+            </div>
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- else -%}
+      <div class="featured-products__empty">
+        <p>No products found. Add a collection or select products in the theme editor.</p>
+      </div>
+    {%- endif -%}
+
+    {%- comment -%} View All CTA {%- endcomment -%}
+    {%- if section.settings.cta_label != blank -%}
+      <div class="featured-products__footer">
+        <a
+          href="{{ section.settings.collection.url | default: section.settings.cta_url | default: '/collections/all' }}"
+          class="btn btn--secondary btn--lg"
+        >
+          {{ section.settings.cta_label }}
+        </a>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  .featured-products__grid {
+    display: grid;
+    gap: var(--space-6);
+  }
+
+  .featured-products__grid--2 { grid-template-columns: repeat(2, 1fr); }
+  .featured-products__grid--3 { grid-template-columns: repeat(3, 1fr); }
+  .featured-products__grid--4 { grid-template-columns: repeat(4, 1fr); }
+  .featured-products__grid--5 { grid-template-columns: repeat(5, 1fr); }
+
+  .featured-products__footer {
+    text-align: center;
+    margin-top: var(--space-12);
+  }
+
+  .featured-products__empty {
+    text-align: center;
+    padding: var(--space-16);
+    color: var(--color-text-muted);
+  }
+
+  /* Product Card Enhancements */
+  .product-card__badge {
+    position: absolute;
+    top: var(--space-3);
+    left: var(--space-3);
+    z-index: 2;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wider);
+    text-transform: uppercase;
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-sm);
+    color: var(--color-white);
+  }
+
+  .product-card__badge--sale { background-color: var(--color-ember-red); }
+  .product-card__badge--new { background-color: var(--color-iron-green); }
+  .product-card__badge--sold-out { background-color: var(--color-text-muted); }
+
+  .product-card__media-link {
+    display: block;
+    text-decoration: none;
+  }
+
+  .product-card__media-hover {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    transition: opacity var(--transition-normal);
+  }
+
+  .product-card:hover .product-card__media-hover {
+    opacity: 1;
+  }
+
+  .product-card__no-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-surface) 100%);
+    color: var(--color-text-muted);
+  }
+
+  .product-card__no-image svg {
+    width: 48px;
+    height: 48px;
+  }
+
+  .product-card__title-link {
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .product-card__title-link:hover .product-card__title {
+    color: var(--color-accent-primary);
+  }
+
+  .product-card__atc-form { width: 100%; }
+
+  @media (max-width: 1024px) {
+    .featured-products__grid--5 { grid-template-columns: repeat(3, 1fr); }
+    .featured-products__grid--4 { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  @media (max-width: 640px) {
+    .featured-products__grid--5,
+    .featured-products__grid--4,
+    .featured-products__grid--3 {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .featured-products__grid--2 {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .featured-products__grid--5,
+    .featured-products__grid--4,
+    .featured-products__grid--3,
+    .featured-products__grid--2 {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Featured Products",
+  "tag": "section",
+  "class": "section-featured-products",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Section Header"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Top Picks"
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Craftsman Favorites"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "The products our customers keep coming back for."
+    },
+    {
+      "type": "header",
+      "content": "Products"
+    },
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Collection",
+      "info": "Products will be pulled from this collection"
+    },
+    {
+      "type": "product_list",
+      "id": "product_list",
+      "label": "Manual Product Selection",
+      "info": "Used if no collection is selected",
+      "limit": 12
+    },
+    {
+      "type": "range",
+      "id": "products_to_show",
+      "min": 2,
+      "max": 12,
+      "step": 1,
+      "label": "Products to Show",
+      "default": 8
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "select",
+      "id": "columns",
+      "label": "Columns",
+      "options": [
+        { "value": "2", "label": "2" },
+        { "value": "3", "label": "3" },
+        { "value": "4", "label": "4" },
+        { "value": "5", "label": "5" }
+      ],
+      "default": "4"
+    },
+    {
+      "type": "select",
+      "id": "bg_style",
+      "label": "Background",
+      "options": [
+        { "value": "dark", "label": "Dark" },
+        { "value": "surface", "label": "Surface" },
+        { "value": "light", "label": "Light" }
+      ],
+      "default": "dark"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_quick_add",
+      "label": "Show Quick Add",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_ratings",
+      "label": "Show Judge.me Ratings",
+      "default": true
+    },
+    {
+      "type": "header",
+      "content": "View All Button"
+    },
+    {
+      "type": "text",
+      "id": "cta_label",
+      "label": "Button Label",
+      "default": "View All Products"
+    },
+    {
+      "type": "url",
+      "id": "cta_url",
+      "label": "Button URL (fallback)"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Featured Products",
+      "settings": {
+        "eyebrow": "Top Picks",
+        "heading": "Craftsman Favorites",
+        "subheading": "The products our customers keep coming back for.",
+        "products_to_show": 8,
+        "columns": "4",
+        "show_quick_add": true,
+        "show_ratings": true,
+        "cta_label": "View All Products"
+      }
+    }
+  ]
+}
+{% endschema %}

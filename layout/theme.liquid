@@ -1,93 +1,250 @@
 <!DOCTYPE html>
-<html lang="{{ request.locale.iso_code }}">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<html lang="{{ request.locale.iso_code }}" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-    <!-- Content Security Policy - Note: 'unsafe-inline' required for Shopify's inline scripts -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.shopify.com https://*.shopifycdn.com https://monorail-edge.shopifysvc.com; style-src 'self' 'unsafe-inline' https://cdn.shopify.com https://*.shopifycdn.com; img-src 'self' data: https:; font-src 'self' data: https://cdn.shopify.com https://*.shopifycdn.com; connect-src 'self' https://monorail-edge.shopifysvc.com https://*.shopify.com; frame-src https://cdn.shopify.com;"
-    />
+  {%- comment -%} ============================================================
+    JIMBO'S IRON & THREAD SUPPLY CO.
+    Layout: theme.liquid — v2.0.0
+    Integrations: Meta Pixel, Structured Data, Loyalty, Shopify Inbox,
+                  Judge.me, Affiliate UTM, CSP, Open Graph, Twitter Card
+  ============================================================ {%- endcomment -%}
 
-    <title>{% if page_title %}{{ page_title }} | {% endif %}{{ shop.name }}</title>
-    <meta name="description" content="{{ page_description | escape }}" />
+  {%- comment -%} Content Security Policy {%- endcomment -%}
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self';
+      script-src 'self' 'unsafe-inline' 'unsafe-eval'
+        https://cdn.shopify.com https://*.shopifycdn.com
+        https://monorail-edge.shopifysvc.com
+        https://connect.facebook.net https://www.facebook.com
+        https://static.cdn.prismic.io
+        https://cdn.judge.me https://*.judge.me
+        https://cdn.smile.io https://*.smile.io
+        https://static.klaviyo.com https://*.klaviyo.com;
+      style-src 'self' 'unsafe-inline'
+        https://cdn.shopify.com https://*.shopifycdn.com
+        https://fonts.googleapis.com;
+      font-src 'self' data:
+        https://cdn.shopify.com https://*.shopifycdn.com
+        https://fonts.gstatic.com;
+      img-src 'self' data: https: blob:;
+      connect-src 'self'
+        https://monorail-edge.shopifysvc.com https://*.shopify.com
+        https://www.facebook.com https://graph.facebook.com
+        https://*.judge.me https://*.smile.io https://*.klaviyo.com;
+      frame-src https://cdn.shopify.com https://www.facebook.com;
+    "
+  >
 
-    <link rel="canonical" href="{{ canonical_url }}" />
-    <link rel="icon" type="image/png" href="{{ 'favicon.png' | asset_url }}" />
+  {%- comment -%} ============================================================
+    SEO: Title, Description, Canonical
+  ============================================================ {%- endcomment -%}
+  <title>
+    {%- if template == 'index' -%}
+      Jimbo's Iron & Thread Supply Co. — Built for the Craft. Built to Last.
+    {%- elsif page_title -%}
+      {{ page_title }} | Jimbo's Iron & Thread Supply Co.
+    {%- else -%}
+      Jimbo's Iron & Thread Supply Co.
+    {%- endif -%}
+  </title>
 
-    <!-- Open Graph Meta Tags -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="{{ page_title | escape }}" />
-    <meta property="og:description" content="{{ page_description | escape }}" />
-    <meta property="og:url" content="{{ canonical_url }}" />
-    <meta property="og:site_name" content="{{ shop.name }}" />
-    <meta
-      property="og:image"
-      content="{{ page_image | img_url: '1200x630' | prepend: 'https:' }}"
-    />
+  <meta name="description" content="{{ page_description | default: 'Premium metalwork supplies, industrial hardware, and precision thread for craftsmen and fabricators. Free shipping over $75.' | escape }}">
+  <link rel="canonical" href="{{ canonical_url }}">
 
-    <!-- Twitter Card Meta Tags -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="{{ page_title | escape }}" />
-    <meta name="twitter:description" content="{{ page_description | escape }}" />
-    <meta
-      name="twitter:image"
-      content="{{ page_image | img_url: '1200x630' | prepend: 'https:' }}"
-    />
+  {%- comment -%} Robots {%- endcomment -%}
+  {%- if template contains 'search' or template contains 'customers' -%}
+    <meta name="robots" content="noindex, follow">
+  {%- else -%}
+    <meta name="robots" content="index, follow">
+  {%- endif -%}
 
-    <!-- Theme CSS -->
-    {{ 'custom-styles.css' | asset_url | stylesheet_tag }}
+  {%- comment -%} ============================================================
+    Open Graph
+  ============================================================ {%- endcomment -%}
+  <meta property="og:type" content="{% if template contains 'product' %}product{% else %}website{% endif %}">
+  <meta property="og:title" content="{{ page_title | default: shop.name | escape }}">
+  <meta property="og:description" content="{{ page_description | default: shop.description | escape }}">
+  <meta property="og:url" content="{{ canonical_url }}">
+  <meta property="og:site_name" content="Jimbo's Iron & Thread Supply Co.">
+  {%- if page_image -%}
+    <meta property="og:image" content="{{ page_image | image_url: width: 1200 | prepend: 'https:' }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+  {%- elsif settings.og_default_image != blank -%}
+    <meta property="og:image" content="{{ settings.og_default_image | image_url: width: 1200 | prepend: 'https:' }}">
+  {%- endif -%}
+  {%- if template contains 'product' -%}
+    <meta property="product:price:amount" content="{{ product.price | divided_by: 100.0 }}">
+    <meta property="product:price:currency" content="{{ cart.currency.iso_code }}">
+  {%- endif -%}
 
-    <!-- Shopify defaults -->
-    {{ content_for_header }}
+  {%- comment -%} Twitter Card {%- endcomment -%}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ page_title | default: shop.name | escape }}">
+  <meta name="twitter:description" content="{{ page_description | default: shop.description | escape }}">
+  {%- if page_image -%}
+    <meta name="twitter:image" content="{{ page_image | image_url: width: 1200 | prepend: 'https:' }}">
+  {%- endif -%}
+  {%- if settings.twitter_handle != blank -%}
+    <meta name="twitter:site" content="{{ settings.twitter_handle }}">
+  {%- endif -%}
 
-    <!-- Custom scripts -->
-    <script src="{{ 'theme.js' | asset_url }}" defer="defer"></script>
-  </head>
-  <body class="template-{{ template | handle }}" data-shop="{{ shop.permanent_domain }}">
-    <!-- Header Section -->
-    {% section 'header' %}
+  {%- comment -%} ============================================================
+    Favicons
+  ============================================================ {%- endcomment -%}
+  <link rel="icon" type="image/png" href="{{ 'jimbos-logo.png' | asset_url }}">
+  <link rel="apple-touch-icon" href="{{ 'jimbos-logo.png' | asset_url }}">
+  <meta name="theme-color" content="#1A252F">
 
-    <!-- Main Content -->
-    <main id="MainContent" role="main">{{ content_for_layout }}</main>
+  {%- comment -%} ============================================================
+    Preconnect / DNS Prefetch
+  ============================================================ {%- endcomment -%}
+  <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+  <link rel="dns-prefetch" href="https://connect.facebook.net">
+  <link rel="dns-prefetch" href="https://cdn.judge.me">
 
-    <!-- Footer Section -->
-    {% section 'footer' %}
+  {%- comment -%} ============================================================
+    Google Fonts — Bebas Neue + Inter
+  ============================================================ {%- endcomment -%}
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 
-    <!-- Cookie Banner -->
-    <div id="cookie-banner" class="cookie-banner" style="display: none">
-      <div class="cookie-banner__content">
-        <p>
-          We use cookies to enhance your experience. By continuing to browse this site you agree to
-          our use of cookies.
-        </p>
-        <div class="cookie-banner__actions">
-          <button id="cookie-accept" class="btn btn--primary btn--sm">Accept</button>
-          <button id="cookie-decline" class="btn btn--outline btn--sm">Decline</button>
-        </div>
+  {%- comment -%} ============================================================
+    Theme Stylesheet
+  ============================================================ {%- endcomment -%}
+  {{ 'custom-styles.css' | asset_url | stylesheet_tag }}
+
+  {%- comment -%} ============================================================
+    Shopify Required Head Content
+  ============================================================ {%- endcomment -%}
+  {{ content_for_header }}
+
+  {%- comment -%} ============================================================
+    Structured Data (JSON-LD)
+  ============================================================ {%- endcomment -%}
+  {% render 'structured-data' %}
+
+  {%- comment -%} ============================================================
+    Meta Pixel + Affiliate UTM Tracking
+  ============================================================ {%- endcomment -%}
+  {% render 'meta-pixel' %}
+
+  {%- comment -%} ============================================================
+    JS: no-js → js class swap
+  ============================================================ {%- endcomment -%}
+  <script>document.documentElement.classList.replace('no-js', 'js');</script>
+</head>
+
+<body
+  class="template-{{ template | handle }}{% if customer %} customer-logged-in{% endif %}"
+  data-shop="{{ shop.permanent_domain }}"
+  data-currency="{{ cart.currency.iso_code }}"
+>
+
+  {%- comment -%} Skip to content (accessibility) {%- endcomment -%}
+  <a class="skip-link" href="#MainContent">Skip to main content</a>
+
+  {%- comment -%} ============================================================
+    HEADER
+  ============================================================ {%- endcomment -%}
+  {% section 'header' %}
+
+  {%- comment -%} ============================================================
+    MAIN CONTENT
+  ============================================================ {%- endcomment -%}
+  <main id="MainContent" role="main" tabindex="-1">
+    {{ content_for_layout }}
+  </main>
+
+  {%- comment -%} ============================================================
+    FOOTER
+  ============================================================ {%- endcomment -%}
+  {% section 'footer' %}
+
+  {%- comment -%} ============================================================
+    CART DRAWER (rendered globally)
+  ============================================================ {%- endcomment -%}
+  <div id="cart-drawer" class="cart-drawer" aria-hidden="true" role="dialog" aria-label="Shopping cart">
+    <div class="cart-drawer__overlay" id="cart-drawer-overlay"></div>
+    <div class="cart-drawer__panel">
+      <div class="cart-drawer__header">
+        <h2 class="cart-drawer__title">Your Cart</h2>
+        <button type="button" class="cart-drawer__close" aria-label="Close cart" id="cart-drawer-close">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+      <div class="cart-drawer__body" id="cart-drawer-body">
+        {%- comment -%} Populated via JS fetch /cart.js {%- endcomment -%}
+      </div>
+      <div class="cart-drawer__footer">
+        {% render 'loyalty-program', context: 'cart' %}
+        <a href="/cart" class="btn btn--secondary btn--full btn--lg cart-drawer__view-cart">View Cart</a>
+        <a href="/checkout" class="btn btn--primary btn--full btn--lg cart-drawer__checkout">Checkout</a>
       </div>
     </div>
+  </div>
 
-    <!-- JSON-LD Structured Data -->
-    <script type="application/ld+json">
-      {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "{{ shop.name }}",
-        "url": "{{ shop.url }}",
-        "logo": "{{ 'logo.png' | asset_url }}",
-        "description": "{{ shop.description | escape }}",
-        "sameAs": [
-          "{{ settings.social_twitter }}",
-          "{{ settings.social_facebook }}",
-          "{{ settings.social_instagram }}"
-        ]
+  {%- comment -%} ============================================================
+    COOKIE / PRIVACY BANNER
+  ============================================================ {%- endcomment -%}
+  <div id="cookie-banner" class="cookie-banner" hidden aria-live="polite" role="region" aria-label="Cookie consent">
+    <div class="cookie-banner__content">
+      <p>
+        We use cookies to enhance your experience and for analytics. By continuing, you agree to our
+        <a href="/pages/privacy-policy">Privacy Policy</a>.
+      </p>
+      <div class="cookie-banner__actions">
+        <button id="cookie-accept" class="btn btn--primary btn--sm">Accept All</button>
+        <button id="cookie-decline" class="btn btn--ghost btn--sm">Decline</button>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} ============================================================
+    THEME JAVASCRIPT
+  ============================================================ {%- endcomment -%}
+  <script src="{{ 'theme.js' | asset_url }}" defer></script>
+
+  {%- comment -%} ============================================================
+    PRODUCT PAGE — ViewContent Pixel Event
+  ============================================================ {%- endcomment -%}
+  {%- if template contains 'product' -%}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.JITSPixel) {
+        JITSPixel.viewContent({
+          id: {{ product.id | json }},
+          title: {{ product.title | json }},
+          price: {{ product.price }}
+        });
       }
+    });
     </script>
+  {%- endif -%}
 
-    <!-- Analytics (commented - add your tracking ID) -->
-    <!-- Google Analytics, Segment, etc. -->
-  </body>
+  {%- comment -%} ============================================================
+    CART PAGE — InitiateCheckout Pixel Event
+  ============================================================ {%- endcomment -%}
+  {%- if template == 'cart' -%}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var checkoutBtns = document.querySelectorAll('[name="checkout"], .cart__checkout-btn');
+      checkoutBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+          if (window.JITSPixel) {
+            JITSPixel.initiateCheckout({{ cart.total_price }}, {{ cart.item_count }});
+          }
+        });
+      });
+    });
+    </script>
+  {%- endif -%}
+
+</body>
 </html>

@@ -1,0 +1,478 @@
+{% comment %}
+  JIMBO'S IRON & THREAD SUPPLY CO.
+  Section: Hero Banner
+  Version: 2.0.0
+  Description: Full-width cinematic hero with overlay text, CTA buttons,
+               and optional video background. Supports both image and video.
+{% endcomment %}
+
+<section
+  class="hero{% if section.settings.full_height %} hero--full{% endif %}"
+  data-section-id="{{ section.id }}"
+  data-section-type="hero"
+  style="--hero-min-height: {{ section.settings.min_height }}px;"
+>
+  {%- comment -%} Background Media {%- endcomment -%}
+  <div class="hero__media">
+    {%- if section.settings.video_url != blank -%}
+      <video
+        class="hero__video"
+        autoplay
+        muted
+        loop
+        playsinline
+        poster="{{ section.settings.image | image_url: width: 1920 }}"
+      >
+        <source src="{{ section.settings.video_url }}" type="video/mp4">
+      </video>
+    {%- elsif section.settings.image != blank -%}
+      <img
+        class="hero__image"
+        src="{{ section.settings.image | image_url: width: 2000 }}"
+        srcset="
+          {{ section.settings.image | image_url: width: 600 }} 600w,
+          {{ section.settings.image | image_url: width: 900 }} 900w,
+          {{ section.settings.image | image_url: width: 1200 }} 1200w,
+          {{ section.settings.image | image_url: width: 1600 }} 1600w,
+          {{ section.settings.image | image_url: width: 2000 }} 2000w
+        "
+        sizes="100vw"
+        alt="{{ section.settings.image.alt | default: shop.name }}"
+        loading="eager"
+        fetchpriority="high"
+        width="{{ section.settings.image.width }}"
+        height="{{ section.settings.image.height }}"
+      >
+    {%- else -%}
+      <div class="hero__image-placeholder"></div>
+    {%- endif -%}
+
+    {%- comment -%} Overlay {%- endcomment -%}
+    <div
+      class="hero__overlay"
+      style="--overlay-opacity: {{ section.settings.overlay_opacity | divided_by: 100.0 }};"
+    ></div>
+  </div>
+
+  {%- comment -%} Content {%- endcomment -%}
+  <div class="hero__content-wrap">
+    <div class="container">
+      <div class="hero__content hero__content--{{ section.settings.content_alignment }}">
+
+        {%- if section.settings.eyebrow != blank -%}
+          <p class="hero__eyebrow eyebrow">{{ section.settings.eyebrow }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.heading != blank -%}
+          <h1 class="hero__heading">{{ section.settings.heading }}</h1>
+        {%- endif -%}
+
+        {%- if section.settings.subheading != blank -%}
+          <p class="hero__subheading lead">{{ section.settings.subheading }}</p>
+        {%- endif -%}
+
+        {%- if section.settings.cta_primary_label != blank or section.settings.cta_secondary_label != blank -%}
+          <div class="hero__cta-group">
+            {%- if section.settings.cta_primary_label != blank -%}
+              <a
+                href="{{ section.settings.cta_primary_url }}"
+                class="btn btn--primary btn--lg"
+              >
+                {{ section.settings.cta_primary_label }}
+              </a>
+            {%- endif -%}
+            {%- if section.settings.cta_secondary_label != blank -%}
+              <a
+                href="{{ section.settings.cta_secondary_url }}"
+                class="btn btn--secondary btn--lg"
+              >
+                {{ section.settings.cta_secondary_label }}
+              </a>
+            {%- endif -%}
+          </div>
+        {%- endif -%}
+
+        {%- if section.settings.show_scroll_indicator -%}
+          <div class="hero__scroll-indicator" aria-hidden="true">
+            <span class="hero__scroll-line"></span>
+            <span class="hero__scroll-text">Scroll</span>
+          </div>
+        {%- endif -%}
+
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%} Trust Badges Strip (optional) {%- endcomment -%}
+  {%- if section.settings.show_trust_strip -%}
+    <div class="hero__trust-strip">
+      <div class="container">
+        <div class="hero__trust-items">
+          <div class="hero__trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+            <span>Free Shipping Over $75</span>
+          </div>
+          <div class="hero__trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+            <span>Quality Guaranteed</span>
+          </div>
+          <div class="hero__trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+            <span>Same-Day Processing</span>
+          </div>
+          <div class="hero__trust-item">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+            <span>Craftsman-Approved</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  {%- endif -%}
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: var(--hero-min-height, 600px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: var(--color-bg-dark);
+  }
+
+  .hero--full {
+    min-height: 100svh;
+  }
+
+  /* Media */
+  .hero__media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .hero__image,
+  .hero__video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+
+  .hero__image-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, var(--color-bg-dark) 0%, var(--color-bg-surface) 100%);
+  }
+
+  .hero__overlay {
+    position: absolute;
+    inset: 0;
+    background-color: rgba(26, 37, 47, var(--overlay-opacity, 0.6));
+  }
+
+  /* Content */
+  .hero__content-wrap {
+    position: relative;
+    z-index: 1;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    padding-block: var(--space-20);
+  }
+
+  .hero__content {
+    max-width: 720px;
+  }
+
+  .hero__content--center {
+    margin-inline: auto;
+    text-align: center;
+  }
+
+  .hero__content--right {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .hero__eyebrow {
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+
+  .hero__heading {
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: var(--font-weight-black);
+    line-height: var(--line-height-tight);
+    letter-spacing: var(--letter-spacing-tight);
+    text-transform: uppercase;
+    color: var(--color-white);
+    margin-bottom: var(--space-6);
+    text-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .hero__subheading {
+    font-size: var(--font-size-md);
+    color: var(--color-steel-light);
+    margin-bottom: var(--space-8);
+    max-width: 560px;
+    line-height: var(--line-height-relaxed);
+    text-shadow: 0 1px 8px rgba(0, 0, 0, 0.4);
+  }
+
+  .hero__content--center .hero__subheading {
+    margin-inline: auto;
+  }
+
+  .hero__cta-group {
+    display: flex;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+  }
+
+  .hero__content--center .hero__cta-group {
+    justify-content: center;
+  }
+
+  .hero__content--right .hero__cta-group {
+    justify-content: flex-end;
+  }
+
+  /* Scroll Indicator */
+  .hero__scroll-indicator {
+    position: absolute;
+    bottom: var(--space-8);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--color-silver-lining);
+    opacity: 0.7;
+  }
+
+  .hero__scroll-line {
+    display: block;
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--color-silver-lining), transparent);
+    animation: scrollPulse 2s ease-in-out infinite;
+  }
+
+  .hero__scroll-text {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    letter-spacing: var(--letter-spacing-widest);
+    text-transform: uppercase;
+  }
+
+  @keyframes scrollPulse {
+    0%, 100% { opacity: 0.4; transform: scaleY(1); }
+    50% { opacity: 1; transform: scaleY(1.2); }
+  }
+
+  /* Trust Strip */
+  .hero__trust-strip {
+    position: relative;
+    z-index: 1;
+    background-color: rgba(26, 37, 47, 0.85);
+    backdrop-filter: blur(8px);
+    border-top: 1px solid var(--color-border);
+    padding-block: var(--space-4);
+  }
+
+  .hero__trust-items {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    flex-wrap: wrap;
+  }
+
+  .hero__trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wider);
+    text-transform: uppercase;
+    color: var(--color-silver-lining);
+  }
+
+  .hero__trust-item svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent-primary);
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 768px) {
+    .hero__content-wrap {
+      padding-block: var(--space-12);
+      align-items: flex-end;
+      padding-bottom: var(--space-16);
+    }
+
+    .hero__cta-group {
+      flex-direction: column;
+    }
+
+    .hero__trust-items {
+      gap: var(--space-4);
+      justify-content: flex-start;
+    }
+
+    .hero__trust-item:nth-child(n+3) {
+      display: none;
+    }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Hero Banner",
+  "tag": "section",
+  "class": "section-hero",
+  "settings": [
+    {
+      "type": "header",
+      "content": "Media"
+    },
+    {
+      "type": "image_picker",
+      "id": "image",
+      "label": "Background Image",
+      "info": "Recommended: 2000x1125px or larger (16:9)"
+    },
+    {
+      "type": "url",
+      "id": "video_url",
+      "label": "Background Video URL",
+      "info": "MP4 format. Overrides image if set."
+    },
+    {
+      "type": "range",
+      "id": "overlay_opacity",
+      "min": 0,
+      "max": 90,
+      "step": 5,
+      "unit": "%",
+      "label": "Overlay Opacity",
+      "default": 55
+    },
+    {
+      "type": "header",
+      "content": "Content"
+    },
+    {
+      "type": "text",
+      "id": "eyebrow",
+      "label": "Eyebrow Text",
+      "default": "Jimbo's Iron & Thread Supply Co."
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Built for the Craft. Built to Last."
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Premium metalwork supplies, industrial-grade hardware, and precision thread for the modern craftsman."
+    },
+    {
+      "type": "select",
+      "id": "content_alignment",
+      "label": "Content Alignment",
+      "options": [
+        { "value": "left", "label": "Left" },
+        { "value": "center", "label": "Center" },
+        { "value": "right", "label": "Right" }
+      ],
+      "default": "left"
+    },
+    {
+      "type": "header",
+      "content": "Primary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_primary_label",
+      "label": "Button Label",
+      "default": "Shop Now"
+    },
+    {
+      "type": "url",
+      "id": "cta_primary_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Secondary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta_secondary_label",
+      "label": "Button Label",
+      "default": "View Collections"
+    },
+    {
+      "type": "url",
+      "id": "cta_secondary_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Layout"
+    },
+    {
+      "type": "range",
+      "id": "min_height",
+      "min": 400,
+      "max": 900,
+      "step": 50,
+      "unit": "px",
+      "label": "Minimum Height",
+      "default": 700
+    },
+    {
+      "type": "checkbox",
+      "id": "full_height",
+      "label": "Full Viewport Height",
+      "default": false
+    },
+    {
+      "type": "checkbox",
+      "id": "show_scroll_indicator",
+      "label": "Show Scroll Indicator",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "show_trust_strip",
+      "label": "Show Trust Strip",
+      "default": true
+    }
+  ],
+  "presets": [
+    {
+      "name": "Hero Banner",
+      "settings": {
+        "eyebrow": "Jimbo's Iron & Thread Supply Co.",
+        "heading": "Built for the Craft. Built to Last.",
+        "subheading": "Premium metalwork supplies, industrial-grade hardware, and precision thread for the modern craftsman.",
+        "cta_primary_label": "Shop Now",
+        "cta_secondary_label": "View Collections",
+        "overlay_opacity": 55,
+        "min_height": 700,
+        "show_trust_strip": true
+      }
+    }
+  ]
+}
+{% endschema %}

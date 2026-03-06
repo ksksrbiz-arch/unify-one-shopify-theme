@@ -1,67 +1,690 @@
 {% comment %}
-  Collection Page Template
-  Displays a grid of products in a collection
+  JIMBO'S IRON & THREAD SUPPLY CO.
+  Template: Collection Page
+  Version: 2.0.0
+  Description: Full-featured collection page with sidebar filters,
+               sort controls, active filter chips, product grid,
+               and pagination.
 {% endcomment %}
 
-{% paginate collection.products by 20 %}
-<div class="collection-page">
-  <div class="container">
-    
-    {%- comment -%} Collection Header {%- endcomment -%}
-    <div class="collection__header">
-      <h1 class="collection__title">{{ collection.title }}</h1>
-      {% if collection.description != blank %}
-        <div class="collection__description">
-          {{ collection.description }}
-        </div>
-      {% endif %}
+{% paginate collection.products by 24 %}
+
+<div class="collection-page" data-collection-handle="{{ collection.handle }}">
+
+  {%- comment -%} Collection Hero Banner {%- endcomment -%}
+  <div class="collection-hero">
+    {%- if collection.image != blank -%}
+      <div class="collection-hero__media">
+        <img
+          src="{{ collection.image | image_url: width: 1600 }}"
+          srcset="
+            {{ collection.image | image_url: width: 800 }} 800w,
+            {{ collection.image | image_url: width: 1200 }} 1200w,
+            {{ collection.image | image_url: width: 1600 }} 1600w
+          "
+          sizes="100vw"
+          alt="{{ collection.image.alt | default: collection.title }}"
+          loading="eager"
+          width="{{ collection.image.width }}"
+          height="{{ collection.image.height }}"
+        >
+        <div class="collection-hero__overlay"></div>
+      </div>
+    {%- endif -%}
+    <div class="container">
+      <div class="collection-hero__content">
+        {% render 'breadcrumbs' %}
+        <h1 class="collection-hero__title">{{ collection.title }}</h1>
+        {%- if collection.description != blank -%}
+          <p class="collection-hero__desc">{{ collection.description | strip_html | truncate: 160 }}</p>
+        {%- endif -%}
+        <p class="collection-hero__count">
+          {{ collection.products_count }} {{ collection.products_count | pluralize: 'Product', 'Products' }}
+        </p>
+      </div>
     </div>
+  </div>
 
-    {%- comment -%} Product Grid {%- endcomment -%}
-    {% if collection.products.size > 0 %}
-      <div class="collection__products">
-        <div class="product-grid">
-          {% for product in collection.products %}
-            <div class="product-card">
-              <a href="{{ product.url }}" class="product-card__link">
-                {% if product.featured_image %}
-                  <div class="product-card__image">
-                    <img 
-                      src="{{ product.featured_image | img_url: '400x' }}" 
-                      alt="{{ product.featured_image.alt | escape }}"
-                      loading="lazy">
+  <div class="container">
+    <div class="collection-layout">
+
+      {%- comment -%} ===== SIDEBAR FILTERS ===== {%- endcomment -%}
+      <aside class="collection-sidebar" id="collection-filters" aria-label="Product filters">
+        <div class="collection-sidebar__header">
+          <h2 class="collection-sidebar__title">Filters</h2>
+          <button type="button" class="btn btn--ghost btn--sm" id="clear-filters" aria-label="Clear all filters">
+            Clear All
+          </button>
+        </div>
+
+        {%- for filter in collection.filters -%}
+          <div class="collection-filter" data-filter-type="{{ filter.type }}">
+            <button
+              type="button"
+              class="accordion__trigger collection-filter__trigger"
+              aria-expanded="true"
+              aria-controls="filter-{{ filter.param_name }}"
+            >
+              {{ filter.label }}
+              <svg class="accordion__icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </button>
+
+            <div id="filter-{{ filter.param_name }}" class="collection-filter__options">
+              {%- if filter.type == 'price_range' -%}
+                <div class="collection-filter__price-range">
+                  <div class="collection-filter__price-inputs">
+                    <div class="form-group">
+                      <label class="form-label" for="filter-price-min">Min ($)</label>
+                      <input
+                        type="number"
+                        id="filter-price-min"
+                        name="{{ filter.min_value.param_name }}"
+                        value="{{ filter.min_value.value | divided_by: 100 | ceil }}"
+                        min="0"
+                        max="{{ filter.range_max | divided_by: 100 | ceil }}"
+                        class="form-input"
+                        placeholder="0"
+                      >
+                    </div>
+                    <div class="form-group">
+                      <label class="form-label" for="filter-price-max">Max ($)</label>
+                      <input
+                        type="number"
+                        id="filter-price-max"
+                        name="{{ filter.max_value.param_name }}"
+                        value="{{ filter.max_value.value | divided_by: 100 | ceil }}"
+                        min="0"
+                        max="{{ filter.range_max | divided_by: 100 | ceil }}"
+                        class="form-input"
+                        placeholder="{{ filter.range_max | divided_by: 100 | ceil }}"
+                      >
+                    </div>
                   </div>
-                {% endif %}
-                
-                <div class="product-card__info">
-                  <h3 class="product-card__title">{{ product.title }}</h3>
-                  {% render 'price-display', 
-                    product: product,
-                    wrapper_class: 'product-card__price' %}
                 </div>
-              </a>
-              
-              {% render 'product-availability-button', 
-                product: product,
-                button_size: 'sm' %}
+
+              {%- elsif filter.type == 'list' -%}
+                <ul class="collection-filter__list">
+                  {%- for filter_value in filter.values -%}
+                    <li class="collection-filter__item">
+                      <label class="collection-filter__label">
+                        <input
+                          type="checkbox"
+                          name="{{ filter_value.param_name }}"
+                          value="{{ filter_value.value }}"
+                          class="collection-filter__checkbox"
+                          {% if filter_value.active %}checked{% endif %}
+                          {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}
+                        >
+                        <span class="collection-filter__check-mark"></span>
+                        <span class="collection-filter__value-label">{{ filter_value.label }}</span>
+                        <span class="collection-filter__count">({{ filter_value.count }})</span>
+                      </label>
+                    </li>
+                  {%- endfor -%}
+                </ul>
+              {%- endif -%}
             </div>
-          {% endfor %}
+          </div>
+        {%- endfor -%}
+      </aside>
+
+      {%- comment -%} ===== MAIN CONTENT ===== {%- endcomment -%}
+      <div class="collection-main">
+
+        {%- comment -%} Toolbar: Sort + Active Filters {%- endcomment -%}
+        <div class="collection-toolbar">
+          <div class="collection-toolbar__left">
+            {%- comment -%} Mobile Filter Toggle {%- endcomment -%}
+            <button
+              type="button"
+              class="btn btn--secondary btn--sm collection-toolbar__filter-toggle"
+              aria-controls="collection-filters"
+              aria-expanded="false"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="11" y1="18" x2="13" y2="18"/></svg>
+              Filters
+            </button>
+
+            {%- comment -%} Active Filter Chips {%- endcomment -%}
+            {%- assign active_filters_count = 0 -%}
+            {%- for filter in collection.filters -%}
+              {%- for filter_value in filter.active_values -%}
+                {%- assign active_filters_count = active_filters_count | plus: 1 -%}
+                <a
+                  href="{{ filter_value.url_to_remove }}"
+                  class="collection-toolbar__chip"
+                  aria-label="Remove filter: {{ filter_value.label }}"
+                >
+                  {{ filter_value.label }}
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </a>
+              {%- endfor -%}
+            {%- endfor -%}
+          </div>
+
+          <div class="collection-toolbar__right">
+            <label class="collection-toolbar__sort-label form-label" for="collection-sort">Sort</label>
+            <select
+              id="collection-sort"
+              name="sort_by"
+              class="form-select collection-toolbar__sort"
+              aria-label="Sort products"
+            >
+              {%- for option in collection.sort_options -%}
+                <option
+                  value="{{ option.value }}"
+                  {% if option.value == collection.sort_by %}selected{% endif %}
+                >
+                  {{ option.name }}
+                </option>
+              {%- endfor -%}
+            </select>
+          </div>
         </div>
+
+        {%- comment -%} Product Grid {%- endcomment -%}
+        {%- if collection.products.size > 0 -%}
+          <div class="collection-grid" id="collection-grid">
+            {%- for product in collection.products -%}
+              <div class="product-card">
+                {%- comment -%} Badge {%- endcomment -%}
+                {%- if product.available == false -%}
+                  <div class="product-card__badge product-card__badge--sold-out">Sold Out</div>
+                {%- elsif product.compare_at_price > product.price -%}
+                  {%- assign savings = product.compare_at_price | minus: product.price | times: 100 | divided_by: product.compare_at_price -%}
+                  <div class="product-card__badge product-card__badge--sale">-{{ savings }}%</div>
+                {%- elsif product.tags contains 'new' -%}
+                  <div class="product-card__badge product-card__badge--new">New</div>
+                {%- endif -%}
+
+                {%- comment -%} Image {%- endcomment -%}
+                <a href="{{ product.url }}" class="product-card__media-link" aria-label="{{ product.title }}">
+                  <div class="product-card__media">
+                    {%- if product.featured_image != blank -%}
+                      <img
+                        src="{{ product.featured_image | image_url: width: 500 }}"
+                        srcset="
+                          {{ product.featured_image | image_url: width: 300 }} 300w,
+                          {{ product.featured_image | image_url: width: 500 }} 500w
+                        "
+                        sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                        alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                        loading="lazy"
+                        width="{{ product.featured_image.width }}"
+                        height="{{ product.featured_image.height }}"
+                      >
+                    {%- else -%}
+                      <div class="product-card__no-image">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                      </div>
+                    {%- endif -%}
+                  </div>
+                </a>
+
+                {%- comment -%} Quick Add {%- endcomment -%}
+                {%- if product.available -%}
+                  <div class="product-card__quick-add">
+                    {%- if product.variants.size == 1 -%}
+                      <form action="/cart/add" method="post">
+                        <input type="hidden" name="id" value="{{ product.variants.first.id }}">
+                        <input type="hidden" name="quantity" value="1">
+                        <button type="submit" class="btn btn--primary btn--full btn--sm">Add to Cart</button>
+                      </form>
+                    {%- else -%}
+                      <a href="{{ product.url }}" class="btn btn--primary btn--full btn--sm">Select Options</a>
+                    {%- endif -%}
+                  </div>
+                {%- endif -%}
+
+                {%- comment -%} Info {%- endcomment -%}
+                <div class="product-card__info">
+                  {%- if product.vendor != blank -%}
+                    <p class="product-card__vendor">{{ product.vendor }}</p>
+                  {%- endif -%}
+                  <a href="{{ product.url }}" class="product-card__title-link">
+                    <h3 class="product-card__title">{{ product.title }}</h3>
+                  </a>
+                  <div class="product-card__price-wrap">
+                    {%- if product.compare_at_price > product.price -%}
+                      <span class="product-card__price product-card__price--sale">{{ product.price | money }}</span>
+                      <span class="product-card__price--compare">{{ product.compare_at_price | money }}</span>
+                    {%- else -%}
+                      <span class="product-card__price">{{ product.price | money }}</span>
+                    {%- endif -%}
+                  </div>
+                  <div class="product-card__rating">
+                    {% render 'judgeme_widgets', widget_type: 'judgeme_preview_badge', jm_style: '', concierge_install: false, product: product %}
+                  </div>
+                </div>
+              </div>
+            {%- endfor -%}
+          </div>
+
+          {%- comment -%} Pagination {%- endcomment -%}
+          {%- if paginate.pages > 1 -%}
+            <nav class="pagination" aria-label="Collection pagination">
+              {%- if paginate.previous -%}
+                <a href="{{ paginate.previous.url }}" class="pagination__item" aria-label="Previous page">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+                </a>
+              {%- endif -%}
+
+              {%- for part in paginate.parts -%}
+                {%- if part.is_link -%}
+                  <a href="{{ part.url }}" class="pagination__item">{{ part.title }}</a>
+                {%- elsif part.title == paginate.current_page -%}
+                  <span class="pagination__item pagination__item--active" aria-current="page">{{ part.title }}</span>
+                {%- else -%}
+                  <span class="pagination__item pagination__item--ellipsis">{{ part.title }}</span>
+                {%- endif -%}
+              {%- endfor -%}
+
+              {%- if paginate.next -%}
+                <a href="{{ paginate.next.url }}" class="pagination__item" aria-label="Next page">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>
+                </a>
+              {%- endif -%}
+            </nav>
+          {%- endif -%}
+
+        {%- else -%}
+          <div class="collection-empty">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <h3>No products found</h3>
+            <p>Try adjusting your filters or browse all products.</p>
+            <a href="{{ collection.url }}" class="btn btn--primary">Clear Filters</a>
+          </div>
+        {%- endif -%}
+
       </div>
-
-      {%- comment -%} Pagination {%- endcomment -%}
-      {% if paginate.pages > 1 %}
-        <div class="collection__pagination">
-          {{ paginate | default_pagination }}
-        </div>
-      {% endif %}
-
-    {% else %}
-      <div class="collection__empty">
-        <p>No products found in this collection.</p>
-      </div>
-    {% endif %}
-
+    </div>
   </div>
 </div>
+
 {% endpaginate %}
+
+<style>
+  /* ============================================================
+     COLLECTION PAGE
+     ============================================================ */
+  .collection-page {
+    background-color: var(--color-bg-primary);
+    min-height: 60vh;
+  }
+
+  /* Hero */
+  .collection-hero {
+    position: relative;
+    background-color: var(--color-bg-dark);
+    padding-block: var(--space-12);
+    margin-bottom: var(--space-8);
+    overflow: hidden;
+    min-height: 240px;
+    display: flex;
+    align-items: center;
+  }
+
+  .collection-hero__media {
+    position: absolute;
+    inset: 0;
+  }
+
+  .collection-hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 30%;
+  }
+
+  .collection-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(26,37,47,0.9) 0%, rgba(26,37,47,0.5) 100%);
+  }
+
+  .collection-hero__content {
+    position: relative;
+    z-index: 1;
+  }
+
+  .collection-hero__title {
+    font-size: var(--font-size-5xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .collection-hero__desc {
+    font-size: var(--font-size-base);
+    color: var(--color-silver-lining);
+    margin-bottom: var(--space-2);
+    max-width: 600px;
+  }
+
+  .collection-hero__count {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-widest);
+    text-transform: uppercase;
+    color: var(--color-accent-primary);
+    margin-bottom: 0;
+  }
+
+  /* Layout */
+  .collection-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: var(--space-8);
+    align-items: start;
+    padding-bottom: var(--space-20);
+  }
+
+  /* Sidebar */
+  .collection-sidebar {
+    position: sticky;
+    top: var(--space-8);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+  }
+
+  .collection-sidebar__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .collection-sidebar__title {
+    font-size: var(--font-size-base);
+    margin-bottom: 0;
+  }
+
+  /* Filters */
+  .collection-filter {
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: var(--space-4);
+    margin-bottom: var(--space-4);
+  }
+
+  .collection-filter:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+  }
+
+  .collection-filter__trigger {
+    padding-block: var(--space-3);
+    font-size: var(--font-size-sm);
+  }
+
+  .collection-filter__options {
+    padding-top: var(--space-3);
+  }
+
+  .collection-filter__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .collection-filter__label {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    cursor: pointer;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    transition: color var(--transition-fast);
+  }
+
+  .collection-filter__label:hover {
+    color: var(--color-text-primary);
+  }
+
+  .collection-filter__checkbox {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--color-accent-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .collection-filter__count {
+    margin-left: auto;
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  .collection-filter__price-inputs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-3);
+  }
+
+  .collection-filter__price-inputs .form-group {
+    margin-bottom: 0;
+  }
+
+  /* Toolbar */
+  .collection-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-6);
+    padding-bottom: var(--space-4);
+    border-bottom: 1px solid var(--color-border);
+    flex-wrap: wrap;
+  }
+
+  .collection-toolbar__left {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+
+  .collection-toolbar__right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-shrink: 0;
+  }
+
+  .collection-toolbar__sort-label {
+    margin-bottom: 0;
+    white-space: nowrap;
+  }
+
+  .collection-toolbar__sort {
+    width: auto;
+    min-width: 180px;
+  }
+
+  .collection-toolbar__filter-toggle {
+    display: none;
+  }
+
+  .collection-toolbar__chip {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-1) var(--space-3);
+    background-color: rgba(230, 126, 34, 0.1);
+    border: 1px solid rgba(230, 126, 34, 0.3);
+    border-radius: var(--radius-full);
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-accent-primary);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .collection-toolbar__chip:hover {
+    background-color: rgba(230, 126, 34, 0.2);
+  }
+
+  .collection-toolbar__chip svg {
+    width: 12px;
+    height: 12px;
+  }
+
+  /* Product Grid */
+  .collection-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-5);
+  }
+
+  /* Empty State */
+  .collection-empty {
+    text-align: center;
+    padding: var(--space-20);
+    color: var(--color-text-muted);
+  }
+
+  .collection-empty svg {
+    width: 64px;
+    height: 64px;
+    margin-inline: auto;
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted);
+  }
+
+  .collection-empty h3 {
+    font-size: var(--font-size-2xl);
+    margin-bottom: var(--space-3);
+  }
+
+  .collection-empty p {
+    margin-bottom: var(--space-6);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .collection-layout {
+      grid-template-columns: 220px 1fr;
+    }
+
+    .collection-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .collection-layout {
+      grid-template-columns: 1fr;
+    }
+
+    .collection-sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: 300px;
+      z-index: var(--z-modal);
+      transform: translateX(-100%);
+      transition: transform var(--transition-normal);
+      overflow-y: auto;
+      border-radius: 0;
+    }
+
+    .collection-sidebar--open {
+      transform: translateX(0);
+    }
+
+    .collection-toolbar__filter-toggle {
+      display: inline-flex;
+    }
+
+    .collection-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .collection-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+<script>
+  (function() {
+    'use strict';
+
+    // Sort select — auto-submit
+    const sortSelect = document.getElementById('collection-sort');
+    if (sortSelect) {
+      sortSelect.addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        url.searchParams.set('sort_by', this.value);
+        window.location.href = url.toString();
+      });
+    }
+
+    // Mobile filter sidebar toggle
+    const filterToggle = document.querySelector('.collection-toolbar__filter-toggle');
+    const sidebar = document.getElementById('collection-filters');
+
+    if (filterToggle && sidebar) {
+      filterToggle.addEventListener('click', function() {
+        const isOpen = sidebar.classList.toggle('collection-sidebar--open');
+        this.setAttribute('aria-expanded', isOpen.toString());
+      });
+
+      // Close on outside click
+      document.addEventListener('click', function(e) {
+        if (!sidebar.contains(e.target) && !filterToggle.contains(e.target)) {
+          sidebar.classList.remove('collection-sidebar--open');
+          filterToggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Filter checkboxes — auto-submit
+    const filterCheckboxes = document.querySelectorAll('.collection-filter__checkbox');
+    filterCheckboxes.forEach(function(checkbox) {
+      checkbox.addEventListener('change', function() {
+        const url = new URL(window.location.href);
+        // Rebuild filter params
+        filterCheckboxes.forEach(function(cb) {
+          if (cb.checked) {
+            url.searchParams.set(cb.name, cb.value);
+          } else {
+            url.searchParams.delete(cb.name);
+          }
+        });
+        window.location.href = url.toString();
+      });
+    });
+
+    // Accordion filters
+    const accordionTriggers = document.querySelectorAll('.collection-filter__trigger');
+    accordionTriggers.forEach(function(trigger) {
+      trigger.addEventListener('click', function() {
+        const expanded = this.getAttribute('aria-expanded') === 'true';
+        this.setAttribute('aria-expanded', (!expanded).toString());
+        const panel = document.getElementById(this.getAttribute('aria-controls'));
+        if (panel) {
+          panel.style.display = expanded ? 'none' : '';
+        }
+      });
+    });
+
+    // Clear filters
+    const clearBtn = document.getElementById('clear-filters');
+    if (clearBtn) {
+      clearBtn.addEventListener('click', function() {
+        window.location.href = window.location.pathname;
+      });
+    }
+
+  })();
+</script>

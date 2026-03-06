@@ -1,0 +1,433 @@
+{% comment %}
+  JIMBO'S IRON & THREAD SUPPLY CO.
+  Snippet: Loyalty Program — Craftsman Rewards
+  Version: 2.0.0
+  Description: Renders the loyalty program UI widget. Supports:
+    - Shopify Loyalty apps (Smile.io, Yotpo, BON Loyalty) via app embed
+    - Custom points display for logged-in customers
+    - Earn points callout on product pages
+    - Redeem points callout on cart page
+
+  Usage:
+    {% render 'loyalty-program', context: 'product' %}
+    {% render 'loyalty-program', context: 'cart' %}
+    {% render 'loyalty-program', context: 'account' %}
+    {% render 'loyalty-program', context: 'footer' %}
+{% endcomment %}
+
+{%- assign loyalty_app = settings.loyalty_app | default: 'smile' -%}
+
+{%- comment -%}
+  ============================================================
+  PRODUCT PAGE — Earn Points Callout
+  ============================================================
+{%- endcomment -%}
+{%- if context == 'product' -%}
+  {%- assign points_per_dollar = settings.loyalty_points_per_dollar | default: 5 -%}
+  {%- assign product_points = product.price | divided_by: 100 | times: points_per_dollar | floor -%}
+
+  <div class="loyalty-earn-callout" aria-label="Earn loyalty points">
+    <div class="loyalty-earn-callout__icon">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+    </div>
+    <div class="loyalty-earn-callout__text">
+      <span class="loyalty-earn-callout__headline">
+        Earn <strong>{{ product_points }} Craftsman Points</strong> with this purchase
+      </span>
+      <span class="loyalty-earn-callout__sub">
+        {%- if customer -%}
+          You have <strong>{{ customer.metafields.loyalty.points | default: '0' }} points</strong> —
+          <a href="/account" class="loyalty-earn-callout__link">view your rewards</a>
+        {%- else -%}
+          <a href="/account/login" class="loyalty-earn-callout__link">Sign in</a> or
+          <a href="/account/register" class="loyalty-earn-callout__link">create an account</a> to earn points
+        {%- endif -%}
+      </span>
+    </div>
+  </div>
+
+  {%- comment -%} Smile.io embed point display {%- endcomment -%}
+  {%- if loyalty_app == 'smile' -%}
+    <div data-smile-ui="product_points_callout" data-product-id="{{ product.id }}"></div>
+  {%- endif -%}
+
+{%- comment -%}
+  ============================================================
+  CART PAGE — Redeem Points Banner
+  ============================================================
+{%- endcomment -%}
+{%- elsif context == 'cart' -%}
+  {%- if customer -%}
+    <div class="loyalty-cart-banner">
+      <div class="loyalty-cart-banner__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      </div>
+      <div class="loyalty-cart-banner__content">
+        <p class="loyalty-cart-banner__title">Craftsman Rewards</p>
+        <p class="loyalty-cart-banner__text">
+          You have <strong>{{ customer.metafields.loyalty.points | default: '0' }} points</strong> available.
+          Redeem at checkout for a discount.
+        </p>
+      </div>
+      <a href="/account" class="btn btn--secondary btn--sm loyalty-cart-banner__cta">View Rewards</a>
+    </div>
+  {%- else -%}
+    <div class="loyalty-cart-banner loyalty-cart-banner--guest">
+      <div class="loyalty-cart-banner__icon">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+      </div>
+      <div class="loyalty-cart-banner__content">
+        <p class="loyalty-cart-banner__title">Join Craftsman Rewards</p>
+        <p class="loyalty-cart-banner__text">
+          Create a free account to earn points on every order and unlock exclusive member discounts.
+        </p>
+      </div>
+      <a href="/account/register" class="btn btn--primary btn--sm loyalty-cart-banner__cta">Join Free</a>
+    </div>
+  {%- endif -%}
+
+  {%- if loyalty_app == 'smile' -%}
+    <div data-smile-ui="redeem_points_at_checkout"></div>
+  {%- endif -%}
+
+{%- comment -%}
+  ============================================================
+  ACCOUNT PAGE — Full Points Dashboard
+  ============================================================
+{%- endcomment -%}
+{%- elsif context == 'account' -%}
+  {%- if customer -%}
+    <div class="loyalty-dashboard">
+      <div class="loyalty-dashboard__header">
+        <div class="loyalty-dashboard__icon">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+        </div>
+        <div>
+          <h3 class="loyalty-dashboard__title">Craftsman Rewards</h3>
+          <p class="loyalty-dashboard__subtitle">Earn points. Redeem discounts. Build your craft.</p>
+        </div>
+      </div>
+
+      <div class="loyalty-dashboard__stats">
+        <div class="loyalty-dashboard__stat">
+          <span class="loyalty-dashboard__stat-number">{{ customer.metafields.loyalty.points | default: '0' }}</span>
+          <span class="loyalty-dashboard__stat-label">Points Balance</span>
+        </div>
+        <div class="loyalty-dashboard__stat">
+          <span class="loyalty-dashboard__stat-number">{{ customer.metafields.loyalty.lifetime_points | default: '0' }}</span>
+          <span class="loyalty-dashboard__stat-label">Lifetime Points</span>
+        </div>
+        <div class="loyalty-dashboard__stat">
+          <span class="loyalty-dashboard__stat-number">{{ customer.metafields.loyalty.tier | default: 'Apprentice' }}</span>
+          <span class="loyalty-dashboard__stat-label">Current Tier</span>
+        </div>
+      </div>
+
+      <div class="loyalty-dashboard__tiers">
+        <h4>Reward Tiers</h4>
+        <div class="loyalty-tier-list">
+          <div class="loyalty-tier loyalty-tier--apprentice">
+            <span class="loyalty-tier__name">Apprentice</span>
+            <span class="loyalty-tier__range">0 – 999 pts</span>
+            <span class="loyalty-tier__benefit">5 pts per $1</span>
+          </div>
+          <div class="loyalty-tier loyalty-tier--journeyman">
+            <span class="loyalty-tier__name">Journeyman</span>
+            <span class="loyalty-tier__range">1,000 – 4,999 pts</span>
+            <span class="loyalty-tier__benefit">7 pts per $1 + free shipping</span>
+          </div>
+          <div class="loyalty-tier loyalty-tier--master">
+            <span class="loyalty-tier__name">Master Craftsman</span>
+            <span class="loyalty-tier__range">5,000+ pts</span>
+            <span class="loyalty-tier__benefit">10 pts per $1 + priority support</span>
+          </div>
+        </div>
+      </div>
+
+      {%- if loyalty_app == 'smile' -%}
+        <div data-smile-ui="rewards_panel"></div>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+{%- comment -%}
+  ============================================================
+  FOOTER — Compact Loyalty CTA
+  ============================================================
+{%- endcomment -%}
+{%- elsif context == 'footer' -%}
+  <div class="loyalty-footer-cta">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/></svg>
+    <span>
+      <strong>Craftsman Rewards</strong> — Earn points on every order.
+      <a href="/account/register">Join free →</a>
+    </span>
+  </div>
+{%- endif -%}
+
+<style>
+  /* ============================================================
+     LOYALTY PROGRAM STYLES
+     ============================================================ */
+
+  /* Product Earn Callout */
+  .loyalty-earn-callout {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding: var(--space-4);
+    background-color: rgba(230, 126, 34, 0.08);
+    border: 1px solid rgba(230, 126, 34, 0.25);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-4);
+  }
+
+  .loyalty-earn-callout__icon {
+    flex-shrink: 0;
+    color: var(--color-accent-primary);
+    width: 20px;
+    height: 20px;
+    margin-top: 2px;
+  }
+
+  .loyalty-earn-callout__icon svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  .loyalty-earn-callout__text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .loyalty-earn-callout__headline {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-primary);
+  }
+
+  .loyalty-earn-callout__sub {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+
+  .loyalty-earn-callout__link {
+    color: var(--color-accent-primary);
+    text-decoration: underline;
+  }
+
+  /* Cart Banner */
+  .loyalty-cart-banner {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4) var(--space-5);
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-lg);
+    margin-bottom: var(--space-4);
+  }
+
+  .loyalty-cart-banner--guest {
+    border-color: rgba(230, 126, 34, 0.3);
+    background-color: rgba(230, 126, 34, 0.05);
+  }
+
+  .loyalty-cart-banner__icon {
+    flex-shrink: 0;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(230, 126, 34, 0.1);
+    border-radius: var(--radius-md);
+    color: var(--color-accent-primary);
+  }
+
+  .loyalty-cart-banner__icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .loyalty-cart-banner__content {
+    flex: 1;
+  }
+
+  .loyalty-cart-banner__title {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+    margin-bottom: var(--space-1);
+  }
+
+  .loyalty-cart-banner__text {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin-bottom: 0;
+  }
+
+  /* Account Dashboard */
+  .loyalty-dashboard {
+    background-color: var(--color-bg-surface);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    padding: var(--space-8);
+    margin-bottom: var(--space-8);
+  }
+
+  .loyalty-dashboard__header {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    margin-bottom: var(--space-8);
+    padding-bottom: var(--space-6);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .loyalty-dashboard__icon {
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(230, 126, 34, 0.1);
+    border-radius: var(--radius-xl);
+    color: var(--color-accent-primary);
+    flex-shrink: 0;
+  }
+
+  .loyalty-dashboard__icon svg {
+    width: 28px;
+    height: 28px;
+  }
+
+  .loyalty-dashboard__title {
+    font-size: var(--font-size-xl);
+    margin-bottom: var(--space-1);
+  }
+
+  .loyalty-dashboard__subtitle {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+    margin-bottom: 0;
+  }
+
+  .loyalty-dashboard__stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .loyalty-dashboard__stat {
+    text-align: center;
+    padding: var(--space-5);
+    background-color: var(--color-bg-dark);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--color-border);
+  }
+
+  .loyalty-dashboard__stat-number {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: var(--font-size-3xl);
+    font-weight: var(--font-weight-black);
+    color: var(--color-accent-primary);
+    line-height: 1;
+    margin-bottom: var(--space-2);
+  }
+
+  .loyalty-dashboard__stat-label {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-xs);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wider);
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+  }
+
+  /* Tier List */
+  .loyalty-tier-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .loyalty-tier {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-border);
+    background-color: var(--color-bg-dark);
+  }
+
+  .loyalty-tier--journeyman { border-color: var(--color-accent-secondary); }
+  .loyalty-tier--master { border-color: var(--color-accent-primary); background-color: rgba(230, 126, 34, 0.05); }
+
+  .loyalty-tier__name {
+    font-family: var(--font-heading);
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: var(--letter-spacing-wide);
+    text-transform: uppercase;
+    color: var(--color-text-primary);
+    min-width: 160px;
+  }
+
+  .loyalty-tier__range {
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+    flex: 1;
+  }
+
+  .loyalty-tier__benefit {
+    font-size: var(--font-size-xs);
+    color: var(--color-accent-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Footer CTA */
+  .loyalty-footer-cta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+
+  .loyalty-footer-cta svg {
+    width: 16px;
+    height: 16px;
+    color: var(--color-accent-primary);
+    flex-shrink: 0;
+  }
+
+  .loyalty-footer-cta a {
+    color: var(--color-accent-primary);
+  }
+
+  @media (max-width: 640px) {
+    .loyalty-dashboard__stats {
+      grid-template-columns: 1fr;
+    }
+
+    .loyalty-cart-banner {
+      flex-wrap: wrap;
+    }
+
+    .loyalty-tier {
+      flex-wrap: wrap;
+    }
+
+    .loyalty-tier__name {
+      min-width: auto;
+    }
+  }
+</style>

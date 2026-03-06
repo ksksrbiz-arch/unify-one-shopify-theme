@@ -1,0 +1,161 @@
+{% comment %}
+  JIMBO'S IRON & THREAD SUPPLY CO.
+  Snippet: Structured Data (JSON-LD)
+  Version: 2.0.0
+  Description: Outputs schema.org JSON-LD for Organization, WebSite,
+               Product (with offers, reviews, breadcrumb), and
+               BreadcrumbList. Improves Google rich results.
+
+  Usage: {% render 'structured-data' %}
+  Place in theme.liquid <head>.
+{% endcomment %}
+
+{%- comment -%} Organization + WebSite (every page) {%- endcomment -%}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "{{ shop.url }}/#organization",
+      "name": "Jimbo's Iron & Thread Supply Co.",
+      "url": "{{ shop.url }}",
+      "logo": {
+        "@type": "ImageObject",
+        "url": "{{ 'jimbos-logo.png' | asset_url }}"
+      },
+      "description": "Premium metalwork supplies, industrial hardware, and precision thread for craftsmen and fabricators.",
+      "sameAs": [
+        "https://www.facebook.com/jimbosironandthread",
+        "https://www.instagram.com/jimbosironandthread"
+      ],
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "contactType": "customer service",
+        "availableLanguage": "English"
+      }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "{{ shop.url }}/#website",
+      "url": "{{ shop.url }}",
+      "name": "{{ shop.name }}",
+      "publisher": { "@id": "{{ shop.url }}/#organization" },
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": {
+          "@type": "EntryPoint",
+          "urlTemplate": "{{ shop.url }}/search?q={search_term_string}"
+        },
+        "query-input": "required name=search_term_string"
+      }
+    }
+  ]
+}
+</script>
+
+{%- comment -%} Product Schema (product pages only) {%- endcomment -%}
+{%- if template contains 'product' -%}
+  {%- assign current_variant = product.selected_or_first_available_variant -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": {{ product.title | json }},
+    "description": {{ product.description | strip_html | truncate: 500 | json }},
+    "url": "{{ shop.url }}{{ product.url }}",
+    "sku": {{ current_variant.sku | json }},
+    "brand": {
+      "@type": "Brand",
+      "name": {{ product.vendor | default: "Jimbo's Iron & Thread Supply Co." | json }}
+    },
+    {%- if product.featured_image != blank -%}
+    "image": [
+      "{{ product.featured_image | image_url: width: 1200 }}"
+      {%- for image in product.images limit: 4 offset: 1 -%}
+        ,"{{ image | image_url: width: 1200 }}"
+      {%- endfor -%}
+    ],
+    {%- endif -%}
+    "offers": {
+      "@type": "Offer",
+      "url": "{{ shop.url }}{{ product.url }}",
+      "priceCurrency": "{{ cart.currency.iso_code | default: 'USD' }}",
+      "price": "{{ current_variant.price | divided_by: 100.0 }}",
+      {%- if current_variant.compare_at_price > current_variant.price -%}
+      "priceValidUntil": "{{ 'now' | date: '%Y' | plus: 1 }}-12-31",
+      {%- endif -%}
+      "availability": "{% if current_variant.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+      "seller": {
+        "@type": "Organization",
+        "name": "Jimbo's Iron & Thread Supply Co."
+      }
+    }
+    {%- comment -%}
+      Judge.me injects AggregateRating automatically via their app.
+      If not using Judge.me, add aggregateRating block here.
+    {%- endcomment -%}
+  }
+  </script>
+{%- endif -%}
+
+{%- comment -%} Collection Schema {%- endcomment -%}
+{%- if template contains 'collection' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "CollectionPage",
+    "name": {{ collection.title | json }},
+    "description": {{ collection.description | strip_html | truncate: 300 | default: '' | json }},
+    "url": "{{ shop.url }}{{ collection.url }}",
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "{{ shop.url }}"
+        },
+        {
+          "@type": "ListItem",
+          "position": 2,
+          "name": "Collections",
+          "item": "{{ shop.url }}/collections"
+        },
+        {
+          "@type": "ListItem",
+          "position": 3,
+          "name": {{ collection.title | json }},
+          "item": "{{ shop.url }}{{ collection.url }}"
+        }
+      ]
+    }
+  }
+  </script>
+{%- endif -%}
+
+{%- comment -%} Article Schema (blog posts) {%- endcomment -%}
+{%- if template contains 'article' -%}
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Article",
+    "headline": {{ article.title | json }},
+    "description": {{ article.excerpt_or_content | strip_html | truncate: 300 | json }},
+    "url": "{{ shop.url }}{{ article.url }}",
+    "datePublished": "{{ article.published_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
+    "dateModified": "{{ article.updated_at | date: '%Y-%m-%dT%H:%M:%SZ' }}",
+    "author": {
+      "@type": "Person",
+      "name": {{ article.author | json }}
+    },
+    "publisher": {
+      "@id": "{{ shop.url }}/#organization"
+    }
+    {%- if article.image != blank -%}
+    ,"image": "{{ article.image | image_url: width: 1200 }}"
+    {%- endif -%}
+  }
+  </script>
+{%- endif -%}

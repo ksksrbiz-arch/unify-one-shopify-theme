@@ -1,0 +1,174 @@
+{% comment %}
+  JIMBO'S IRON & THREAD SUPPLY CO.
+  Snippet: Meta Pixel + Affiliate UTM Tracking
+  Version: 2.0.0
+  Description: Injects Meta Pixel base code, standard events (PageView,
+               ViewContent, AddToCart, InitiateCheckout, Purchase),
+               and persists UTM/affiliate ref params via sessionStorage.
+               Compliant with Shopify's customer privacy API.
+
+  Usage: {% render 'meta-pixel' %}
+  Place in theme.liquid <head> after consent check.
+{% endcomment %}
+
+{%- comment -%}
+  Only fire if Meta Pixel ID is configured in theme settings.
+  Set settings_schema.json key: meta_pixel_id
+{%- endcomment -%}
+{%- assign pixel_id = settings.meta_pixel_id -%}
+{%- if pixel_id == blank -%}
+  {%- assign pixel_id = '' -%}
+{%- endif -%}
+
+<script>
+(function() {
+  'use strict';
+
+  // ============================================================
+  // AFFILIATE / UTM PARAM PERSISTENCE
+  // Captures ref, utm_source, utm_medium, utm_campaign, utm_content
+  // from URL and stores in sessionStorage for attribution.
+  // ============================================================
+  (function captureAffiliateParams() {
+    try {
+      var params = new URLSearchParams(window.location.search);
+      var trackingKeys = ['ref', 'utm_source', 'utm_medium', 'utm_campaign', 'utm_content', 'utm_term', 'fbclid', 'gclid'];
+      var stored = {};
+
+      trackingKeys.forEach(function(key) {
+        var val = params.get(key);
+        if (val) {
+          stored[key] = val;
+          sessionStorage.setItem('jits_' + key, val);
+        }
+      });
+
+      // Persist ref cookie for 30 days for server-side attribution
+      var ref = params.get('ref');
+      if (ref) {
+        var expires = new Date();
+        expires.setDate(expires.getDate() + 30);
+        document.cookie = 'jits_ref=' + encodeURIComponent(ref) + '; expires=' + expires.toUTCString() + '; path=/; SameSite=Lax';
+      }
+    } catch(e) {}
+  })();
+
+  // ============================================================
+  // META PIXEL
+  // Respects Shopify Customer Privacy API consent
+  // ============================================================
+  var PIXEL_ID = '{{ pixel_id }}';
+  if (!PIXEL_ID) return;
+
+  function initPixel() {
+    !function(f,b,e,v,n,t,s){
+      if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)
+    }(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');
+
+    fbq('init', PIXEL_ID);
+    fbq('track', 'PageView');
+
+    // Enrich with UTM data as custom data
+    try {
+      var utmData = {};
+      ['utm_source','utm_medium','utm_campaign','utm_content','ref'].forEach(function(k) {
+        var v = sessionStorage.getItem('jits_' + k);
+        if (v) utmData[k] = v;
+      });
+      if (Object.keys(utmData).length > 0) {
+        fbq('trackCustom', 'UTMCapture', utmData);
+      }
+    } catch(e) {}
+  }
+
+  // Check Shopify consent
+  if (window.Shopify && window.Shopify.customerPrivacy) {
+    if (window.Shopify.customerPrivacy.analyticsProcessingAllowed()) {
+      initPixel();
+    } else {
+      document.addEventListener('shopify:consent:updated', function() {
+        if (window.Shopify.customerPrivacy.analyticsProcessingAllowed()) {
+          initPixel();
+        }
+      });
+    }
+  } else {
+    // No consent API — fire pixel (non-GDPR markets)
+    initPixel();
+  }
+
+  // ============================================================
+  // STANDARD EVENT HELPERS
+  // Called from product/cart/checkout pages
+  // ============================================================
+  window.JITSPixel = {
+    viewContent: function(product) {
+      if (typeof fbq === 'undefined') return;
+      fbq('track', 'ViewContent', {
+        content_ids: [String(product.id)],
+        content_name: product.title,
+        content_type: 'product',
+        value: (product.price / 100).toFixed(2),
+        currency: '{{ cart.currency.iso_code | default: "USD" }}'
+      });
+    },
+    addToCart: function(variantId, productTitle, price, quantity) {
+      if (typeof fbq === 'undefined') return;
+      fbq('track', 'AddToCart', {
+        content_ids: [String(variantId)],
+        content_name: productTitle,
+        content_type: 'product',
+        value: ((price / 100) * (quantity || 1)).toFixed(2),
+        currency: '{{ cart.currency.iso_code | default: "USD" }}'
+      });
+    },
+    initiateCheckout: function(cartTotal, itemCount) {
+      if (typeof fbq === 'undefined') return;
+      fbq('track', 'InitiateCheckout', {
+        value: (cartTotal / 100).toFixed(2),
+        currency: '{{ cart.currency.iso_code | default: "USD" }}',
+        num_items: itemCount
+      });
+    }
+  };
+
+})();
+</script>
+
+{%- comment -%} Noscript fallback {%- endcomment -%}
+{%- if pixel_id != blank -%}
+<noscript>
+  <img height="1" width="1" style="display:none"
+    src="https://www.facebook.com/tr?id={{ pixel_id }}&ev=PageView&noscript=1"
+    alt="">
+</noscript>
+{%- endif -%}
+
+{% comment %}
+  ============================================================
+  PURCHASE EVENT — rendered on order confirmation page only
+  ============================================================
+{% endcomment %}
+{%- if template == 'customers/order' or first_time_accessed -%}
+  {%- if checkout -%}
+    <script>
+    (function() {
+      if (typeof fbq === 'undefined') return;
+      var orderData = {
+        value: '{{ checkout.total_price | divided_by: 100.0 }}',
+        currency: '{{ checkout.currency }}',
+        content_ids: [{% for line_item in checkout.line_items %}'{{ line_item.variant_id }}'{% unless forloop.last %},{% endunless %}{% endfor %}],
+        content_type: 'product',
+        num_items: {{ checkout.item_count }},
+        order_id: '{{ checkout.order_id }}'
+      };
+      fbq('track', 'Purchase', orderData);
+    })();
+    </script>
+  {%- endif -%}
+{%- endif -%}
