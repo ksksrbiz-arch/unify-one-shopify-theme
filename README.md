@@ -31,6 +31,8 @@ npm install
 npm run dev
 ```
 
+`npm run dev` expects `SHOPIFY_FLAG_STORE` to be set in your shell environment.
+
 ## Linting and Formatting
 ```bash
 npm run lint
@@ -43,6 +45,8 @@ npm run package
 ```
 
 This creates `release/unifyone-modern-commerce-theme.zip` containing only Shopify theme files and buyer docs.
+
+Packaging requires the `zip` CLI utility to be available in your PATH.
 
 ## Support
 See `/docs/SUPPORT.md`.
