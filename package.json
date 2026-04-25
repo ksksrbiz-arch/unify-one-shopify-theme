@@ -4,7 +4,7 @@
   "description": "Reusable Shopify Liquid theme template for modern commerce stores",
   "main": "index.js",
   "scripts": {
-    "dev": "shopify theme dev",
+    "dev": "shopify theme dev --store $SHOPIFY_FLAG_STORE",
     "lint": "shopify theme check",
     "format": "prettier --write \"**/*.{js,json,liquid,css,md}\"",
     "package": "node scripts/package-theme.js"
