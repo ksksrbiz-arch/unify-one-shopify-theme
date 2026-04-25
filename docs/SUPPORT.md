@@ -14,4 +14,4 @@
 - Target: 1-2 business days
 
 ## Contact
-- Support URL: https://example.com/unifyone-modern-commerce/support
+- Support URL: https://github.com/t7451/unify-one-shopify-theme/issues

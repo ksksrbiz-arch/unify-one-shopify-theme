@@ -37,6 +37,11 @@ Example:
 export SHOPIFY_FLAG_STORE=your-store.myshopify.com
 npm run dev
 ```
+Windows Command Prompt example:
+```cmd
+set SHOPIFY_FLAG_STORE=your-store.myshopify.com
+npm run dev
+```
 
 ## Linting and Formatting
 ```bash

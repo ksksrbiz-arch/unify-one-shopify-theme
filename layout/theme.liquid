@@ -45,7 +45,7 @@
   ============================================================ {%- endcomment -%}
   <title>
     {%- if template == 'index' -%}
-      {{ shop.name | default: "UnifyOne Modern Commerce" }}
+      {{ shop.name }}
     {%- elsif page_title -%}
       {{ page_title }} | {{ shop.name }}
     {%- else -%}
