@@ -56,5 +56,6 @@ if (fs.existsSync(assetsDir)) {
 
 if (fs.existsSync(outputFile)) fs.rmSync(outputFile);
 execFileSync('zip', ['-r', outputFile, '.'], { cwd: stagingDir, stdio: 'inherit' });
+fs.rmSync(stagingDir, { recursive: true, force: true });
 
 console.log(`Created ${outputFile}`);
